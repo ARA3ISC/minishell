@@ -6,11 +6,12 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/25 10:52:41 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/25 12:19:06 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
 
 int		cmds_count(char **cmds)
 {
@@ -54,6 +55,39 @@ void	fill_struct(char *cmd)
 
 }
 
+void	syntax_error(char *cmd)
+{
+	size_t i = 0;
+	while (cmd[i])
+	{
+		if (((i == 0 || i == ft_strlen(cmd) - 1) && cmd[i] == '|'))
+			print_error("syntax error near unexpected token `|'");
+		if (cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|')
+			print_error("syntax error `||'");
+		i++;
+	}
+}
+
+void	signal_received(char s)
+{
+	if (s == 'D')
+	{
+		printf(" exit\n");
+		exit(0);
+	}
+}
+
+void	signal_C_received(int signo)
+{
+	// (void)signo;
+	if (signo == SIGINT)
+	{
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		exit(0);
+	}
+}
 
 int main(int argc, char **argv, char **env)
 {
@@ -62,19 +96,22 @@ int main(int argc, char **argv, char **env)
 	char *path;
 	char *cmd;
 
+	signal(SIGINT, signal_C_received);
+
 
 	path = ft_strjoin(env[16], "$ ");
 	path = ft_strchr(path, '/');
 	while ((cmd = readline(path)) != NULL)
 	{
+		syntax_error(cmd);
 		fill_struct(cmd);
-		printf("%s\n", cmd_struct->cmd);
-		printf("%p\n", cmd_struct->next);
-		// printf("%p\n", cmd_struct->next->next);
-		// printf("%p\n", cmd_struct->next->next->next);
-		// printf("%s\n", cmd);
+		// printf("%s\n", cmd_struct->cmd);
+		// printf("%p\n", cmd_struct->next);
+
+
 
 		ft_lstclear(&cmd_struct);
 		free(cmd);
 	}
+	signal_received('D');
 }

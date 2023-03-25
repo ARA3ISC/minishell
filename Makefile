@@ -1,7 +1,7 @@
 NAME = minishell
 CFLAGS = -Wall -Wextra -Werror
 
-FT_SRC = src/minishell.c src/parsing/parsing.c src/ls_utils.c
+FT_SRC = src/minishell.c src/parsing/parsing.c src/ls_utils.c src/error.c
 
 
 # FT_SRC_bonus =

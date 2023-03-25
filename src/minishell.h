@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/03/25 10:50:01 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/25 11:37:01 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/libft.h"
@@ -39,6 +40,7 @@ typedef struct s_node
 
 t_node *cmd_struct;
 
+void				print_error(char *msg);
 
 t_node				*ft_lstnew(char *_cmd, int *fds);
 void				ft_lstadd_back(t_node **lst, t_node *new);
