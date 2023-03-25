@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/23 20:17:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2022/10/30 11:09:39 by eej-jama         ###   ########.fr       */
+/*   Created: 2022/10/14 11:39:39 by maneddam          #+#    #+#             */
+/*   Updated: 2022/11/01 15:39:49 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,25 @@
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	char			*str;
-	unsigned int	i;
-	unsigned int	l;
+	char	*ptr;
+	size_t	i;
 
-	l = ft_strlen(s);
-	if (start >= l)
+	if (!s)
+		return (NULL);
+	if (start >= ft_strlen((char *)s))
 		return (ft_strdup(""));
-	if (len > l - start)
-		len = l - start;
-	str = malloc(len * sizeof(char) + 1);
-	if (!str)
+	if (len > ft_strlen((char *)s) - start)
+		len = ft_strlen((char *)s) - start;
+	ptr = malloc(sizeof(char) * len + 1);
+	if (!ptr)
 		return (NULL);
 	i = 0;
-	while (i < len)
-		str[i++] = s[start++];
-	str[i] = '\0';
-	return (str);
+	while (i < len && s[i] != '\0')
+	{
+		ptr[i] = s[start];
+		start++;
+		i++;
+	}
+	ptr[i] = '\0';
+	return (ptr);
 }
-
-// int main()
-// {
-// 	char a[] = "mohhaed ali bhij";
-// 	printf("%s",ft_substr(a,3,5));
-// 	return 0;
-// }

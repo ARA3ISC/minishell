@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/03/25 11:37:01 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/25 15:12:23 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/libft.h"
-# include "../ft_printf/ft_printf.h"
 
 # define PURPLE "\e[35m"
 # define RESET "\n\033[0m"
@@ -45,5 +44,6 @@ void				print_error(char *msg);
 t_node				*ft_lstnew(char *_cmd, int *fds);
 void				ft_lstadd_back(t_node **lst, t_node *new);
 void				ft_lstclear(t_node **lst);
+extern void    rl_replace_line(const char *, int);
 
 #endif

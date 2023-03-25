@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/25 11:19:50 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/25 15:00:54 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,5 +15,10 @@
 void	print_error(char *msg)
 {
 	printf("%s\n", msg);
-	// exit(EXIT_FAILURE);
+}
+
+void	print_error_and_break(char *msg)
+{
+	printf("%s\n", msg);
+	// break 
 }

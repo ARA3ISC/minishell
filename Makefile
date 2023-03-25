@@ -1,7 +1,8 @@
 NAME = minishell
 CFLAGS = -Wall -Wextra -Werror
-
-FT_SRC = src/minishell.c src/parsing/parsing.c src/ls_utils.c src/error.c
+CC = @cc
+FT_SRC = src/minishell.c src/parsing/parsing.c src/ls_utils.c src/error.c libft/ft_split.c libft/ft_strchr.c libft/ft_substr.c libft/ft_strjoin.c \
+libft/ft_strtrim.c libft/ft_strdup.c libft/ft_strlen.c
 
 
 # FT_SRC_bonus =
@@ -14,20 +15,16 @@ OBJ = $(FT_SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@make -C libft/
-	@make -C ft_printf/
 	@make -C costumizing/
-	@cc $(CFLAGS) $(OBJ) -o $(NAME) -l readline libft/libft.a ft_printf/libftprintf.a
+	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) -I ~/Users/eej-jama/goinfre/homebrew/Cellar/readline/8.2.1/include  -L /Users/eej-jama/goinfre/homebrew/Cellar/readline/8.2.1/lib -lreadline
 
 # bonus: $(OBJ_bonus)
-# 	cc $(CFLAGS) $(OBJ_bonus) -o
+#     cc $(CFLAGS) $(OBJ_bonus) -o
 
 clean:
 	@rm -f $(OBJ)
 
 fclean: clean
-	@make -C libft/ fclean
-	@make -C ft_printf/ fclean
 	@make -C costumizing mse7
 	@rm -f $(NAME)
 
