@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: maneddam <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/30 10:53:41 by eej-jama          #+#    #+#              #
-#    Updated: 2022/10/30 10:54:05 by eej-jama         ###   ########.fr        #
+#    Updated: 2023/03/20 22:07:26 by maneddam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,17 +29,17 @@ BONUS_OBJ = $(FT_BONUS_SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	ar -rc $(NAME) $(OBJ)
+	@ar -rc $(NAME) $(OBJ)
 
 bonus: $(BONUS_OBJ)
-	ar -rc $(NAME) $(BONUS_OBJ)
+	@ar -rc $(NAME) $(BONUS_OBJ)
 
 
 clean:
-	rm -f $(OBJ) $(BONUS_OBJ)
+	@rm -f $(OBJ) $(BONUS_OBJ)
 
 fclean: clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 re: fclean all
 

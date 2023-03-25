@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstmap_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 16:48:17 by eej-jama          #+#    #+#             */
-/*   Updated: 2022/10/30 00:41:16 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/24 22:17:18 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
+t_node	*ft_lstmap(t_node *lst, void *(*f)(void *), void (*del)(void *))
 {
-	t_list	*head;
-	t_list	*i;
-	t_list	*new;
+	t_node	*head;
+	t_node	*i;
+	t_node	*new;
 
 	if (!lst)
 		return (NULL);
@@ -24,7 +24,7 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 	i = lst;
 	while (i)
 	{
-		new = malloc(sizeof(t_list));
+		new = malloc(sizeof(t_node));
 		if (!new)
 		{
 			ft_lstclear(&head, del);

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: maneddam <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/05 15:26:11 by eej-jama          #+#    #+#              #
-#    Updated: 2022/11/06 18:25:57 by eej-jama         ###   ########.fr        #
+#    Updated: 2023/03/20 22:05:29 by maneddam         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,12 +22,12 @@ OBJ = ft_printf.o ft_putchar.o  ft_putstr.o\
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-	ar -rc $(NAME) $(OBJ)
+	@ar -rc $(NAME) $(OBJ)
 
 clean :
-	rm -f $(OBJ)
+	@rm -f $(OBJ)
 
 fclean : clean
-	rm -f $(NAME)
+	@rm -f $(NAME)
 
 re : fclean all
