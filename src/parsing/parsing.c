@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/25 15:13:29 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/25 16:14:32 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,31 @@ int	**alloc_pipes(char **all_cmds)
 	return arr;
 }
 
+int	check_whitespaces(char **all_cmds)
+{
+	int	k;
+	int	i;
+	int	j;
+
+
+	i = 0;
+	while (all_cmds[i])
+	{
+		k = 1;
+		j = 0;
+		while (all_cmds[i][j])
+		{
+			if (all_cmds[i][j] != 32 && all_cmds[i][j] != '\t')
+				k = 0;
+			j++;
+		}
+		if (k)
+			return k;
+		i++;
+	}
+	return (k);
+}
+
 void	fill_struct(char *cmd)
 {
 	int i = 0;
@@ -43,6 +68,11 @@ void	fill_struct(char *cmd)
 	int **pipes_arr;
 
 	all_cmds = ft_split(cmd, '|');
+	if (check_whitespaces(all_cmds))
+	{
+		printf("Syntax error\n");
+		return ;
+	}
 	pipes_arr = alloc_pipes(all_cmds);
 	// TRIM SPACES FROM SIDES
 	while (all_cmds[i])
@@ -55,7 +85,7 @@ void	fill_struct(char *cmd)
 
 }
 
-int help_check_quot(char *string, size_t *i, int qt)
+int help_check_quote(char *string, size_t *i, int qt)
 {
     int check;
 
@@ -72,7 +102,7 @@ int help_check_quot(char *string, size_t *i, int qt)
     return check;
 }
 
-int checking_quots(char c, size_t *i, char *cmd)
+int checking_quotes(char c, size_t *i, char *cmd)
 {
 	int check = 0;
 	int qt;
@@ -80,13 +110,13 @@ int checking_quots(char c, size_t *i, char *cmd)
 	{
 		(*i)++;
 		qt = 39;
-		check = help_check_quot(cmd, i, qt);
+		check = help_check_quote(cmd, i, qt);
 	}
 	if(c == 34)
 	{
 		(*i)++;
 		qt = 34;
-		check = help_check_quot(cmd, i, qt);
+		check = help_check_quote(cmd, i, qt);
 	}
 	return check;
 }
@@ -97,33 +127,32 @@ void	syntax_error(char *cmd)
 	int check = 0;
 	while (cmd[i])
 	{
-		check = checking_quots(cmd[i], &i, cmd);
+		check = checking_quotes(cmd[i], &i, cmd);
 		if(check)
 		{
-			printf("quot error\n");
-			break; 
+			printf("quote error\n");
+			break;
 		}
 		else if ((cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|') || cmd[i] == '&' || cmd[i] == '*')
 		{
 			printf("syntax error\n");
-			break;	
+			break;
 		}
 		else if (((i == 0 || i == ft_strlen(cmd) - 1) && cmd[i] == '|'))
 		{
 			printf("syntax error near unexpected token `|'\n");
 			break;
 		}
-		
 		i++;
 	}
-	
+
 }
 
 void	signal_received(char s)
 {
 	if (s == 'D')
 	{
-		printf(" exit\n");
+		printf("exit\n");
 		exit(0);
 	}
 }
@@ -132,7 +161,7 @@ void	signal_C_received(int signo)
 {
 	// (void)signo;
 	if (signo == SIGINT)
-	{   
+	{
 		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -170,9 +199,6 @@ int main(int argc, char **argv, char **env)
 		syntax_error(cmd);
 		fill_struct(cmd);
 		add_history(cmd);
-		// printf("%s\n", cmd_struct->cmd);
-		// printf("%p\n", cmd_struct->next);
-
 
 
 		ft_lstclear(&cmd_struct);
