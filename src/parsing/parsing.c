@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/26 15:42:20 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/26 16:35:39 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,9 +155,7 @@ char    *get_pwd(char **env)
 
 void	check_redirection_syntax()
 {
-	t_node *tmp;
-
-	
+	t_node *tmp = s;
 	int i;
 	tmp = s;
 	while (s)
@@ -195,12 +193,13 @@ void	banner()
 void	get_details(t_node *tmp)
 {
 	int i = 0;
-	
+
+	// detailed_cmd = malloc(sizeof(t_cmd) * 3);
 	while (tmp->cmd[i])
 	{
-		// printf("%c",tmp->cmd[i]);
 		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
 		{
+			// printf(">>>>>>>>\n");
 			tmp->cmd_dt->op = malloc(sizeof(char) * 3);
 			tmp->cmd_dt->op[0] = tmp->cmd[i];
 			tmp->cmd[i] = '$';
@@ -230,13 +229,12 @@ void	detail_cmd()
 	t_node *tmp;
 
 	// while (1);
-printf("%s\n", s->cmd);
 
 	tmp = s;
 	// s->cmd_dt->op = malloc(sizeof(char) * 3);
 	while (tmp)
 	{
-	
+
 		tmp->cmd_dt = malloc(sizeof(t_cmd));
 		get_details(tmp);
 		printf("cmd : %s\n", tmp->cmd_dt->cmd);
