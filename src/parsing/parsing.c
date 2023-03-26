@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/26 15:28:50 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/26 15:42:20 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,8 @@ char    *get_pwd(char **env)
 void	check_redirection_syntax()
 {
 	t_node *tmp;
+
+	
 	int i;
 	tmp = s;
 	while (s)
