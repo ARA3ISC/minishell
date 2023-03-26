@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/26 12:48:15 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/26 15:20:04 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	print_error(char *msg)
 void	print_error_and_break(char *msg)
 {
 	printf("%s\n", msg);
-	// break
 }
 
 int	check_whitespaces(char **all_cmds)
