@@ -6,12 +6,11 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/25 16:14:32 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/26 14:35:47 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
 
 int		cmds_count(char **cmds)
 {
@@ -36,31 +35,6 @@ int	**alloc_pipes(char **all_cmds)
 	return arr;
 }
 
-int	check_whitespaces(char **all_cmds)
-{
-	int	k;
-	int	i;
-	int	j;
-
-
-	i = 0;
-	while (all_cmds[i])
-	{
-		k = 1;
-		j = 0;
-		while (all_cmds[i][j])
-		{
-			if (all_cmds[i][j] != 32 && all_cmds[i][j] != '\t')
-				k = 0;
-			j++;
-		}
-		if (k)
-			return k;
-		i++;
-	}
-	return (k);
-}
-
 void	fill_struct(char *cmd)
 {
 	int i = 0;
@@ -68,7 +42,7 @@ void	fill_struct(char *cmd)
 	int **pipes_arr;
 
 	all_cmds = ft_split(cmd, '|');
-	if (check_whitespaces(all_cmds))
+	if (check_whitespaces(all_cmds) && cmd[0])
 	{
 		printf("Syntax error\n");
 		return ;
@@ -78,11 +52,9 @@ void	fill_struct(char *cmd)
 	while (all_cmds[i])
 	{
 		all_cmds[i] = ft_strtrim(all_cmds[i], " ");
-		ft_lstadd_back(&cmd_struct, ft_lstnew(all_cmds[i], pipes_arr[i]));
+		ft_lstadd_back(&s, ft_lstnew(all_cmds[i], pipes_arr[i]));
 		i++;
 	}
-
-
 }
 
 int help_check_quote(char *string, size_t *i, int qt)
@@ -159,7 +131,6 @@ void	signal_received(char s)
 
 void	signal_C_received(int signo)
 {
-	// (void)signo;
 	if (signo == SIGINT)
 	{
 		printf("\n");
@@ -179,7 +150,97 @@ char    *get_pwd(char **env)
             return env[i];
         i++;
     }
-    return NULL;
+    return (NULL);
+}
+
+void	check_redirection_syntax()
+{
+	int i;
+	while (s)
+	{
+		i = 0;
+		while (s->cmd[i])
+		{
+			if (s->cmd[i + 1]  && ((s->cmd[i] == '<' && s->cmd[i + 1] == '>')
+				|| (s->cmd[i] == '>' && s->cmd[i + 1] == '<')))
+				printf("syntax error near unexpected token `%c'\n", s->cmd[i]);
+			if (s->cmd[i + 1] && s->cmd[i + 2] && ((s->cmd[i] == '>' && s->cmd[i + 1] == '>' && s->cmd[i + 2] == '>')
+				|| (s->cmd[i] == '<' && s->cmd[i + 1] == '<' && s->cmd[i + 2] == '<')))
+				printf("syntax error near unexpected token `%c'\n", s->cmd[i]);
+			i++;
+		}
+		s = s->next;
+	}
+}
+
+void	banner()
+{
+	printf("\n");
+	printf(RED"   *     (        )  (    (        )       (     (    \n");
+	printf(" (  `    )\\ )  ( /(  )\\ ) )\\ )  ( /(       )\\ )  )\\ ) \n");
+	printf(" )\\))(  (()/(  )\\())(()/((()/(  )\\()) (   (()/( (()/( \n");
+	printf("((_)()\\  /(_))((_)\\  /(_))/(_))((_)\\  )\\   /(_)) /(_))\n");
+	printf("(_()((_)(_))   _((_)(_)) (_))   _((_)((_) (_))  (_))  \n"GREEN);
+	printf("|  \\/  ||_ _| | \\| ||_ _|/ __| | || || __|| |   | |   \n");
+	printf("| |\\/| | | |  | .` | | | \\__ \\ | __ || _| | |__ | |__ \n");
+	printf("|_|  |_||___| |_|\\_||___||___/ |_||_||___||____||____|\n"RESET);
+	printf("\n");
+}
+
+void	get_details(t_node *s)
+{
+	// t_cmd *detailed_cmd;
+	// char *op;
+	int i = 0;
+
+	// detailed_cmd = malloc(sizeof(t_cmd) * 3);
+	while (s->cmd[i])
+	{
+		if (s->cmd[i] == '>' || s->cmd[i] == '<')
+		{
+			// printf(">>>>>>>>\n");
+			s->cmd_dt->op = malloc(sizeof(char) * 3);
+			s->cmd_dt->op[0] = s->cmd[i];
+			s->cmd[i] = '$';
+			i++;
+			if (s->cmd[i] && (s->cmd[i] == '<' || s->cmd[i] == '>'))
+			{
+				if (s->cmd[i] == '<')
+					s->cmd_dt->op[1] = '<';
+				else
+					s->cmd_dt->op[1] = '>';
+				s->cmd[i] = 32;
+				s->cmd_dt->op[2] = '\0';
+			}
+			else
+				s->cmd_dt->op[1] = '\0';
+		}
+		i++;
+	}
+	printf("\n*******\n");
+	// s->cmd_dt->cmd = s->cmd;
+}
+
+void	detail_cmd()
+{
+	t_node *tmp;
+
+	tmp = s;
+	// printf("op : %s\n", s->cmd_dt->op);
+	// while (1);
+
+
+	s->cmd_dt = malloc(sizeof(t_cmd) * 3);
+	// s->cmd_dt->op = malloc(sizeof(char) * 3);
+	while (tmp)
+	{
+		get_details(tmp);
+		printf("cmd : %s\n", tmp->cmd_dt->cmd);
+		printf("op : %s\n", tmp->cmd_dt->op);
+		printf("-------\n");
+		tmp = tmp->next;
+	}
+
 }
 
 int main(int argc, char **argv, char **env)
@@ -190,18 +251,26 @@ int main(int argc, char **argv, char **env)
 	char *cmd;
 
 	signal(SIGINT, signal_C_received);
-
+	banner();
 	path = get_pwd(env);
 	path = ft_strjoin(path, "$ ");
-	path = ft_strchr(path, '/');
+	if (!path)
+		path = "$ ";
+	else
+		path = ft_strchr(path, '/');
 	while ((cmd = readline(path)) != NULL)
 	{
 		syntax_error(cmd);
+		check_redirection_syntax();
+
 		fill_struct(cmd);
+		detail_cmd();
+
+
 		add_history(cmd);
 
 
-		ft_lstclear(&cmd_struct);
+		ft_lstclear(&s);
 		free(cmd);
 	}
 	signal_received('D');

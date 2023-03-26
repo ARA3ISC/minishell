@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/03/25 15:12:23 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/26 13:45:51 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,39 @@
 # define GREEN "\033[0;32m"
 # define RED "\033[0;31m"
 
+typedef struct s_cmd
+{
+	char *cmd;
+	char *file;
+	char *op;
+}			t_cmd;
+
 typedef struct s_node
 {
 	char *cmd;
+	struct s_cmd *cmd_dt;
 	int *fds;
 	struct s_node *next;
+	int exit_code;
 }				t_node;
 
-t_node *cmd_struct;
+t_node *s;
 
-void				print_error(char *msg);
+extern void   		 rl_replace_line(const char *, int);
 
 t_node				*ft_lstnew(char *_cmd, int *fds);
 void				ft_lstadd_back(t_node **lst, t_node *new);
 void				ft_lstclear(t_node **lst);
-extern void    rl_replace_line(const char *, int);
+
+// ! error
+void				print_error(char *msg);
+int					check_whitespaces(char **all_cmds);
+void				syntax_error(char *cmd);
 
 #endif
+// str ">>"
+// "$"
+// str[0]
+//str = "wc -l >> file.txt"
+//str = "wc -l $ file.txt"
+
