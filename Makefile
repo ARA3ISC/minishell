@@ -1,5 +1,6 @@
 NAME = minishell
 CFLAGS = -Wall -Wextra -Werror
+#-fsanitize=address
 CC = @cc
 FT_SRC = src/minishell.c src/parsing/parsing.c src/ls_utils.c src/error.c libft/ft_split.c libft/ft_strchr.c libft/ft_substr.c libft/ft_strjoin.c \
 libft/ft_strtrim.c libft/ft_strdup.c libft/ft_strlen.c
