@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2023/03/26 15:30:24 by maneddam         ###   ########.fr       */
+=======
+/*   Updated: 2023/03/26 15:28:50 by eej-jama         ###   ########.fr       */
+>>>>>>> refs/remotes/origin/master
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,8 +159,13 @@ char    *get_pwd(char **env)
 
 void	check_redirection_syntax()
 {
+<<<<<<< HEAD
 	t_node *tmp = s;
+=======
+	t_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	int i;
+	tmp = s;
 	while (s)
 	{
 		i = 0;
@@ -191,9 +200,8 @@ void	banner()
 
 void	get_details(t_node *tmp)
 {
-	// t_cmd *detailed_cmd;
-	// char *op;
 	int i = 0;
+<<<<<<< HEAD
 
 	// detailed_cmd = malloc(sizeof(t_cmd) * 3);
 	while (tmp->cmd[i])
@@ -201,6 +209,14 @@ void	get_details(t_node *tmp)
 		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
 		{
 			// printf(">>>>>>>>\n");
+=======
+	
+	while (tmp->cmd[i])
+	{
+		// printf("%c",tmp->cmd[i]);
+		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
+		{
+>>>>>>> refs/remotes/origin/master
 			tmp->cmd_dt->op = malloc(sizeof(char) * 3);
 			tmp->cmd_dt->op[0] = tmp->cmd[i];
 			tmp->cmd[i] = '$';
@@ -219,23 +235,38 @@ void	get_details(t_node *tmp)
 		}
 		i++;
 	}
+<<<<<<< HEAD
 	tmp->cmd_dt->cmd = tmp->cmd;
 	// printf("\n*******\n");
+=======
+	// printf("\n*******\n");
+	// printf("\n####### %s --------\n",tmp->cmd_dt->cmd);
+	// printf("\n####### %s --------\n",tmp->cmd);
+	tmp->cmd_dt->cmd = tmp->cmd;
+>>>>>>> refs/remotes/origin/master
 }
 
 void	detail_cmd()
 {
 	t_node *tmp;
 
-	tmp = s;
-	// printf("op : %s\n", s->cmd_dt->op);
 	// while (1);
+printf("%s\n", s->cmd);
 
+<<<<<<< HEAD
 
 	// s->cmd_dt->op = malloc(sizeof(char) * 3);
 	while (tmp)
 	{
 		s->cmd_dt = malloc(sizeof(t_cmd));
+=======
+	tmp = s;
+	// s->cmd_dt->op = malloc(sizeof(char) * 3);
+	while (tmp)
+	{
+	
+		tmp->cmd_dt = malloc(sizeof(t_cmd));
+>>>>>>> refs/remotes/origin/master
 		get_details(tmp);
 		printf("cmd : %s\n", tmp->cmd_dt->cmd);
 		printf("op : %s\n", tmp->cmd_dt->op);
