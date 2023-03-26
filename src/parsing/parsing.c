@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/26 15:38:59 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/26 16:29:57 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,36 +192,55 @@ void	banner()
 
 void	get_details(t_node *tmp)
 {
+	char **tab;
 	int i = 0;
-
+	int j = 0;
+	// exit(0);
 	// detailed_cmd = malloc(sizeof(t_cmd) * 3);
 	while (tmp->cmd[i])
 	{
+
 		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
 		{
 			// printf(">>>>>>>>\n");
-			tmp->cmd_dt->op = malloc(sizeof(char) * 3);
-			tmp->cmd_dt->op[0] = tmp->cmd[i];
+			tmp->cmd_dt->op[j] = malloc(sizeof(char) * 3);
+			tmp->cmd_dt->op[j][0] = tmp->cmd[i];
 			tmp->cmd[i] = '$';
 			i++;
 			if (tmp->cmd[i] && (tmp->cmd[i] == '<' || tmp->cmd[i] == '>'))
 			{
 				if (tmp->cmd[i] == '<')
-					tmp->cmd_dt->op[1] = '<';
+					tmp->cmd_dt->op[j][1] = '<';
 				else
-					tmp->cmd_dt->op[1] = '>';
+					tmp->cmd_dt->op[j][1] = '>';
 				tmp->cmd[i] = 32;
-				tmp->cmd_dt->op[2] = '\0';
+				tmp->cmd_dt->op[j][2] = '\0';
 			}
 			else
-				tmp->cmd_dt->op[1] = '\0';
+				tmp->cmd_dt->op[j][1] = '\0';
+			j++;
 		}
 		i++;
 	}
-	// printf("\n*******\n");
-	// printf("\n####### %s --------\n",tmp->cmd_dt->cmd);
-	// printf("\n####### %s --------\n",tmp->cmd);
+	tmp->cmd_dt->op[j] = NULL;
+	tab = ft_split(tmp->cmd, '$');
 	tmp->cmd_dt->cmd = tmp->cmd;
+	i = 0;
+	while (tmp->cmd_dt->op[i])
+	{
+		printf("%s\n", tmp->cmd_dt->op[i]);
+		i++;
+	}
+
+	// printf("%s\n", tmp->cmd_dt->op[0]);
+	// printf("%s\n", tmp->cmd_dt->op[1]);
+	// printf("%s\n", tmp->cmd_dt->op[2]);
+	// printf("%s\n", tmp->cmd_dt->op[3]);
+	// printf("%s\n", tmp->cmd_dt->op[4]);
+
+	exit(0);
+	// while(1);
+
 }
 
 void	detail_cmd()
@@ -231,14 +250,14 @@ void	detail_cmd()
 	// while (1);
 
 	tmp = s;
-	// s->cmd_dt->op = malloc(sizeof(char) * 3);
 	while (tmp)
 	{
 
 		tmp->cmd_dt = malloc(sizeof(t_cmd));
+		tmp->cmd_dt->op = malloc(sizeof(char *));
 		get_details(tmp);
-		printf("cmd : %s\n", tmp->cmd_dt->cmd);
-		printf("op : %s\n", tmp->cmd_dt->op);
+		// printf("cmd : %s\n", tmp->cmd_dt->cmd);
+		// printf("op : %s\n", tmp->cmd_dt->op);
 		printf("-------\n");
 		tmp = tmp->next;
 	}
