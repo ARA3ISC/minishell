@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/03/26 15:55:39 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/26 18:16:06 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,13 @@
 # define GREEN "\033[0;32m"
 # define RED "\033[0;31m"
 
+typedef struct s_info
+{
+	int op_count;
+	int pipe_count;
+	int cmd_count;
+}			t_info;
+
 typedef struct s_cmd
 {
 	char *cmd;
@@ -41,7 +48,8 @@ typedef struct s_node
 {
 	char *cmd;
 	struct s_cmd *cmd_dt;
-	int *fds;
+	struct s_info *infos;
+	int fds[2];
 	struct s_node *next;
 	int exit_code;
 }				t_node;

@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/26 16:29:57 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/26 18:13:58 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,27 +197,31 @@ void	get_details(t_node *tmp)
 	int j = 0;
 	// exit(0);
 	// detailed_cmd = malloc(sizeof(t_cmd) * 3);
+		printf ("cmd = |%s|\n", tmp->cmd);
 	while (tmp->cmd[i])
 	{
-
 		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
 		{
-			// printf(">>>>>>>>\n");
-			tmp->cmd_dt->op[j] = malloc(sizeof(char) * 3);
+
+			if (tmp->cmd[i + 1] && (tmp->cmd[i + 1] == '<' || tmp->cmd[i + 1] == '>'))
+				tmp->cmd_dt->op[j] = malloc(sizeof(char) * 3);
+			else
+				tmp->cmd_dt->op[j] = malloc(sizeof(char) * 2);
 			tmp->cmd_dt->op[j][0] = tmp->cmd[i];
 			tmp->cmd[i] = '$';
-			i++;
-			if (tmp->cmd[i] && (tmp->cmd[i] == '<' || tmp->cmd[i] == '>'))
+			// i++;
+			if (tmp->cmd[i + 1] && (tmp->cmd[i + 1] == '<' || tmp->cmd[i + 1] == '>'))
 			{
-				if (tmp->cmd[i] == '<')
+				if (tmp->cmd[i + 1] == '<')
 					tmp->cmd_dt->op[j][1] = '<';
 				else
 					tmp->cmd_dt->op[j][1] = '>';
-				tmp->cmd[i] = 32;
+				tmp->cmd[i + 1] = 32;
 				tmp->cmd_dt->op[j][2] = '\0';
 			}
 			else
 				tmp->cmd_dt->op[j][1] = '\0';
+			// printf(" %s\n", tmp->cmd_dt->op[j]);
 			j++;
 		}
 		i++;
@@ -238,7 +242,7 @@ void	get_details(t_node *tmp)
 	// printf("%s\n", tmp->cmd_dt->op[3]);
 	// printf("%s\n", tmp->cmd_dt->op[4]);
 
-	exit(0);
+	// exit(0);
 	// while(1);
 
 }
@@ -254,11 +258,11 @@ void	detail_cmd()
 	{
 
 		tmp->cmd_dt = malloc(sizeof(t_cmd));
-		tmp->cmd_dt->op = malloc(sizeof(char *));
+		tmp->cmd_dt->op = malloc(sizeof(char *) * 6);
 		get_details(tmp);
 		// printf("cmd : %s\n", tmp->cmd_dt->cmd);
 		// printf("op : %s\n", tmp->cmd_dt->op);
-		printf("-------\n");
+		// printf("-------\n");
 		tmp = tmp->next;
 	}
 
@@ -286,8 +290,6 @@ int main(int argc, char **argv, char **env)
 		check_redirection_syntax();
 
 		detail_cmd();
-
-
 		add_history(cmd);
 
 

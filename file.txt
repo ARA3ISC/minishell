@@ -20,3 +20,4 @@ CC = @cc
 	@rm -f $(OBJ)
 	@make -C costumizing mse7
 	@rm -f $(NAME)
+       0
