@@ -17,7 +17,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@make -C costumizing/
-	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) -I ~/Users/eej-jama/goinfre/homebrew/Cellar/readline/8.2.1/include  -L /Users/eej-jama/goinfre/homebrew/Cellar/readline/8.2.1/lib -lreadline
+	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) -I ~/Users/maneddam/goinfre/homebrew/Cellar/readline/8.2.1/include  -L /Users/maneddam/goinfre/homebrew/Cellar/readline/8.2.1/lib -lreadline
 
 # bonus: $(OBJ_bonus)
 #     cc $(CFLAGS) $(OBJ_bonus) -o
