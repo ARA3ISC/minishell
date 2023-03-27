@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/03/27 14:22:54 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/27 17:34:38 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ void				ft_lstclear(t_node **lst);
 void				print_error(char *msg, int code);
 int					check_whitespaces(char **all_cmds);
 void				syntax_error(char *cmd);
-void				check_next_cmd(char *cmd);
 void				invalid_expression(char *cmd);
 
 

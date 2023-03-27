@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/27 15:11:35 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/27 17:37:27 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,29 +184,29 @@ void	check_redirection_syntax()
 
 // }
 
-// void	banner()
-// {
-// 	printf("\n");
-// 	printf(GREEN"|███    ███ ██ ███    ██ ██ ███████ ██   ██ ███████ ██      ██| \n");
-// 	printf("|████  ████ ██ ████   ██ ██ ██      ██   ██ ██      ██      ██|  \n");
-// 	printf("|██ ████ ██ ██ ██ ██  ██ ██ ███████ ███████ █████   ██      ██|\n");
-// 	printf("|██  ██  ██ ██ ██  ██ ██ ██      ██ ██   ██ ██      ██      ██| \n");
-// 	printf("|██      ██ ██ ██   ████ ██ ███████ ██   ██ ███████ ███████ ███████|\n"RESET);
-// 	printf("\n");
-// }
 void	banner()
 {
 	printf("\n");
-	printf(RED"\t   *     (        )  (    (        )       (     (    \n");
-	printf("\t (  `    )\\ )  ( /(  )\\ ) )\\ )  ( /(       )\\ )  )\\ ) \n");
-	printf("\t )\\))(  (()/(  )\\())(()/((()/(  )\\()) (   (()/( (()/( \n");
-	printf("\t((_)()\\  /(_))((_)\\  /(_))/(_))((_)\\  )\\   /(_)) /(_))\n");
-	printf("\t(_()((_)(_))   _((_)(_)) (_))   _((_)((_) (_))  (_))  \n"GREEN);
-	printf("\t|  \\/  ||_ _| | \\| ||_ _|/ __| | || || __|| |   | |   \n");
-	printf("\t| |\\/| | | |  | .` | | | \\__ \\ | __ || _| | |__ | |__ \n");
-	printf("\t|_|  |_||___| |_|\\_||___||___/ |_||_||___||____||____|\n"RESET);
+	printf(GREEN"\t|███    ███ ██ ███    ██ ██ ███████ ██   ██ ███████ ██      ██| \n");
+	printf("\t|████  ████ ██ ████   ██ ██ ██      ██   ██ ██      ██      ██|  \n");
+	printf("\t|██ ████ ██ ██ ██ ██  ██ ██ ███████ ███████ █████   ██      ██|\n");
+	printf("\t|██  ██  ██ ██ ██  ██ ██ ██      ██ ██   ██ ██      ██      ██| \n");
+	printf("\t|██      ██ ██ ██   ████ ██ ███████ ██   ██ ███████ ███████ ███████|\n"RESET);
 	printf("\n");
 }
+// void	banner()
+// {
+// 	printf("\n");
+// 	printf(RED"\t   *     (        )  (    (        )       (     (    \n");
+// 	printf("\t (  `    )\\ )  ( /(  )\\ ) )\\ )  ( /(       )\\ )  )\\ ) \n");
+// 	printf("\t )\\))(  (()/(  )\\())(()/((()/(  )\\()) (   (()/( (()/( \n");
+// 	printf("\t((_)()\\  /(_))((_)\\  /(_))/(_))((_)\\  )\\   /(_)) /(_))\n");
+// 	printf("\t(_()((_)(_))   _((_)(_)) (_))   _((_)((_) (_))  (_))  \n"GREEN);
+// 	printf("\t|  \\/  ||_ _| | \\| ||_ _|/ __| | || || __|| |   | |   \n");
+// 	printf("\t| |\\/| | | |  | .` | | | \\__ \\ | __ || _| | |__ | |__ \n");
+// 	printf("\t|_|  |_||___| |_|\\_||___||___/ |_||_||___||____||____|\n"RESET);
+// 	printf("\n");
+// }
 
 void	get_details(t_node *tmp)
 {
@@ -343,22 +343,17 @@ int main(int argc, char **argv, char **env)
 	char *path;
 	char *full_cmd;
 
-	signal(SIGINT, signal_C_received);
 	banner();
+	signal(SIGINT, signal_C_received);
 	path = get_pwd(env);
 	path = ft_strjoin(path, "$ ");
 	if (!path)
 		path = "$ ";
 	else
 		path = ft_strchr(path, '/');
-	// printf(GREEN"%s"RESET, path);
 	while ((full_cmd = readline(path)) != NULL)
 	{
 		add_history(full_cmd);
-		//! invalid_expression(full_cmd);
-
-
-
 		if (!fill_struct(full_cmd))
 		{
 			syntax_error(full_cmd);
@@ -366,17 +361,15 @@ int main(int argc, char **argv, char **env)
 			{
 				// printf("hhh\n");
 				check_redirection_syntax();
-				get_number_of_tokens(full_cmd);
-				detail_cmd();
+				if (!s->error)
+				{
+					invalid_expression(full_cmd);
+					get_number_of_tokens(full_cmd);
+					detail_cmd();
+				}
 			}
+			ft_lstclear(&s);
 		}
-
-		// if (s->exit_code != 0)
-		// 	exit(s->exit_code);
-		// else
-
-
-		ft_lstclear(&s);
 		free(full_cmd);
 	}
 	signal_received('D');

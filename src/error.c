@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/27 14:25:01 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/27 17:41:25 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,37 +45,45 @@ int	check_whitespaces(char **all_cmds)
 }
 // ls >>  '\0'
 // !makhdamash (>> | ) (>> '\0')
-void	check_next_cmd(char *cmd)
+bool	check_next_cmd(char *cmd)
 {
 	int i = 0;
-	// int count = 0;
 
+	while (cmd[i] && (cmd[i] == 32 || cmd[i] == '\t'))
+		i++;
+	// exit(1);
 	while (cmd[i])
 	{
-		if (cmd[i] != 32 && cmd[i] != '\t')
+		// printf("%s\n", &cmd[i]);
+		if (cmd[i] == '<' || cmd[i] == '>' || cmd[i] == '|')
 		{
-			if (cmd[i] == '|' || cmd[i + 1] == '\0' || cmd[i + 1] == '|')
-				printf("syntax error\n");
-			else if (cmd[i] == '\0')
-				return ;
+			print_error("system err", 258);
+			return false;
 		}
 		i++;
 	}
-	// printf("%d\n", count);
-	// if (count == 0 && cmd[i] == '\0')
+	return true;
 }
 
 void	invalid_expression(char *cmd)
 {
+	// printf("%s\n", &cmd[9]);
+	// exit(1);
 	int i = 0;
 	while (cmd[i])
 	{
 		if ((cmd[i] == '>' || cmd[i] == '<'))
 		{
 			if (cmd[i + 1] && (cmd[i + 1] == '>' || cmd[i + 1] =='<'))
-				check_next_cmd(&cmd[i + 1]);
+			{
+				if (check_next_cmd(&cmd[i + 2]) == false)
+					return ;
+			}
 			else
-				check_next_cmd(&cmd[i]);
+			{
+				if (check_next_cmd(&cmd[i + 1]) == false)
+					return ;
+			}
 		}
 		i++;
 	}
