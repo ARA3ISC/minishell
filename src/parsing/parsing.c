@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/26 18:13:58 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/27 15:11:35 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,15 @@ int	**alloc_pipes(char **all_cmds)
 	return arr;
 }
 
-void	fill_struct(char *cmd)
+int	fill_struct(char *cmd)
 {
 	int i = 0;
 	char **all_cmds;
 	int **pipes_arr;
 
 	all_cmds = ft_split(cmd, '|');
-	if (check_whitespaces(all_cmds) && cmd[0])
-	{
-		printf("Syntax error\n");
-		return ;
-	}
+	if (check_whitespaces(all_cmds) && !all_cmds[0])
+		return 1;
 	pipes_arr = alloc_pipes(all_cmds);
 	// TRIM SPACES FROM SIDES
 	while (all_cmds[i])
@@ -55,6 +52,7 @@ void	fill_struct(char *cmd)
 		ft_lstadd_back(&s, ft_lstnew(all_cmds[i], pipes_arr[i]));
 		i++;
 	}
+	return 0;
 }
 
 int help_check_quote(char *string, size_t *i, int qt)
@@ -102,17 +100,18 @@ void	syntax_error(char *cmd)
 		check = checking_quotes(cmd[i], &i, cmd);
 		if(check)
 		{
-			printf("quote error\n");
+			print_error("quote error", 101);
 			break;
 		}
 		else if ((cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|') || cmd[i] == '&' || cmd[i] == '*')
 		{
-			printf("syntax error\n");
+			print_error("syntax error", 102);
 			break;
 		}
 		else if (((i == 0 || i == ft_strlen(cmd) - 1) && cmd[i] == '|'))
 		{
-			printf("syntax error near unexpected token `|'\n");
+			print_error("syntax error near unexpected token `|'", 103);
+			// kill(getpid(), SIGINT);
 			break;
 		}
 		i++;
@@ -165,10 +164,10 @@ void	check_redirection_syntax()
 		{
 			if (s->cmd[i + 1]  && ((s->cmd[i] == '<' && s->cmd[i + 1] == '>')
 				|| (s->cmd[i] == '>' && s->cmd[i + 1] == '<')))
-				printf("syntax error near unexpected token `%c'\n", s->cmd[i]);
+				print_error("syntax error", 258);
 			if (s->cmd[i + 1] && s->cmd[i + 2] && ((s->cmd[i] == '>' && s->cmd[i + 1] == '>' && s->cmd[i + 2] == '>')
 				|| (s->cmd[i] == '<' && s->cmd[i + 1] == '<' && s->cmd[i + 2] == '<')))
-				printf("syntax error near unexpected token `%c'\n", s->cmd[i]);
+				print_error("syntax error", 258);
 			i++;
 		}
 		s = s->next;
@@ -176,17 +175,36 @@ void	check_redirection_syntax()
 	s = tmp;
 }
 
+// void	banner()
+// {
+// 	printf("\n");
+// 	printf(GREEN"\t╔╦╗╦╔╗╔╔═╗╦ ╦╔═╗╦  ╦  \n");
+// 	printf("\t║║║║║║║╚═╗╠═╣║╣ ║  ║  \n");
+// 	printf("\t╩ ╩╩╝╚╝╚═╝╩ ╩╚═╝╩═╝╩═╝\n"RESET);
+
+// }
+
+// void	banner()
+// {
+// 	printf("\n");
+// 	printf(GREEN"|███    ███ ██ ███    ██ ██ ███████ ██   ██ ███████ ██      ██| \n");
+// 	printf("|████  ████ ██ ████   ██ ██ ██      ██   ██ ██      ██      ██|  \n");
+// 	printf("|██ ████ ██ ██ ██ ██  ██ ██ ███████ ███████ █████   ██      ██|\n");
+// 	printf("|██  ██  ██ ██ ██  ██ ██ ██      ██ ██   ██ ██      ██      ██| \n");
+// 	printf("|██      ██ ██ ██   ████ ██ ███████ ██   ██ ███████ ███████ ███████|\n"RESET);
+// 	printf("\n");
+// }
 void	banner()
 {
 	printf("\n");
-	printf(RED"   *     (        )  (    (        )       (     (    \n");
-	printf(" (  `    )\\ )  ( /(  )\\ ) )\\ )  ( /(       )\\ )  )\\ ) \n");
-	printf(" )\\))(  (()/(  )\\())(()/((()/(  )\\()) (   (()/( (()/( \n");
-	printf("((_)()\\  /(_))((_)\\  /(_))/(_))((_)\\  )\\   /(_)) /(_))\n");
-	printf("(_()((_)(_))   _((_)(_)) (_))   _((_)((_) (_))  (_))  \n"GREEN);
-	printf("|  \\/  ||_ _| | \\| ||_ _|/ __| | || || __|| |   | |   \n");
-	printf("| |\\/| | | |  | .` | | | \\__ \\ | __ || _| | |__ | |__ \n");
-	printf("|_|  |_||___| |_|\\_||___||___/ |_||_||___||____||____|\n"RESET);
+	printf(RED"\t   *     (        )  (    (        )       (     (    \n");
+	printf("\t (  `    )\\ )  ( /(  )\\ ) )\\ )  ( /(       )\\ )  )\\ ) \n");
+	printf("\t )\\))(  (()/(  )\\())(()/((()/(  )\\()) (   (()/( (()/( \n");
+	printf("\t((_)()\\  /(_))((_)\\  /(_))/(_))((_)\\  )\\   /(_)) /(_))\n");
+	printf("\t(_()((_)(_))   _((_)(_)) (_))   _((_)((_) (_))  (_))  \n"GREEN);
+	printf("\t|  \\/  ||_ _| | \\| ||_ _|/ __| | || || __|| |   | |   \n");
+	printf("\t| |\\/| | | |  | .` | | | \\__ \\ | __ || _| | |__ | |__ \n");
+	printf("\t|_|  |_||___| |_|\\_||___||___/ |_||_||___||____||____|\n"RESET);
 	printf("\n");
 }
 
@@ -197,7 +215,7 @@ void	get_details(t_node *tmp)
 	int j = 0;
 	// exit(0);
 	// detailed_cmd = malloc(sizeof(t_cmd) * 3);
-		printf ("cmd = |%s|\n", tmp->cmd);
+		// printf ("cmd = |%s|\n", tmp->cmd);
 	while (tmp->cmd[i])
 	{
 		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
@@ -229,12 +247,13 @@ void	get_details(t_node *tmp)
 	tmp->cmd_dt->op[j] = NULL;
 	tab = ft_split(tmp->cmd, '$');
 	tmp->cmd_dt->cmd = tmp->cmd;
-	i = 0;
-	while (tmp->cmd_dt->op[i])
-	{
-		printf("%s\n", tmp->cmd_dt->op[i]);
-		i++;
-	}
+	// i = 0;
+	// while (tmp->cmd_dt->op[i])
+	// {
+	// 	// printf("cmd : %s\n", tmp->cmd_dt->cmd);
+	// 	printf("op : %s\n", tmp->cmd_dt->op[i]);
+	// 	i++;
+	// }
 
 	// printf("%s\n", tmp->cmd_dt->op[0]);
 	// printf("%s\n", tmp->cmd_dt->op[1]);
@@ -268,12 +287,61 @@ void	detail_cmd()
 
 }
 
+int	count_op(char *cmd)
+{
+	int i = 0;
+	int count = 0;
+	while (cmd[i])
+	{
+		if (cmd[i] == '<' || cmd[i] == '>')
+		{
+			count++;
+			i++;
+		}
+		i++;
+	}
+	return (count);
+}
+
+int	count_pipes(char *cmd)
+{
+	int i = 0;
+	int count = 0;
+	while (cmd[i])
+	{
+		if (cmd[i] == '|')
+		{
+			count++;
+		}
+		i++;
+	}
+	return (count);
+}
+
+void	get_number_of_tokens(char *full_cmd)
+{
+	t_node *tmp;
+
+	tmp = s;
+	while (s)
+	{
+		s->infos = malloc(sizeof(t_info));
+		s->infos->op_count = count_op(s->cmd);
+
+		s->infos->pipe_count = count_pipes(full_cmd);
+		s->infos->cmd_count = s->infos->pipe_count + 1;
+		// printf("commands count : %d\n", s->infos->cmd_count);
+		s = s->next;
+	}
+	s = tmp;
+}
+
 int main(int argc, char **argv, char **env)
 {
 	(void)argc;
 	(void)argv;
 	char *path;
-	char *cmd;
+	char *full_cmd;
 
 	signal(SIGINT, signal_C_received);
 	banner();
@@ -283,18 +351,33 @@ int main(int argc, char **argv, char **env)
 		path = "$ ";
 	else
 		path = ft_strchr(path, '/');
-	while ((cmd = readline(path)) != NULL)
+	// printf(GREEN"%s"RESET, path);
+	while ((full_cmd = readline(path)) != NULL)
 	{
-		syntax_error(cmd);
-		fill_struct(cmd);
-		check_redirection_syntax();
+		add_history(full_cmd);
+		//! invalid_expression(full_cmd);
 
-		detail_cmd();
-		add_history(cmd);
+
+
+		if (!fill_struct(full_cmd))
+		{
+			syntax_error(full_cmd);
+			if (!s->error)
+			{
+				// printf("hhh\n");
+				check_redirection_syntax();
+				get_number_of_tokens(full_cmd);
+				detail_cmd();
+			}
+		}
+
+		// if (s->exit_code != 0)
+		// 	exit(s->exit_code);
+		// else
 
 
 		ft_lstclear(&s);
-		free(cmd);
+		free(full_cmd);
 	}
 	signal_received('D');
 }
