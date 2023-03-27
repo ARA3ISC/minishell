@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/03/26 13:45:51 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/26 15:55:39 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@
 typedef struct s_cmd
 {
 	char *cmd;
-	char *file;
-	char *op;
+	char **file;
+	char **op;
 }			t_cmd;
 
 typedef struct s_node
