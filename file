@@ -1,0 +1,27 @@
+Makefile
+bonus
+costumizing
+file
+jjj
+kk
+libft
+ll
+minishell
+out
+src
+total 64
+drwxr-xr-x  15 eej-jama  2019    510 Mar 27 22:17 .
+drwxr-xr-x   8 eej-jama  2019    272 Mar 26 14:37 ..
+drwxr-xr-x  18 eej-jama  2019    612 Mar 27 21:51 .git
+drwxr-xr-x   3 eej-jama  2019    102 Mar 26 14:37 .vscode
+-rw-r--r--   1 eej-jama  2019    750 Mar 27 22:01 Makefile
+drwxr-xr-x   3 eej-jama  2019    102 Mar 26 14:37 bonus
+drwxr-xr-x   7 eej-jama  2019    238 Mar 27 22:02 costumizing
+-rw-r--r--   1 eej-jama  2019     66 Mar 27 22:17 file
+-rw-r--r--   1 eej-jama  2019      0 Mar 27 22:08 jjj
+-rw-r--r--   1 eej-jama  2019      0 Mar 27 22:08 kk
+drwxr-xr-x  21 eej-jama  2019    714 Mar 27 22:00 libft
+-rw-r--r--   1 eej-jama  2019     54 Mar 27 21:49 ll
+-rwxr-xr-x   1 eej-jama  2019  18760 Mar 27 22:02 minishell
+-rw-r--r--   1 eej-jama  2019      0 Mar 27 21:49 out
+drwxr-xr-x  11 eej-jama  2019    374 Mar 27 22:00 src

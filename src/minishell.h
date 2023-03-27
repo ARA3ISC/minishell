@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/03/26 15:55:39 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/27 17:34:38 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,13 @@
 # define GREEN "\033[0;32m"
 # define RED "\033[0;31m"
 
+typedef struct s_info
+{
+	int op_count;
+	int pipe_count;
+	int cmd_count;
+}			t_info;
+
 typedef struct s_cmd
 {
 	char *cmd;
@@ -40,10 +47,12 @@ typedef struct s_cmd
 typedef struct s_node
 {
 	char *cmd;
+	struct s_info *infos;
 	struct s_cmd *cmd_dt;
 	int *fds;
 	struct s_node *next;
 	int exit_code;
+	bool error;
 }				t_node;
 
 t_node *s;
@@ -55,14 +64,11 @@ void				ft_lstadd_back(t_node **lst, t_node *new);
 void				ft_lstclear(t_node **lst);
 
 // ! error
-void				print_error(char *msg);
+void				print_error(char *msg, int code);
 int					check_whitespaces(char **all_cmds);
 void				syntax_error(char *cmd);
+void				invalid_expression(char *cmd);
+
 
 #endif
-// str ">>"
-// "$"
-// str[0]
-//str = "wc -l >> file.txt"
-//str = "wc -l $ file.txt"
 

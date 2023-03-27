@@ -3,23 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/26 15:20:04 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/27 17:41:25 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print_error(char *msg)
+void	print_error(char *msg, int code)
 {
 	printf("%s\n", msg);
-}
-
-void	print_error_and_break(char *msg)
-{
-	printf("%s\n", msg);
+	s->error = true;
+	s->exit_code = code;
 }
 
 int	check_whitespaces(char **all_cmds)
@@ -46,5 +43,49 @@ int	check_whitespaces(char **all_cmds)
 	}
 	return (k);
 }
+// ls >>  '\0'
+// !makhdamash (>> | ) (>> '\0')
+bool	check_next_cmd(char *cmd)
+{
+	int i = 0;
 
+	while (cmd[i] && (cmd[i] == 32 || cmd[i] == '\t'))
+		i++;
+	// exit(1);
+	while (cmd[i])
+	{
+		// printf("%s\n", &cmd[i]);
+		if (cmd[i] == '<' || cmd[i] == '>' || cmd[i] == '|')
+		{
+			print_error("system err", 258);
+			return false;
+		}
+		i++;
+	}
+	return true;
+}
+
+void	invalid_expression(char *cmd)
+{
+	// printf("%s\n", &cmd[9]);
+	// exit(1);
+	int i = 0;
+	while (cmd[i])
+	{
+		if ((cmd[i] == '>' || cmd[i] == '<'))
+		{
+			if (cmd[i + 1] && (cmd[i + 1] == '>' || cmd[i + 1] =='<'))
+			{
+				if (check_next_cmd(&cmd[i + 2]) == false)
+					return ;
+			}
+			else
+			{
+				if (check_next_cmd(&cmd[i + 1]) == false)
+					return ;
+			}
+		}
+		i++;
+	}
+}
 

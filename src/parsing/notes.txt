@@ -1,0 +1,12 @@
+1 - baqi lblan dyal exit status ila matfillash struct
+2 - u lblan dyal (>> flkher) u (>> |)
+
+
+ls >> ls > > ll
+ls > |jjj
+> 					<======  done
+ls < > ll
+ls | | ll			<======  done
+ls > | ll
+s < | ll
+ls < > ll
