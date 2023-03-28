@@ -1,12 +1,19 @@
-1 - baqi lblan dyal exit status ila matfillash struct
-2 - u lblan dyal (>> flkher) u (>> |)
+ls >> ls > > ll		<======  done
+ls < > ll			<======  done
+> 					<======  done
+ls | | ll			<======  done
+ " hjjhd | pp "     <======  done
 
 
-ls >> ls > > ll
-ls > |jjj
-> 					<======
-ls < > ll
-ls | | ll			<======
-ls > | ll
-s < | ll
-ls < > ll
+
+ls > |jjj			<======  done
+ls > | ll			<======  done
+
+hahah \				<======  not yet
+
+
+--> baqi lblan li knty checkity dyal '|' rh commentitu
+
+--> baqi lblan dyal ila drna ctrl C khas l exit code ywli fih 1
+	ms mmkn ykun struct baqi matalloca = seg
+

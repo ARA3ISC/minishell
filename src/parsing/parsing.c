@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/27 23:16:20 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/28 12:56:45 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,19 +35,57 @@ int	**alloc_pipes(char **all_cmds)
 	return arr;
 }
 
+char **spliting_by_pipe(char *cmd)
+{
+	// int i = 0;
+	char **all_cmds;
+	// while(cmd[i])
+	// {
+	// 	if(cmd[i] == 39)
+	// 	{
+	// 		i++;
+	// 		while(cmd[i] != 39)
+	// 			i++;
+	// 		i++;
+	// 	}
+	// 	if(cmd[i] && cmd[i] == 34)
+	// 	{
+	// 		i++;
+	// 		while(cmd[i] != 34)
+	// 			i++;
+	// 		i++;
+	// 	}
+	// 	// if(cmd[i] && cmd[i] == '|') // ! fiha mushkil fhad les cas (| dsfdf) (fadfa |) (sddf || dff)
+	// 	// 	cmd[i] = '$';
+	// 	i++;
+	// }
+	all_cmds = ft_split(cmd, '|');
+	return all_cmds;
+}
+
 int	fill_struct(char *cmd)
 {
 	int i = 0;
 	char **all_cmds;
 	int **pipes_arr;
+	char *cmd_tmp;
+	cmd_tmp = cmd;
 
-	all_cmds = ft_split(cmd, '|');
-	if (check_whitespaces(all_cmds) && !all_cmds[0])
+	all_cmds = spliting_by_pipe(cmd_tmp);
+	if (!all_cmds[0])
 		return 1;
+	if (check_whitespaces(all_cmds))
+	{
+		print_error("syntax error near unexpected token `|'", 258);
+		//! hna khass n nssetiw exit code l 0 ms rh lvariable li f struct baqi mamallocyinsh lih so tatsegfaulty
+		return 1;
+	}
 	pipes_arr = alloc_pipes(all_cmds);
 	while (all_cmds[i])
 	{
 		all_cmds[i] = ft_strtrim(all_cmds[i], " ");
+		if(!all_cmds[i][0])
+			print_error("syntax error near unexpected token `|'", 101);// 3aaaaaaabi viifie hna l exit status ach khaso ykon !!!!!!!!!!!!!!!!!!!
 		ft_lstadd_back(&s, ft_lstnew(all_cmds[i], pipes_arr[i]));
 		i++;
 	}
@@ -90,10 +128,25 @@ int checking_quotes(char c, size_t *i, char *cmd)
 	return check;
 }
 
+void checking_redirection_in_the_last(char *cmd)
+{
+	size_t i = ft_strlen(cmd);
+	i--;
+	while(cmd[i] == ' ')
+		i--;
+	if(cmd[i] == '>' || cmd[i] == '<')
+		print_error("syntax error", 258); // 3aaaaaaabi viifie hna l exit status ach khaso ykon !
+}
+
 void	syntax_error(char *cmd)
 {
 	size_t i = 0;
 	int check = 0;
+
+
+
+
+	checking_redirection_in_the_last(cmd);
 	while (cmd[i])
 	{
 		check = checking_quotes(cmd[i], &i, cmd);
@@ -102,14 +155,14 @@ void	syntax_error(char *cmd)
 			print_error("quote error", 101);
 			break;
 		}
-		else if ((cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|') || cmd[i] == '&' || cmd[i] == '*')
+		if ((cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|') || cmd[i] == '&' || cmd[i] == '*')
 		{
 			print_error("syntax error", 102);
 			break;
 		}
-		else if (((i == 0 || i == ft_strlen(cmd) - 1) && cmd[i] == '|'))
+		if (((i == 0 || i == ft_strlen(cmd) - 1) && cmd[i] == '|'))
 		{
-			print_error("syntax error near unexpected token `|'", 103);
+			print_error("syntax error near unexpected token `|'", 258);
 			break;
 		}
 		i++;
@@ -132,7 +185,7 @@ void	signal_C_received(int signo)
 	{
 		printf("\n");
 		rl_on_new_line();
-		// rl_replace_line("", 0);
+		rl_replace_line("", 0);
 		rl_redisplay();
 	}
 }
@@ -328,10 +381,10 @@ int main(int argc, char **argv, char **env)
 		add_history(full_cmd);
 		if (!fill_struct(full_cmd))
 		{
+
 			syntax_error(full_cmd);
 			if (!s->error)
 			{
-				// printf("hhh\n");
 				check_redirection_syntax();
 				if (!s->error)
 				{
@@ -340,8 +393,16 @@ int main(int argc, char **argv, char **env)
 					detail_cmd();
 				}
 			}
+			// while(s)
+			// {
+			// 	printf("--- %s",s->cmd);
+			// 	s = s->next;
+			// }
+			// printf("\n");
 			ft_lstclear(&s);
 		}
+		// else
+		// 	print_error("syntax error near unexpected tokennnn `|'", 258);
 		free(full_cmd);
 	}
 	signal_received('D');
