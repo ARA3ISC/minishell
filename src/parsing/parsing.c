@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/28 12:56:45 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/28 22:35:20 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,29 +37,29 @@ int	**alloc_pipes(char **all_cmds)
 
 char **spliting_by_pipe(char *cmd)
 {
-	// int i = 0;
+	int i = 0;
 	char **all_cmds;
-	// while(cmd[i])
-	// {
-	// 	if(cmd[i] == 39)
-	// 	{
-	// 		i++;
-	// 		while(cmd[i] != 39)
-	// 			i++;
-	// 		i++;
-	// 	}
-	// 	if(cmd[i] && cmd[i] == 34)
-	// 	{
-	// 		i++;
-	// 		while(cmd[i] != 34)
-	// 			i++;
-	// 		i++;
-	// 	}
-	// 	// if(cmd[i] && cmd[i] == '|') // ! fiha mushkil fhad les cas (| dsfdf) (fadfa |) (sddf || dff)
-	// 	// 	cmd[i] = '$';
-	// 	i++;
-	// }
-	all_cmds = ft_split(cmd, '|');
+	while(cmd[i])
+	{
+		if(cmd[i] == 39)
+		{
+			i++;
+			while(cmd[i] != 39)
+				i++;
+			i++;
+		}
+		if(cmd[i] && cmd[i] == 34)
+		{
+			i++;
+			while(cmd[i] != 34)
+				i++;
+			i++;
+		}
+		if(cmd[i] && cmd[i] == '|') // ! fiha mushkil fhad les cas (| dsfdf) (fadfa |) (sddf || dff)
+			cmd[i] = '&';
+		i++;
+	}
+	all_cmds = ft_split(cmd, '&');
 	return all_cmds;
 }
 
@@ -69,9 +69,10 @@ int	fill_struct(char *cmd)
 	char **all_cmds;
 	int **pipes_arr;
 	char *cmd_tmp;
-	cmd_tmp = cmd;
-
+	
+	cmd_tmp =ft_strdup(cmd);
 	all_cmds = spliting_by_pipe(cmd_tmp);
+
 	if (!all_cmds[0])
 		return 1;
 	if (check_whitespaces(all_cmds))
@@ -155,7 +156,7 @@ void	syntax_error(char *cmd)
 			print_error("quote error", 101);
 			break;
 		}
-		if ((cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|') || cmd[i] == '&' || cmd[i] == '*')
+		if ((cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|') || cmd[i] == '&' || cmd[i] == '*' || cmd[i] == '\\')
 		{
 			print_error("syntax error", 102);
 			break;
@@ -181,12 +182,21 @@ void	signal_received(char s)
 
 void	signal_C_received(int signo)
 {
-	if (signo == SIGINT)
+	char **tmp = malloc(2 * sizeof(char *));
+ 	if (signo == SIGINT)
 	{
 		printf("\n");
 		rl_on_new_line();
-		rl_replace_line("", 0);
+		// rl_replace_line("", 0);
 		rl_redisplay();
+		if(s)
+			s->exit_code = 1;
+		else
+		{
+			ft_lstadd_back(&s, ft_lstnew(" ", *alloc_pipes(tmp)));	
+			s->exit_code = 1;
+		}
+			
 	}
 }
 

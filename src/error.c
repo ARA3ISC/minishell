@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/28 14:15:46 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/28 22:18:46 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ bool	check_next_cmd(char *cmd)
 	// exit(1);
 	while (cmd[i])
 	{
-		if (cmd[i] == '<' || cmd[i] == '>' || cmd[i] == '|')
+		if (cmd[i] == '<' || cmd[i] == '>')
 		{
 			print_error("syntax err", 258);
 			return false;
