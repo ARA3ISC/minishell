@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/03/27 22:35:56 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/28 00:43:48 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,45 @@ int	**alloc_pipes(char **all_cmds)
 	return arr;
 }
 
+char **spliting_by_pipe(char *cmd)
+{
+	int i = 0;
+	char **all_cmds;
+	while(cmd[i])
+	{
+		if(cmd[i] == 39)
+		{
+			i++;
+			while(cmd[i] != 39)
+				i++;
+			i++;
+		}
+		if(cmd[i] && cmd[i] == 34)
+		{
+			i++;
+			while(cmd[i] != 34)
+				i++;
+			i++;
+		}
+		if(cmd[i] && cmd[i] == '|')
+			cmd[i] = '$';
+		i++;
+	}
+	all_cmds = ft_split(cmd, '$');
+	return all_cmds;
+}
+
 int	fill_struct(char *cmd)
 {
 	int i = 0;
 	char **all_cmds;
 	int **pipes_arr;
-
-	all_cmds = ft_split(cmd, '|');
-	if (check_whitespaces(all_cmds) && !all_cmds[0])
+	char *cmd_tmp;
+	cmd_tmp = cmd;
+	
+	all_cmds = spliting_by_pipe(cmd_tmp);
+	// printf("|%s|\n", all_cmds[0]);
+	if (check_whitespaces(all_cmds) || !all_cmds[0])
 		return 1;
 	pipes_arr = alloc_pipes(all_cmds);
 	// TRIM SPACES FROM SIDES
@@ -377,9 +408,18 @@ int main(int argc, char **argv, char **env)
 					detail_cmd();
 				}
 			}
+			while(s)
+			{
+				printf("--- %s",s->cmd);
+				s = s->next;
+			}
+			printf("\n");
 			ft_lstclear(&s);
 		}
+		else
+			print_error("syntax error near unexpected token `|'", 258);
 		free(full_cmd);
 	}
 	signal_received('D');
+	
 }

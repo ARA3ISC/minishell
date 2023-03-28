@@ -10,3 +10,6 @@ ls | | ll			<======  done
 ls > | ll
 s < | ll
 ls < > ll
+
+
+ " hjjhd | pp "     <======  done
