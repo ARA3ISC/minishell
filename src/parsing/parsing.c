@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/27 17:37:27 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/27 23:16:20 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ int	fill_struct(char *cmd)
 	if (check_whitespaces(all_cmds) && !all_cmds[0])
 		return 1;
 	pipes_arr = alloc_pipes(all_cmds);
-	// TRIM SPACES FROM SIDES
 	while (all_cmds[i])
 	{
 		all_cmds[i] = ft_strtrim(all_cmds[i], " ");
@@ -111,7 +110,6 @@ void	syntax_error(char *cmd)
 		else if (((i == 0 || i == ft_strlen(cmd) - 1) && cmd[i] == '|'))
 		{
 			print_error("syntax error near unexpected token `|'", 103);
-			// kill(getpid(), SIGINT);
 			break;
 		}
 		i++;
@@ -134,7 +132,7 @@ void	signal_C_received(int signo)
 	{
 		printf("\n");
 		rl_on_new_line();
-		rl_replace_line("", 0);
+		// rl_replace_line("", 0);
 		rl_redisplay();
 	}
 }
@@ -181,7 +179,6 @@ void	check_redirection_syntax()
 // 	printf(GREEN"\t╔╦╗╦╔╗╔╔═╗╦ ╦╔═╗╦  ╦  \n");
 // 	printf("\t║║║║║║║╚═╗╠═╣║╣ ║  ║  \n");
 // 	printf("\t╩ ╩╩╝╚╝╚═╝╩ ╩╚═╝╩═╝╩═╝\n"RESET);
-
 // }
 
 void	banner()
@@ -194,6 +191,7 @@ void	banner()
 	printf("\t|██      ██ ██ ██   ████ ██ ███████ ██   ██ ███████ ███████ ███████|\n"RESET);
 	printf("\n");
 }
+
 // void	banner()
 // {
 // 	printf("\n");
@@ -211,11 +209,9 @@ void	banner()
 void	get_details(t_node *tmp)
 {
 	char **tab;
+
 	int i = 0;
 	int j = 0;
-	// exit(0);
-	// detailed_cmd = malloc(sizeof(t_cmd) * 3);
-		// printf ("cmd = |%s|\n", tmp->cmd);
 	while (tmp->cmd[i])
 	{
 		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
@@ -227,7 +223,6 @@ void	get_details(t_node *tmp)
 				tmp->cmd_dt->op[j] = malloc(sizeof(char) * 2);
 			tmp->cmd_dt->op[j][0] = tmp->cmd[i];
 			tmp->cmd[i] = '$';
-			// i++;
 			if (tmp->cmd[i + 1] && (tmp->cmd[i + 1] == '<' || tmp->cmd[i + 1] == '>'))
 			{
 				if (tmp->cmd[i + 1] == '<')
@@ -239,7 +234,6 @@ void	get_details(t_node *tmp)
 			}
 			else
 				tmp->cmd_dt->op[j][1] = '\0';
-			// printf(" %s\n", tmp->cmd_dt->op[j]);
 			j++;
 		}
 		i++;
@@ -247,30 +241,12 @@ void	get_details(t_node *tmp)
 	tmp->cmd_dt->op[j] = NULL;
 	tab = ft_split(tmp->cmd, '$');
 	tmp->cmd_dt->cmd = tmp->cmd;
-	// i = 0;
-	// while (tmp->cmd_dt->op[i])
-	// {
-	// 	// printf("cmd : %s\n", tmp->cmd_dt->cmd);
-	// 	printf("op : %s\n", tmp->cmd_dt->op[i]);
-	// 	i++;
-	// }
-
-	// printf("%s\n", tmp->cmd_dt->op[0]);
-	// printf("%s\n", tmp->cmd_dt->op[1]);
-	// printf("%s\n", tmp->cmd_dt->op[2]);
-	// printf("%s\n", tmp->cmd_dt->op[3]);
-	// printf("%s\n", tmp->cmd_dt->op[4]);
-
-	// exit(0);
-	// while(1);
 
 }
 
 void	detail_cmd()
 {
 	t_node *tmp;
-
-	// while (1);
 
 	tmp = s;
 	while (tmp)
@@ -279,9 +255,6 @@ void	detail_cmd()
 		tmp->cmd_dt = malloc(sizeof(t_cmd));
 		tmp->cmd_dt->op = malloc(sizeof(char *) * 6);
 		get_details(tmp);
-		// printf("cmd : %s\n", tmp->cmd_dt->cmd);
-		// printf("op : %s\n", tmp->cmd_dt->op);
-		// printf("-------\n");
 		tmp = tmp->next;
 	}
 
@@ -330,7 +303,6 @@ void	get_number_of_tokens(char *full_cmd)
 
 		s->infos->pipe_count = count_pipes(full_cmd);
 		s->infos->cmd_count = s->infos->pipe_count + 1;
-		// printf("commands count : %d\n", s->infos->cmd_count);
 		s = s->next;
 	}
 	s = tmp;
