@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/03/29 12:04:34 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/29 16:33:17 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,18 @@ void				syntax_error(char *cmd);
 void				invalid_expression(char *cmd);
 
 
+void				banner();
+int					cmds_count(char **cmds);
+char				*get_pwd(char **env);
+int					count_op(char *cmd);
+void				get_number_of_tokens(char *full_cmd);
+int					count_pipes(char *cmd);
+
+int		**alloc_pipes(char **all_cmds);
+void	signal_received(char s);
+void	signal_C_received(int signo);
+void	check_redirection_syntax();
+int 	checking_quotes(char c, size_t *i, char *cmd);
+void	checking_redirection_in_the_last(char *cmd);
 #endif
 

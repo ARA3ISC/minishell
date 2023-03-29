@@ -3,23 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/28 22:18:46 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/29 22:04:42 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	print_error(char *msg, int code)
 {
+	char **tmp = malloc(2 * sizeof(char *));
 	printf("%s\n", msg);
 	if(s)
 	{
 		s->error = true;
 		s->exit_code = code;
 		printf("exit code : %d\n", s->exit_code);
+	}
+	else
+	{
+		ft_lstadd_back(&s, ft_lstnew(" ", *alloc_pipes(tmp)));
+		s->exit_code = code;
+		s->error = true;
 	}
 }
 
@@ -58,9 +65,9 @@ bool	check_next_cmd(char *cmd)
 	// exit(1);
 	while (cmd[i])
 	{
-		if (cmd[i] == '<' || cmd[i] == '>')
+		if (cmd[i] == '<' || cmd[i] == '>' || cmd[i] == '|')
 		{
-			print_error("syntax err", 258);
+			print_error("syntax erroooooo", 555);
 			return false;
 		}
 		else
