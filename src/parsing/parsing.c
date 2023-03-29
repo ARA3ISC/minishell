@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/28 22:35:20 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/29 12:20:59 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,7 +271,7 @@ void	banner()
 
 void	get_details(t_node *tmp)
 {
-	char **tab;
+	// char **tab;
 
 	int i = 0;
 	int j = 0;
@@ -285,7 +285,7 @@ void	get_details(t_node *tmp)
 			else
 				tmp->cmd_dt->op[j] = malloc(sizeof(char) * 2);
 			tmp->cmd_dt->op[j][0] = tmp->cmd[i];
-			tmp->cmd[i] = '$';
+			tmp->cmd[i] = '&';
 			if (tmp->cmd[i + 1] && (tmp->cmd[i + 1] == '<' || tmp->cmd[i + 1] == '>'))
 			{
 				if (tmp->cmd[i + 1] == '<')
@@ -302,8 +302,9 @@ void	get_details(t_node *tmp)
 		i++;
 	}
 	tmp->cmd_dt->op[j] = NULL;
-	tab = ft_split(tmp->cmd, '$');
+	// tab = ft_split(tmp->cmd, '&');
 	tmp->cmd_dt->cmd = tmp->cmd;
+	// printf("%s\n",tmp->cmd_dt->cmd);
 
 }
 
@@ -371,6 +372,66 @@ void	get_number_of_tokens(char *full_cmd)
 	s = tmp;
 }
 
+void get_var(char *str, t_node *tmp)
+{
+	int len;
+	int i;
+
+	len = 0;
+	while (ft_isalnum(str[len]))
+		len++;
+	
+	tmp->exp_var = malloc(len + 1);
+	if (!tmp->exp_var)
+		return ;
+	i = 0;
+	while (i < len)
+	{
+		tmp->exp_var[i] = str[i];
+		i++;
+	}
+	tmp->exp_var[i] = '\0';
+	
+	// printf("var %s\n", s->exp_var);
+	// exit(0);
+}
+
+void look_for_dollar(t_node *tmp)
+{
+	size_t i;
+	int len;
+
+	i = 0;
+	len = 0;
+		printf("cmd %s\n", tmp->cmd);
+	while (tmp->cmd[i])
+	{
+		if(tmp->cmd[i] == 39)
+		{
+			i++;
+			help_check_quote(tmp->cmd, &i, 39);
+		}
+		if(tmp->cmd[i] && tmp->cmd[i + 1] && tmp->cmd[i] == '$')
+			get_var(&(tmp->cmd[i + 1]) ,tmp);
+		i++;
+	}
+	
+}
+
+void check_expanding()
+{
+	t_node *tmp;
+
+	tmp = s;
+	while (tmp)
+	{
+		
+		look_for_dollar(tmp);
+		tmp = tmp->next;
+	}
+	
+}
+
 int main(int argc, char **argv, char **env)
 {
 	(void)argc;
@@ -401,11 +462,14 @@ int main(int argc, char **argv, char **env)
 					invalid_expression(full_cmd);
 					get_number_of_tokens(full_cmd);
 					detail_cmd();
+					check_expanding();
 				}
 			}
+			
 			// while(s)
 			// {
-			// 	printf("--- %s",s->cmd);
+			// 	printf("cmd  %s\n",s->cmd);
+			// 	printf("var  %s\n",s->exp_var);
 			// 	s = s->next;
 			// }
 			// printf("\n");
