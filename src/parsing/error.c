@@ -3,31 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/29 22:04:42 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/30 13:02:15 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	print_error(char *msg, int code)
+int	all_error(char *full_cmd)
 {
-	char **tmp = malloc(2 * sizeof(char *));
+	int error;
+	error = syntax_error(full_cmd);
+	if(!error)
+		error = check_redirection_syntax(full_cmd);
+	if(!error)
+		error = invalid_expression(full_cmd);
+	return error;
+}
+
+
+int	print_error(char *msg, int code)
+{
 	printf("%s\n", msg);
-	if(s)
-	{
-		s->error = true;
-		s->exit_code = code;
-		printf("exit code : %d\n", s->exit_code);
-	}
-	else
-	{
-		ft_lstadd_back(&s, ft_lstnew(" ", *alloc_pipes(tmp)));
-		s->exit_code = code;
-		s->error = true;
-	}
+	printf("exit code : %d\n", code);
+	
+	return code;
 }
 
 int	check_whitespaces(char **all_cmds)
@@ -77,9 +79,12 @@ bool	check_next_cmd(char *cmd)
 	return true;
 }
 
-void	invalid_expression(char *cmd)
+int	invalid_expression(char *cmd)
 {
 	int i = 0;
+	int error;
+
+	error = 0;
 	while (cmd[i])
 	{
 		if ((cmd[i] == '>' || cmd[i] == '<'))
@@ -87,15 +92,16 @@ void	invalid_expression(char *cmd)
 			if (cmd[i + 1] && (cmd[i + 1] == '>' || cmd[i + 1] =='<'))
 			{
 				if (check_next_cmd(&cmd[i + 2]) == false)
-					return ;
+					error = 1;
 			}
 			else
 			{
 				if (check_next_cmd(&cmd[i + 1]) == false)
-					return ;
+					error = 1;
 			}
 		}
 		i++;
 	}
+	return error;
 }
 

@@ -3,63 +3,67 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_error.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:25:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/29 16:32:27 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/30 15:11:17 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	syntax_error(char *cmd)
+int	syntax_error(char *cmd)
 {
-	size_t i = 0;
+	int i = 0;
 	int check = 0;
+	int error;
+	error = 0;
 
-	checking_redirection_in_the_last(cmd);
-	while (cmd[i])
+	error = checking_redirection_in_the_last(cmd);
+	while (!error &&  cmd[i])
 	{
 		check = checking_quotes(cmd[i], &i, cmd);
 		if(check)
 		{
-			print_error("quote error", 101);
+			error = print_error("quote error", 101);
 			break;
 		}
 		if ((cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|') || cmd[i] == '&' || cmd[i] == '*' || cmd[i] == '\\')
 		{
-			print_error("syntax error", 102);
+			error = print_error("syntax error", 102);
 			break;
 		}
 		if (((i == 0 || i == ft_strlen(cmd) - 1) && cmd[i] == '|'))
 		{
-			print_error("syntax error near unexpected token `|'", 258);
+			error = print_error("syntax error near unexpected token `|'", 258);
 			break;
 		}
 		i++;
 	}
-
+	return error;
 }
 
-void	check_redirection_syntax()
+int	check_redirection_syntax(char *cmd)
 {
-	t_node *tmp = s;
 	int i;
-	tmp = s;
-	while (s)
+	int error;
+	i = 0;
+	error = 0;
+	while (cmd[i])
 	{
-		i = 0;
-		while (s->cmd[i])
+		if (cmd[i + 1]  && ((cmd[i] == '<' && cmd[i + 1] == '>')
+			|| (cmd[i] == '>' && cmd[i + 1] == '<')))
 		{
-			if (s->cmd[i + 1]  && ((s->cmd[i] == '<' && s->cmd[i + 1] == '>')
-				|| (s->cmd[i] == '>' && s->cmd[i + 1] == '<')))
-				print_error("syntax error", 258);
-			if (s->cmd[i + 1] && s->cmd[i + 2] && ((s->cmd[i] == '>' && s->cmd[i + 1] == '>' && s->cmd[i + 2] == '>')
-				|| (s->cmd[i] == '<' && s->cmd[i + 1] == '<' && s->cmd[i + 2] == '<')))
-				print_error("syntax error", 258);
-			i++;
+			error = print_error("syntax error", 258);
+			break;
 		}
-		s = s->next;
+		if (cmd[i + 1] && cmd[i + 2] && ((cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 2] == '>')
+			|| (cmd[i] == '<' && cmd[i + 1] == '<' && cmd[i + 2] == '<')))
+		{
+			error = print_error("syntax error", 258);
+			break;
+		}
+		i++;
 	}
-	s = tmp;
+	return error;
 }

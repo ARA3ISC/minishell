@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/03/29 16:33:17 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/30 15:11:17 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,7 @@ typedef struct s_node
 	struct s_cmd *cmd_dt;
 	int *fds;
 	struct s_node *next;
-	int exit_code;
-	bool error;
-	char *exp_var;
+	char **exp_var;
 }				t_node;
 
 t_node *s;
@@ -65,10 +63,10 @@ void				ft_lstadd_back(t_node **lst, t_node *new);
 void				ft_lstclear(t_node **lst);
 
 // ! error
-void				print_error(char *msg, int code);
+int				print_error(char *msg, int code);
 int					check_whitespaces(char **all_cmds);
-void				syntax_error(char *cmd);
-void				invalid_expression(char *cmd);
+int				syntax_error(char *cmd);
+int				invalid_expression(char *cmd);
 
 
 void				banner();
@@ -81,8 +79,9 @@ int					count_pipes(char *cmd);
 int		**alloc_pipes(char **all_cmds);
 void	signal_received(char s);
 void	signal_C_received(int signo);
-void	check_redirection_syntax();
-int 	checking_quotes(char c, size_t *i, char *cmd);
-void	checking_redirection_in_the_last(char *cmd);
+int		check_redirection_syntax(char *cmd);
+int 	checking_quotes(char c, int *i, char *cmd);
+int		checking_redirection_in_the_last(char *cmd);
+int		all_error(char *full_cmd);
 #endif
 
