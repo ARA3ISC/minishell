@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helper.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 14:27:28 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/29 14:30:13 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/03/30 17:38:50 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int	count_op(char *cmd)
 {
 	int i = 0;
 	int count = 0;
+			
 	while (cmd[i])
 	{
 		if (cmd[i] == '<' || cmd[i] == '>')
@@ -64,19 +65,22 @@ int	count_pipes(char *cmd)
 	return (count);
 }
 
-void	get_number_of_tokens(char *full_cmd)
+t_node *get_number_of_tokens(char *full_cmd, t_node *list_cmd)
 {
 	t_node *tmp;
-
-	tmp = s;
-	while (s)
+	
+	tmp = list_cmd;;
+	while (tmp)
 	{
-		s->infos = malloc(sizeof(t_info));
-		s->infos->op_count = count_op(s->cmd);
+		tmp->infos = malloc(sizeof(t_info));
+		if(!tmp->infos)
+			return NULL;
+		tmp->infos->op_count = count_op(tmp->cmd);
+	
 
-		s->infos->pipe_count = count_pipes(full_cmd);
-		s->infos->cmd_count = s->infos->pipe_count + 1;
-		s = s->next;
+		tmp->infos->pipe_count = count_pipes(full_cmd);
+		tmp->infos->cmd_count = tmp->infos->pipe_count + 1;
+		tmp = tmp->next;
 	}
-	s = tmp;
+	return list_cmd;
 }

@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/30 13:02:15 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/30 18:37:55 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,11 @@ bool	check_next_cmd(char *cmd)
 
 	while (cmd[i] && (cmd[i] == 32 || cmd[i] == '\t'))
 		i++;
-	// printf("%s\n", &cmd[i]);
-	// exit(1);
 	while (cmd[i])
 	{
 		if (cmd[i] == '<' || cmd[i] == '>' || cmd[i] == '|')
 		{
-			print_error("syntax erroooooo", 555);
+			print_error("syntax erroohh", 555);
 			return false;
 		}
 		else
@@ -89,9 +87,10 @@ int	invalid_expression(char *cmd)
 	{
 		if ((cmd[i] == '>' || cmd[i] == '<'))
 		{
-			if (cmd[i + 1] && (cmd[i + 1] == '>' || cmd[i + 1] =='<'))
+			i++;
+			if (cmd[i] && (cmd[i] == '>' || cmd[i] =='<'))
 			{
-				if (check_next_cmd(&cmd[i + 2]) == false)
+				if (check_next_cmd(&cmd[i + 1]) == false)
 					error = 1;
 			}
 			else

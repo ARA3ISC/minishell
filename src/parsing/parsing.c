@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/30 15:24:22 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/30 17:54:23 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,31 +40,31 @@ char	**spliting_by_pipe(char *cmd)
 	return all_cmds;
 }
 
-int		fill_struct(char *cmd)
+int		fill_struct(char *cmd, t_node **list_cmd)
 {
 	int i = 0;
 	char **all_cmds;
 	int **pipes_arr;
 	char *cmd_tmp;
 	int error;
+	
 
 	error = 0;
 	cmd_tmp =ft_strdup(cmd);
 	all_cmds = spliting_by_pipe(cmd_tmp);
 
 	if (!all_cmds[0])
-		return 0;
+		return 1;
 	if (check_whitespaces(all_cmds) && all_cmds[1])
-	{
-		error = print_error("syntax error near unexpected tokenn `|'", 258);
-		return error;
-	}
+		return print_error("syntax error near unexpected tokenn `|'", 258);
 	pipes_arr = alloc_pipes(all_cmds);
 	while (all_cmds[i])
 	{
 		all_cmds[i] = ft_strtrim(all_cmds[i], " ");
-		
-		ft_lstadd_back(&s, ft_lstnew(all_cmds[i], pipes_arr[i]));
+		// if (i == 0)
+		// 	ft_lstnew(all_cmds[i], pipes_arr[i]);
+		// else
+		ft_lstadd_back(list_cmd, ft_lstnew(all_cmds[i], pipes_arr[i]));
 		i++;
 	}
 	return error;
@@ -137,6 +137,8 @@ void	get_details(t_node *tmp)
 				tmp->cmd_dt->op[j] = malloc(sizeof(char) * 3);
 			else
 				tmp->cmd_dt->op[j] = malloc(sizeof(char) * 2);
+			if(!tmp->cmd_dt->op[j])
+				return ;
 			tmp->cmd_dt->op[j][0] = tmp->cmd[i];
 			tmp->cmd[i] = '&';
 			if (tmp->cmd[i + 1] && (tmp->cmd[i + 1] == '<' || tmp->cmd[i + 1] == '>'))
@@ -161,20 +163,24 @@ void	get_details(t_node *tmp)
 
 }
 
-void	detail_cmd()
+t_node *detail_cmd(t_node *list_cmd)
 {
 	t_node *tmp;
 
-	tmp = s;
+	tmp = list_cmd;
 	while (tmp)
 	{
 
 		tmp->cmd_dt = malloc(sizeof(t_cmd));
+		if(!tmp->cmd_dt)
+			return NULL;
 		tmp->cmd_dt->op = malloc(sizeof(char *) * 6);
+		if(!tmp->cmd_dt->op)
+			return NULL;
 		get_details(tmp);
 		tmp = tmp->next;
 	}
-
+	return list_cmd;  
 }
 
 void	get_var(char *str, char *exp)
@@ -232,6 +238,8 @@ void alloc_variables(t_node *tmp)
 
 	len = var_count(tmp->cmd);
 	tmp->exp_var = malloc(len * sizeof(char *));
+	if(!tmp->exp_var)
+		return ;
 }
 
 void	look_for_dollar(t_node *tmp)
@@ -263,29 +271,27 @@ void	look_for_dollar(t_node *tmp)
 	}
 }
 
-void	check_expanding()
+t_node *check_expanding(t_node *list_cmd)
 {
 	t_node *tmp;
 
-	tmp = s;
+	tmp = list_cmd;
 	while (tmp)
 	{
 		look_for_dollar(tmp);
-		// printf("cmd : %s\n", tmp->cmd); //
 		tmp = tmp->next;
 	}
-
+	return list_cmd;
 }
 
 int		main(int argc, char **argv, char **env)
 {
 	(void)argc;
 	(void)argv;
+	t_node *list_cmd;
 	char *path;
 	char *full_cmd;
-	int error;
-
-	
+	// int i;
 	banner();
 	signal(SIGINT, signal_C_received);
 	path = get_pwd(env);
@@ -297,22 +303,30 @@ int		main(int argc, char **argv, char **env)
 	while ((full_cmd = readline(path)) != NULL)
 	{
 		add_history(full_cmd);
-		error = all_error(full_cmd);
-		if(!error)
-			error = fill_struct(full_cmd);
-		if (!error)
+		exit_code = all_error(full_cmd);
+		if(!exit_code)
+			exit_code = fill_struct(full_cmd, &list_cmd);
+		if (!exit_code)
 		{
-			get_number_of_tokens(full_cmd);
-			detail_cmd();
-			check_expanding();
-			// while(s)
+			list_cmd = get_number_of_tokens(full_cmd, list_cmd);
+			
+		
+			list_cmd = detail_cmd(list_cmd);
+			list_cmd = check_expanding(list_cmd);
+			// while(list_cmd)
 			// {
-			// 	printf("cmd  : |%s|\n",s->cmd);
-			// 	printf("var  : %s\n",s->exp_var);
+			// 	printf("cmd  : |%s|\n",list_cmd->cmd);
+			// 	i = 0;
+			// 	while(list_cmd->exp_var[i])
+			// 	{
+			// 		printf("var  : %s\t",list_cmd->exp_var[i]);
+			// 		i++;
+			// 	}
 			// 	printf("-----\n");
-			// 	s = s->next;
+			// 	list_cmd = list_cmd->next;
 			// }
-			ft_lstclear(&s);
+			printf("dann\n");
+			ft_lstclear(&list_cmd);
 			free(full_cmd);
 		}
 	}

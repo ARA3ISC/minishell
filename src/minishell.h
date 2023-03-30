@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/03/30 15:11:17 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/03/30 17:22:07 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_cmd
 	char **op;
 }			t_cmd;
 
+
 typedef struct s_node
 {
 	char *cmd;
@@ -54,7 +55,7 @@ typedef struct s_node
 	char **exp_var;
 }				t_node;
 
-t_node *s;
+int exit_code;
 
 extern void   		 rl_replace_line(const char *, int);
 
@@ -73,7 +74,7 @@ void				banner();
 int					cmds_count(char **cmds);
 char				*get_pwd(char **env);
 int					count_op(char *cmd);
-void				get_number_of_tokens(char *full_cmd);
+t_node *get_number_of_tokens(char *full_cmd, t_node *list_cmd);
 int					count_pipes(char *cmd);
 
 int		**alloc_pipes(char **all_cmds);
