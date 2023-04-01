@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/30 17:54:23 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/01 13:01:58 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,47 +120,64 @@ int	checking_redirection_in_the_last(char *cmd)
 	return error;
 }
 
+void allocate_for_op_and_file(t_node *tmp, int i, int j)
+{
+	int len;
+
+	len = 0;
+	tmp->cmd_dt->op[j] = malloc(sizeof(char) * 3);
+	if(!tmp->cmd_dt->op[j])
+		return ;
+	if(tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
+		i++;
+	while(tmp->cmd[i] && (tmp->cmd[i] == 32 || tmp->cmd[i] == '\t'))
+		i++;
+	while(tmp->cmd[i] && tmp->cmd[i] != 32 && tmp->cmd[i] != '\t')
+	{
+		i++;
+		len++;
+	}
+	tmp->cmd_dt->file[j] = malloc(sizeof(char) * len + 1);
+	if(!tmp->cmd_dt->file[j])
+		return;
+}
+
 void	get_details(t_node *tmp)
 {
-	// char **tab;
-
-	// tab = ft_strdup(tmp);
 	int i = 0;
 	int j = 0;
+	int k;
 	
 	while (tmp->cmd[i])
 	{
 		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
 		{
-
-			if (tmp->cmd[i + 1] && (tmp->cmd[i + 1] == '<' || tmp->cmd[i + 1] == '>'))
-				tmp->cmd_dt->op[j] = malloc(sizeof(char) * 3);
-			else
-				tmp->cmd_dt->op[j] = malloc(sizeof(char) * 2);
-			if(!tmp->cmd_dt->op[j])
-				return ;
+			allocate_for_op_and_file(tmp, i + 1, j);
+			k = 0;
 			tmp->cmd_dt->op[j][0] = tmp->cmd[i];
-			tmp->cmd[i] = '&';
-			if (tmp->cmd[i + 1] && (tmp->cmd[i + 1] == '<' || tmp->cmd[i + 1] == '>'))
+			i++;
+			if (tmp->cmd[i] && (tmp->cmd[i] == '<' || tmp->cmd[i] == '>'))
 			{
-				if (tmp->cmd[i + 1] == '<')
+				if (tmp->cmd[i] == '<')
 					tmp->cmd_dt->op[j][1] = '<';
 				else
 					tmp->cmd_dt->op[j][1] = '>';
-				tmp->cmd[i + 1] = 32;
 				tmp->cmd_dt->op[j][2] = '\0';
+				i++;
 			}
 			else
 				tmp->cmd_dt->op[j][1] = '\0';
+			while(tmp->cmd[i] && (tmp->cmd[i] == 32 || tmp->cmd[i] == '\t'))
+				i++;
+			while(tmp->cmd[i] && tmp->cmd[i] != 32 && tmp->cmd[i] != '\t')
+				tmp->cmd_dt->file[j][k++] = tmp->cmd[i++];
+			tmp->cmd_dt->file[j][k] = '\0';
 			j++;
 		}
 		i++;
 	}
 	tmp->cmd_dt->op[j] = NULL;
-	// tab = ft_split(tmp->cmd, '&');
-	tmp->cmd_dt->cmd = tmp->cmd;
-	// printf("%s\n",tmp->cmd_dt->cmd);
-
+	tmp->cmd_dt->file[j] = NULL;
 }
 
 t_node *detail_cmd(t_node *list_cmd)
@@ -174,10 +191,12 @@ t_node *detail_cmd(t_node *list_cmd)
 		tmp->cmd_dt = malloc(sizeof(t_cmd));
 		if(!tmp->cmd_dt)
 			return NULL;
-		tmp->cmd_dt->op = malloc(sizeof(char *) * 6);
+		tmp->cmd_dt->op = malloc(sizeof(char *) * tmp->infos->op_count + 1);
 		if(!tmp->cmd_dt->op)
 			return NULL;
+		tmp->cmd_dt->file = malloc(sizeof(char *) * tmp->infos->op_count + 1);
 		get_details(tmp);
+		
 		tmp = tmp->next;
 	}
 	return list_cmd;  
@@ -291,7 +310,7 @@ int		main(int argc, char **argv, char **env)
 	t_node *list_cmd;
 	char *path;
 	char *full_cmd;
-	// int i;
+	int i;
 	banner();
 	signal(SIGINT, signal_C_received);
 	path = get_pwd(env);
@@ -309,23 +328,27 @@ int		main(int argc, char **argv, char **env)
 		if (!exit_code)
 		{
 			list_cmd = get_number_of_tokens(full_cmd, list_cmd);
-			
 		
 			list_cmd = detail_cmd(list_cmd);
 			list_cmd = check_expanding(list_cmd);
-			// while(list_cmd)
-			// {
-			// 	printf("cmd  : |%s|\n",list_cmd->cmd);
-			// 	i = 0;
-			// 	while(list_cmd->exp_var[i])
-			// 	{
-			// 		printf("var  : %s\t",list_cmd->exp_var[i]);
-			// 		i++;
-			// 	}
-			// 	printf("-----\n");
-			// 	list_cmd = list_cmd->next;
-			// }
-			printf("dann\n");
+			while(list_cmd)
+			{
+				printf("cmd  : |%s|\n",list_cmd->cmd);
+				i = 0;
+				// while(list_cmd->exp_var[i])
+				// {
+				// 	printf("var  : %s\t",list_cmd->exp_var[i]);
+				// 	i++;
+				// }
+				while(list_cmd->cmd_dt->op[i])
+				{
+					printf("op  : %s\n",list_cmd->cmd_dt->op[i]);
+					printf("file  : %s\n",list_cmd->cmd_dt->file[i]);
+					i++;
+				}
+				printf("-----\n");
+				list_cmd = list_cmd->next;
+			}
 			ft_lstclear(&list_cmd);
 			free(full_cmd);
 		}
