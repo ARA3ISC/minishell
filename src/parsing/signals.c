@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:26:45 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/30 17:41:40 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/03 22:06:40 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,6 @@ void	signal_C_received(int signo)
 		// rl_replace_line("", 0);
 		rl_redisplay();
 		exit_code = 1;
-		printf("%d\n", exit_code);
+		// printf("%d\n", exit_code);
 	}
 }

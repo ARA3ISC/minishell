@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/30 18:37:55 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/03 15:08:12 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	print_error(char *msg, int code)
+{
+	printf("%s\n", msg);
+	printf("exit code : %d\n", code);
+
+	return code;
+}
 
 int	all_error(char *full_cmd)
 {
@@ -24,13 +32,6 @@ int	all_error(char *full_cmd)
 }
 
 
-int	print_error(char *msg, int code)
-{
-	printf("%s\n", msg);
-	printf("exit code : %d\n", code);
-	
-	return code;
-}
 
 int	check_whitespaces(char **all_cmds)
 {

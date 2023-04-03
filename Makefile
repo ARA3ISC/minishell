@@ -18,7 +18,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@make -C costumizing/
-	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) -lreadline
+	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME)   -lreadline
 
 # bonus: $(OBJ_bonus)
 #     cc $(CFLAGS) $(OBJ_bonus) -o
