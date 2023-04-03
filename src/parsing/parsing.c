@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/02 11:00:55 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/03 22:00:16 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -406,11 +406,11 @@ int		main(int argc, char **argv, char **env)
 			{
 				printf("cmd  : |%s|\n",list_cmd->cmd);
 				i = 0;
-				// while(list_cmd->exp_var[i])
-				// {
-				// 	printf("var  : %s\t",list_cmd->exp_var[i]);
-				// 	i++;
-				// }
+				while(list_cmd->exp_var[i])
+				{
+					printf("var  : %s\t",list_cmd->exp_var[i]);
+					i++;
+				}
 				while(list_cmd->cmd_dt->op[i])
 				{
 					printf("op  : |%s|\n",list_cmd->cmd_dt->op[i]);
