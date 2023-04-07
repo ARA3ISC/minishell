@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/03 15:08:12 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/07 17:40:08 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 int	print_error(char *msg, int code)
 {
-	printf("%s\n", msg);
-	printf("exit code : %d\n", code);
-
+	if (msg)
+		printf("%s\n", msg);
+	// printf("exit code : %d\n", code);
 	return code;
 }
 
@@ -68,7 +68,7 @@ bool	check_next_cmd(char *cmd)
 	{
 		if (cmd[i] == '<' || cmd[i] == '>' || cmd[i] == '|')
 		{
-			print_error("syntax erroohh", 555);
+			print_error("syntax error", 555);
 			return false;
 		}
 		else
@@ -96,7 +96,7 @@ int	invalid_expression(char *cmd)
 			}
 			else
 			{
-				if (check_next_cmd(&cmd[i + 1]) == false)
+				if (check_next_cmd(&cmd[i]) == false)
 					error = 1;
 			}
 		}

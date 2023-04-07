@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_error.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:25:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/03/30 15:11:17 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/06 15:58:19 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	syntax_error(char *cmd)
 			error = print_error("quote error", 101);
 			break;
 		}
-		if ((cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|') || cmd[i] == '&' || cmd[i] == '*' || cmd[i] == '\\')
+		if ((cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|') || cmd[i] == '&' || cmd[i] == '\\' || cmd[i] == ';')
 		{
 			error = print_error("syntax error", 102);
 			break;
