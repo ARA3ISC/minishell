@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/11 12:49:23 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/11 15:48:43 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int	checking_redirection_in_the_last(char *cmd)
 	while(cmd[i] == ' ')
 		i--;
 	if(cmd[i] == '>' || cmd[i] == '<')
-		error = print_error("syntax error", 258); // 3aaaaaaabi viifie hna l exit status ach khaso ykon !
+		error = print_error("syntax error", 258);
 	return error;
 }
 
@@ -129,15 +129,38 @@ int allocate_for_op_and_file(t_node *tmp, int i, int j)
 	tmp->cmd_dt->op[j] = malloc(sizeof(char) * 3);
 	if(!tmp->cmd_dt->op[j])
 		exit(1);
+		// printf("gggggg\n");
 	if(tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
 		i++;
 	while(tmp->cmd[i] && (tmp->cmd[i] == 32 || tmp->cmd[i] == '\t'))
 		i++;
 	while(tmp->cmd[i] && tmp->cmd[i] != 32 && tmp->cmd[i] != '\t')
 	{
-		i++;
+		if(tmp->cmd[i] == 34)
+		{
+			len++;
+			i++;
+			while(tmp->cmd[i] && tmp->cmd[i] != 34)
+			{
+				i++;
+				len++;
+			}
+		}
+		if(tmp->cmd[i] == 39)
+		{
+			len++;
+			i++;
+			while(tmp->cmd[i] && tmp->cmd[i] != 39)
+			{
+				i++;
+				len++;
+			}
+		}
 		len++;
+		i++;
 	}
+	// printf("%d\n",len);
+	// exit(0);
 	tmp->cmd_dt->file[j] = malloc(sizeof(char) * len + 1);
 	if(!tmp->cmd_dt->file[j])
 		exit(1);
@@ -185,17 +208,38 @@ char *working_in_the_name_of_the_file(char *file_name, int len)
 			n_name[j++] = file_name[i];
 			i++;
 		}
-		i++;
 	}
+	n_name[j] = '\0';
 	return n_name;
 }
 
 void fill_file_name(t_node *tmp, int i, int j)
 {
 	int k = 0;
-	int d;
 	while(tmp->cmd[i] && (tmp->cmd[i] == 32 || tmp->cmd[i] == '\t'))
 		i++;
+	while(tmp->cmd[i] && tmp->cmd[i] != 32 && tmp->cmd[i] != '\t')
+	{
+		// printf("%c\n",tmp->cmd[i]);
+		tmp->cmd_dt->file[j][k++] = tmp->cmd[i];
+		if(tmp->cmd[i] == 34)
+		{
+			i++;
+			while(tmp->cmd[i] && tmp->cmd[i] != 34)
+				tmp->cmd_dt->file[j][k++] = tmp->cmd[i++];
+			tmp->cmd_dt->file[j][k++] = tmp->cmd[i++];
+		}
+		else if(tmp->cmd[i] && tmp->cmd[i] == 39)
+		{
+			i++;
+			while(tmp->cmd[i] && tmp->cmd[i] != 39)
+				tmp->cmd_dt->file[j][k++] = tmp->cmd[i++];
+			tmp->cmd_dt->file[j][k++] = tmp->cmd[i++];
+		}
+		else
+			i++;
+	}
+	tmp->cmd_dt->file[j][k] = '\0';
 	// if(tmp->cmd[i] == 34)
 	// {
 	// 	while(tmp->cmd[i] && tmp->cmd[i] != 34)
@@ -206,15 +250,14 @@ void fill_file_name(t_node *tmp, int i, int j)
 	// 	while(tmp->cmd[i] && tmp->cmd[i] != 39)
 	// 		tmp->cmd_dt->file[j][k++] = tmp->cmd[i++];
 	// }
-	d = i;
-	while(tmp->cmd[d] && tmp->cmd[d] != '>' && tmp->cmd[d] != '<')
-		d++;
-	d--;
-	while(d >= 0 && (tmp->cmd[d] == 32 || tmp->cmd[d] == '\t'))
-		d--;
-	while(i <= d)
-		tmp->cmd_dt->file[j][k++] = tmp->cmd[i++];
-	tmp->cmd_dt->file[j][k] = '\0';
+	// d = i;
+	// while(tmp->cmd[d] && tmp->cmd[d] != '>' && tmp->cmd[d] != '<')
+	// 	d++;
+	// d--;
+	// while(d >= 0 && (tmp->cmd[d] == 32 || tmp->cmd[d] == '\t'))
+	// 	d--;
+	// while(i <= d)
+	// 	tmp->cmd_dt->file[j][k++] = tmp->cmd[i++];
 }
 
 // void	fill_file_name(t_node *tmp)
@@ -257,12 +300,14 @@ void	get_details(t_node *tmp)
 			}
 			else
 				tmp->cmd_dt->op[j][1] = '\0';
-			fill_file_name(tmp, i, j); //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
-			// fill_file_name(tmp);
-			// printf("%s\n", tmp->cmd_dt->file[j]);
+				// printf("uuuuu\n");
+			fill_file_name(tmp, i, j);   //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
+			// printf("|%s|\n", tmp->cmd_dt->file[j]);
+			// exit(0);
 
 			tmp->cmd_dt->file[j] = working_in_the_name_of_the_file(tmp->cmd_dt->file[j], len);
-
+			// printf("|%s|\n", tmp->cmd_dt->file[j]);
+			// exit(0);
 			j++;
 		}
 		i++;
@@ -442,11 +487,14 @@ void	exit_herd(int signo)
 	}
 }
 
-void	start_reading(char *eof)
+int	start_reading(char *eof)
 {
 	// (void)eof;
-	char *rd;
+	int fds[2];
+	char *rd = NULL;
+	char *input = NULL;
 	signal(SIGINT, SIG_IGN);
+	pipe(fds);
 	int id = fork();
 	eof = ft_strtrim(eof, " ");
 	if (id == 0)
@@ -455,31 +503,42 @@ void	start_reading(char *eof)
 		while(1)
 		{
 			rd = readline("> ");
+
 			if (!ft_strcmp(rd, eof))
 			{
+				close(fds[1]);
 				exit_code = print_error(NULL, 1);
-				exit(1);
+				break ;
 			}
+			input = ft_strjoin2(input, rd);
+			input = ft_strjoin( input ,"\n");
+			write(fds[1], input, ft_strlen(input) * sizeof(char));
+			close(fds[1]);
 		}
+			printf("%s", input);
 	}
 	wait(NULL);
+	return fds[0];
 }
 
 void	check_herdocs(t_node *list_cmd)
 {
 	char *eof;
 	int i;
+	int j;
 
 	while (list_cmd)
 	{
 		i = 0;
+		j = 0;
 		while (list_cmd->cmd[i])
 		{
 			if (list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '<' && list_cmd->cmd[i + 1] == '<')
 			{
 				// printf("****\n");
-				eof = get_eof(&list_cmd->cmd[i + 2]);
-				start_reading(eof);
+				// eof = get_eof(&list_cmd->cmd[i + 2]);
+				eof = list_cmd->cmd_dt->file[j++];
+				list_cmd->inf_fd = start_reading(eof);
 				// printf("eof : %s\n", eof);
 				free(eof);
 			}
@@ -523,31 +582,27 @@ int		main(int argc, char **argv, char **env)
 			detail_cmd(list_cmd);
 			check_expanding(list_cmd);
 			check_herdocs(list_cmd);
-
 		}
+		// int i;
+		// while(list_cmd)
+		// {
+		// 	printf("cmd  : |%s|\n",list_cmd->cmd);
+		// 	i = 0;
+		// 	while(list_cmd->exp_var[i])
+		// 	{
+		// 		printf("var  : %s\t",list_cmd->exp_var[i]);
+		// 		i++;
+		// 	}
+		// 	while(list_cmd->cmd_dt->op[i])
+		// 	{
+		// 		printf("op  : |%s|\n",list_cmd->cmd_dt->op[i]);
+		// 		printf("file  : |%s|\n",list_cmd->cmd_dt->file[i]);
+		// 		i++;
+		// 	}
+		// printf("-----\n");
+		// 	list_cmd = list_cmd->next;
+		// }
 
-		int i;
-		while(list_cmd)
-		{
-			printf("cmd  : |%s|\n",list_cmd->cmd);
-			i = 0;
-			while(list_cmd->exp_var[i])
-			{
-				printf("var  : %s\t",list_cmd->exp_var[i]);
-				i++;
-			}
-			i = 0;
-			while(list_cmd->cmd_dt->op[i])
-			{
-				// printf("op  : |%s|\n",list_cmd->cmd_dt->op[i]);
-				printf("file  : |%s|\n",list_cmd->cmd_dt->file[i]);
-				i++;
-			}
-		printf("-----\n");
-			list_cmd = list_cmd->next;
-		}
-
-		// list_cmd->infos->op_count = 0;
 		ft_lstclear(&list_cmd);
 		free(full_cmd);
 
