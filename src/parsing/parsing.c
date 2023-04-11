@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/07 17:41:01 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/11 12:49:23 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -525,11 +525,32 @@ int		main(int argc, char **argv, char **env)
 			check_herdocs(list_cmd);
 
 		}
+
+		int i;
+		while(list_cmd)
+		{
+			printf("cmd  : |%s|\n",list_cmd->cmd);
+			i = 0;
+			while(list_cmd->exp_var[i])
+			{
+				printf("var  : %s\t",list_cmd->exp_var[i]);
+				i++;
+			}
+			i = 0;
+			while(list_cmd->cmd_dt->op[i])
+			{
+				// printf("op  : |%s|\n",list_cmd->cmd_dt->op[i]);
+				printf("file  : |%s|\n",list_cmd->cmd_dt->file[i]);
+				i++;
+			}
+		printf("-----\n");
+			list_cmd = list_cmd->next;
+		}
+
 		// list_cmd->infos->op_count = 0;
 		ft_lstclear(&list_cmd);
 		free(full_cmd);
 
 	}
-
 	signal_received('D');
 }
