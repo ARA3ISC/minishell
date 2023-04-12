@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/08 12:50:26 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/09 21:55:55 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -346,11 +346,6 @@ void	get_var(char *str, t_node *tmp, int j)
 	len = 0;
 	while (ft_isalnum(str[len]) && str[len])
 		len++;
-
-
-
-
-
 	exp = malloc(len + 1);
 	if (!exp)
 	{
@@ -420,6 +415,20 @@ void	look_for_dollar(t_node *tmp)
 			i++;
 			help_check_quote(tmp->cmd, &i, 39);
 		}
+		if(tmp->cmd[i] == 34)
+		{
+			i++;
+			while(tmp->cmd[i] && tmp->cmd[i] != 34)
+			{
+				if(tmp->cmd[i + 1] && tmp->cmd[i] == '$' && ft_isalnum(tmp->cmd[i + 1]))
+				{
+					get_var(&tmp->cmd[i + 1], tmp, j);
+					j++;
+				}
+				i++;
+			}
+			i++;
+		}
 		if(tmp->cmd[i] && tmp->cmd[i + 1] && tmp->cmd[i] == '$' && ft_isalnum(tmp->cmd[i + 1]))
 		{
 			get_var(&tmp->cmd[i + 1], tmp, j);
@@ -438,7 +447,6 @@ void	check_expanding(t_node *list_cmd)
 	while (tmp)
 	{
 		look_for_dollar(tmp);
-
 		tmp = tmp->next;
 	}
 }
@@ -579,7 +587,7 @@ int		main(int argc, char **argv, char **env)
 			i = 0;
 			while(list_cmd->exp_var[i])
 			{
-				printf("var  : %s\t",list_cmd->exp_var[i]);
+				printf("var  : %s\t",getenv(list_cmd->exp_var[i]));
 				i++;
 			}
 			while(list_cmd->cmd_dt->op[i])
