@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/11 15:48:43 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/11 18:21:39 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,11 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 	cmd_tmp =ft_strdup(cmd);
 	all_cmds = spliting_by_pipe(cmd_tmp);
 
+
 	if (!all_cmds[0])
-		return 1;
+		return 0;
 	if (check_whitespaces(all_cmds) && all_cmds[1])
-		return print_error("syntax error near unexpected tokenn `|'", 258);
+		return print_error("syntax error near unexpected token `|'", 258);
 	pipes_arr = alloc_pipes(all_cmds);
 	while (all_cmds[i])
 	{
@@ -68,6 +69,12 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 		ft_lstadd_back(list_cmd, ft_lstnew(all_cmds[i], pipes_arr[i]));
 		i++;
 	}
+	// i = 0;
+	// while (all_cmds[i])
+	// {
+	// 	printf("cmd : %s\n", all_cmds[i++]);
+	// }
+	// list_cmd = &all_cmds;
 	return error;
 }
 
@@ -493,6 +500,7 @@ int	start_reading(char *eof)
 	int fds[2];
 	char *rd = NULL;
 	char *input = NULL;
+	// test = NULL;
 	signal(SIGINT, SIG_IGN);
 	pipe(fds);
 	int id = fork();
@@ -515,7 +523,7 @@ int	start_reading(char *eof)
 			write(fds[1], input, ft_strlen(input) * sizeof(char));
 			close(fds[1]);
 		}
-			printf("%s", input);
+		printf("%s", input);
 	}
 	wait(NULL);
 	return fds[0];
@@ -524,6 +532,7 @@ int	start_reading(char *eof)
 void	check_herdocs(t_node *list_cmd)
 {
 	char *eof;
+	// char *test  = NULL;
 	int i;
 	int j;
 
@@ -539,24 +548,34 @@ void	check_herdocs(t_node *list_cmd)
 				// eof = get_eof(&list_cmd->cmd[i + 2]);
 				eof = list_cmd->cmd_dt->file[j++];
 				list_cmd->inf_fd = start_reading(eof);
-				// printf("eof : %s\n", eof);
-				free(eof);
+
+				// free(eof);
 			}
 			i++;
 		}
 		list_cmd = list_cmd->next;
 	}
 }
-// int p[2]=
-//pipe();
-// write(p[1], str, );
-// return p[0];
+
+void	get_cmd_with_flags(t_node *list_cmd)
+{
+	int i = 0;
+	while (list_cmd)
+	{
+		while (list_cmd->cmd[i])
+		{
+
+			i++;
+		}
+		list_cmd = list_cmd->next;
+	}
+}
 
 int		main(int argc, char **argv, char **env)
 {
 	(void)argc;
 	(void)argv;
-	t_node *list_cmd;
+	t_node *list_cmd = NULL;
 	char *path;
 	char *full_cmd;
 	banner();
@@ -572,21 +591,23 @@ int		main(int argc, char **argv, char **env)
 		add_history(full_cmd);
 		exit_code = all_error(full_cmd);
 
+
 		if(!exit_code)
 			exit_code = fill_struct(full_cmd, &list_cmd);
-		if (!exit_code)
-		{
-			get_number_of_tokens(full_cmd, list_cmd);
 
-			// ! modified after being freed
-			detail_cmd(list_cmd);
-			check_expanding(list_cmd);
-			check_herdocs(list_cmd);
-		}
+
+		// if (!exit_code)
+		// {
+		// 	get_number_of_tokens(full_cmd, list_cmd);
+
+		// 	detail_cmd(list_cmd);
+		// 	check_expanding(list_cmd);
+		// 	// check_herdocs(list_cmd);
+		// 	// get_cmd_with_flags(list_cmd);
+		// }
 		// int i;
 		// while(list_cmd)
 		// {
-		// 	printf("cmd  : |%s|\n",list_cmd->cmd);
 		// 	i = 0;
 		// 	while(list_cmd->exp_var[i])
 		// 	{

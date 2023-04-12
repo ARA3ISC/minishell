@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/11 15:47:40 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/11 17:55:04 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,12 @@ typedef struct s_node
 	char *cmd;
 	struct s_info *infos;
 	struct s_cmd *cmd_dt;
+	int *fds;
+	char **cmd_flags;
 	int inf_fd;
 	int outf_fd;
-	struct s_node *next;
 	char **exp_var;
+	struct s_node *next;
 }				t_node;
 
 int exit_code;
