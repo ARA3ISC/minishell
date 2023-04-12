@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/09 21:55:55 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/12 00:39:17 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,7 +304,7 @@ void	get_details(t_node *tmp)
 			fill_file_name(tmp, i, j);   //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
 			// printf("|%s|\n", tmp->cmd_dt->file[j]);
 			// exit(0);
-			
+
 			tmp->cmd_dt->file[j] = working_in_the_name_of_the_file(tmp->cmd_dt->file[j], len);
 			// printf("|%s|\n", tmp->cmd_dt->file[j]);
 			// exit(0);
@@ -495,11 +495,14 @@ void	exit_herd(int signo)
 	}
 }
 
-void	start_reading(char *eof)
+int	start_reading(char *eof)
 {
 	// (void)eof;
-	char *rd;
+	int fds[2];
+	char *rd = NULL;
+	char *input = NULL;
 	signal(SIGINT, SIG_IGN);
+	pipe(fds);
 	int id = fork();
 	eof = ft_strtrim(eof, " ");
 	if (id == 0)
@@ -508,14 +511,22 @@ void	start_reading(char *eof)
 		while(1)
 		{
 			rd = readline("> ");
+
 			if (!ft_strcmp(rd, eof))
 			{
+				close(fds[1]);
 				exit_code = print_error(NULL, 1);
-				exit(1);
+				break ;
 			}
+			input = ft_strjoin2(input, rd);
+			input = ft_strjoin( input ,"\n");
+			write(fds[1], input, ft_strlen(input) * sizeof(char));
+			close(fds[1]);
 		}
+			printf("%s", input);
 	}
 	wait(NULL);
+	return fds[0];
 }
 
 void	check_herdocs(t_node *list_cmd)
@@ -535,7 +546,7 @@ void	check_herdocs(t_node *list_cmd)
 				// printf("****\n");
 				// eof = get_eof(&list_cmd->cmd[i + 2]);
 				eof = list_cmd->cmd_dt->file[j++];
-				start_reading(eof);
+				list_cmd->inf_fd = start_reading(eof);
 				// printf("eof : %s\n", eof);
 				free(eof);
 			}
@@ -580,30 +591,29 @@ int		main(int argc, char **argv, char **env)
 			check_expanding(list_cmd);
 			check_herdocs(list_cmd);
 		}
-		int i;
-		while(list_cmd)
-		{
-			printf("cmd  : |%s|\n",list_cmd->cmd);
-			i = 0;
-			while(list_cmd->exp_var[i])
-			{
-				printf("var  : %s\t",getenv(list_cmd->exp_var[i]));
-				i++;
-			}
-			while(list_cmd->cmd_dt->op[i])
-			{
-				printf("op  : |%s|\n",list_cmd->cmd_dt->op[i]);
-				printf("file  : |%s|\n",list_cmd->cmd_dt->file[i]);
-				i++;
-			}
-		printf("-----\n");
-			list_cmd = list_cmd->next;
-		}
-		
+		// int i;
+		// while(list_cmd)
+		// {
+		// 	printf("cmd  : |%s|\n",list_cmd->cmd);
+		// 	i = 0;
+		// 	while(list_cmd->exp_var[i])
+		// 	{
+		// 		printf("var  : %s\t",list_cmd->exp_var[i]);
+		// 		i++;
+		// 	}
+		// 	while(list_cmd->cmd_dt->op[i])
+		// 	{
+		// 		printf("op  : |%s|\n",list_cmd->cmd_dt->op[i]);
+		// 		printf("file  : |%s|\n",list_cmd->cmd_dt->file[i]);
+		// 		i++;
+		// 	}
+		// printf("-----\n");
+		// 	list_cmd = list_cmd->next;
+		// }
+
 		ft_lstclear(&list_cmd);
 		free(full_cmd);
 
 	}
-
 	signal_received('D');
 }

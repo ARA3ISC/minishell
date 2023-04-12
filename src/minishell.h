@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/08 12:31:31 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/11 15:47:40 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ typedef struct s_node
 	char *cmd;
 	struct s_info *infos;
 	struct s_cmd *cmd_dt;
-	int *fds;
+	int inf_fd;
+	int outf_fd;
 	struct s_node *next;
 	char **exp_var;
 }				t_node;
