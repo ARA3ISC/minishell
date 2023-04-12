@@ -1,22 +1,4 @@
-ls >> ls > > ll		<======  done
-ls < > ll			<======  done
-> 					<======  done
-ls | | ll			<======  done
- " hjjhd | pp "     <======  done
-
-
-
-ls > |jjj			<======  done
-ls > | ll			<======  done
-
-hahah \				<======  not yet  <====== done
-
-
---> baqi lblan li knty checkity dyal '|' rh commentitu   <======== done
-
---> baqi lblan dyal ila drna ctrl C khas l exit code ywli fih 1      <====== done
-	ms mmkn ykun struct baqi matalloca = seg
-
-<---- asas > | asa
-
-\ seg
+handling ( ) and * and #
+Signals
+open files
+env

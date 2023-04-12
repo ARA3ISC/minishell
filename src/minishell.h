@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/11 17:55:04 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/12 01:28:25 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ int					count_pipes(char *cmd);
 int					**alloc_pipes(char **all_cmds);
 void				signal_received(char s);
 void				signal_C_received(int signo);
+void				signal_D_received(int signo);
 int					check_redirection_syntax(char *cmd);
 int 				checking_quotes(char c, int *i, char *cmd);
 int					checking_redirection_in_the_last(char *cmd);

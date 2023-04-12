@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:26:45 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/06 15:16:24 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/12 01:29:57 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,13 @@ void	signal_C_received(int signo)
 		rl_redisplay();
 		exit_code = 1;
 		// printf("%d\n", exit_code);
+	}
+}
+void	signal_D_received(int signo)
+{
+		printf("\nexit\n");
+ 	if (signo == SIGQUIT)
+	{
+		exit_code = 0;
 	}
 }

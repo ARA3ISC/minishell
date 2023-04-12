@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/11 18:21:39 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/12 01:33:33 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -504,13 +504,13 @@ int	start_reading(char *eof)
 	signal(SIGINT, SIG_IGN);
 	pipe(fds);
 	int id = fork();
-	eof = ft_strtrim(eof, " ");
+	// eof = ft_strtrim(eof, " ");
 	if (id == 0)
 	{
 		signal(SIGINT, &exit_herd);
 		while(1)
 		{
-			rd = readline("> ");
+			rd = readline("herdoc> ");
 
 			if (!ft_strcmp(rd, eof))
 			{
@@ -579,7 +579,9 @@ int		main(int argc, char **argv, char **env)
 	char *path;
 	char *full_cmd;
 	banner();
+	// signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, signal_C_received);
+
 	path = get_pwd(env);
 	path = ft_strjoin(path, "$ ");
 	if (!path)
@@ -596,37 +598,40 @@ int		main(int argc, char **argv, char **env)
 			exit_code = fill_struct(full_cmd, &list_cmd);
 
 
-		// if (!exit_code)
-		// {
-		// 	get_number_of_tokens(full_cmd, list_cmd);
+		if (!exit_code)
+		{
+			get_number_of_tokens(full_cmd, list_cmd);
 
-		// 	detail_cmd(list_cmd);
-		// 	check_expanding(list_cmd);
-		// 	// check_herdocs(list_cmd);
-		// 	// get_cmd_with_flags(list_cmd);
-		// }
-		// int i;
-		// while(list_cmd)
-		// {
-		// 	i = 0;
-		// 	while(list_cmd->exp_var[i])
-		// 	{
-		// 		printf("var  : %s\t",list_cmd->exp_var[i]);
-		// 		i++;
-		// 	}
-		// 	while(list_cmd->cmd_dt->op[i])
-		// 	{
-		// 		printf("op  : |%s|\n",list_cmd->cmd_dt->op[i]);
-		// 		printf("file  : |%s|\n",list_cmd->cmd_dt->file[i]);
-		// 		i++;
-		// 	}
-		// printf("-----\n");
-		// 	list_cmd = list_cmd->next;
-		// }
+			detail_cmd(list_cmd);
+			check_expanding(list_cmd);
+			check_herdocs(list_cmd);
+			get_cmd_with_flags(list_cmd);
+		}
+		int i;
+		while(list_cmd)
+		{
+			printf("cmd : %s\n", list_cmd->cmd);
+			i = 0;
+			while(list_cmd->exp_var[i])
+			{
+				printf("var  : %s\t",list_cmd->exp_var[i]);
+				i++;
+			}
+			while(list_cmd->cmd_dt->op[i])
+			{
+				printf("op  : |%s|\n",list_cmd->cmd_dt->op[i]);
+				printf("file  : |%s|\n",list_cmd->cmd_dt->file[i]);
+				i++;
+			}
+			printf("-----\n");
+			list_cmd = list_cmd->next;
+		}
+
 
 		ft_lstclear(&list_cmd);
 		free(full_cmd);
-
 	}
-	signal_received('D');
+		signal(SIGQUIT, signal_D_received);
+	// printf("hhh\n");
+	// signal_received('D');
 }
