@@ -1,4 +1,17 @@
+fill env
+expand variables
+open files
+
+
 handling ( ) and * and #
 Signals
 open files
 env
+
+
+
+
+
+cat [Makefile]
+cat << eof file1
+cat > file1 [file2 file3]

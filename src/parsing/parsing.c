@@ -6,11 +6,24 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/12 01:33:33 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/12 17:48:43 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void    free_2d_table(char **t)
+{
+    int    i;
+
+    i = 0;
+    while (t[i])
+    {
+        free(t[i]);
+        i++;
+    }
+    free(t);
+}
 
 char	**spliting_by_pipe(char *cmd)
 {
@@ -344,37 +357,6 @@ void	detail_cmd(t_node *list_cmd)
 	}
 }
 
-void	get_var(char *str, t_node *tmp, int j)
-{
-	int len;
-	int i;
-	char *exp;
-
-	len = 0;
-	while (ft_isalnum(str[len]) && str[len])
-		len++;
-
-
-
-
-
-	exp = malloc(len + 1);
-	if (!exp)
-	{
-		printf("lkherr\n");
-		return ;
-	}
-	i = 0;
-	while (i < len)
-	{
-		exp[i] = str[i];
-		i++;
-	}
-	// exp[i] = '\0';
-
-	tmp->exp_var[j] = exp;
-	// printf("%s\n", tmp->exp_var[j]);
-}
 
 int var_count(char *cmd)
 {
@@ -408,6 +390,34 @@ void alloc_variables(t_node *tmp)
 	tmp->exp_var = malloc((len + 1) * sizeof(char *));
 	if(!tmp->exp_var)
 		return ;
+}
+
+void	get_var(char *str, t_node *tmp, int j)
+{
+	int len;
+	int i;
+	char *exp;
+
+	len = 0;
+	while (ft_isalnum(str[len]) && str[len])
+		len++;
+
+	exp = malloc(len + 1);
+	if (!exp)
+	{
+		printf("lkherr\n");
+		return ;
+	}
+	i = 0;
+	while (i < len)
+	{
+		exp[i] = str[i];
+		i++;
+	}
+	// exp[i] = '\0';
+
+	tmp->exp_var[j] = exp;
+	printf("%s\n", tmp->exp_var[j]);
 }
 
 void	look_for_dollar(t_node *tmp)
@@ -445,7 +455,6 @@ void	check_expanding(t_node *list_cmd)
 	while (tmp)
 	{
 		look_for_dollar(tmp);
-
 		tmp = tmp->next;
 	}
 }
@@ -515,7 +524,7 @@ int	start_reading(char *eof)
 			if (!ft_strcmp(rd, eof))
 			{
 				close(fds[1]);
-				exit_code = print_error(NULL, 1);
+				g_gb.exit_code = print_error(NULL, 1);
 				break ;
 			}
 			input = ft_strjoin2(input, rd);
@@ -523,7 +532,7 @@ int	start_reading(char *eof)
 			write(fds[1], input, ft_strlen(input) * sizeof(char));
 			close(fds[1]);
 		}
-		printf("%s", input);
+		// printf("%s", input);
 	}
 	wait(NULL);
 	return fds[0];
@@ -532,7 +541,7 @@ int	start_reading(char *eof)
 void	check_herdocs(t_node *list_cmd)
 {
 	char *eof;
-	// char *test  = NULL;
+	// char *test = NULL;
 	int i;
 	int j;
 
@@ -548,8 +557,6 @@ void	check_herdocs(t_node *list_cmd)
 				// eof = get_eof(&list_cmd->cmd[i + 2]);
 				eof = list_cmd->cmd_dt->file[j++];
 				list_cmd->inf_fd = start_reading(eof);
-
-				// free(eof);
 			}
 			i++;
 		}
@@ -557,18 +564,70 @@ void	check_herdocs(t_node *list_cmd)
 	}
 }
 
-void	get_cmd_with_flags(t_node *list_cmd)
+void	cmd_flags_1st_case(t_node *list_cmd)
 {
-	int i = 0;
-	while (list_cmd)
+	char	**split_cmd;
+	int len;
+	int i;
+	if (ft_isalpha(list_cmd->cmd[0]))
 	{
-		while (list_cmd->cmd[i])
+		len = 0;
+		split_cmd = ft_split(list_cmd->cmd, 32);
+		while (split_cmd[len])
+			len++;
+		list_cmd->cmd_flags = malloc(sizeof(char *) * (len + 1));
+		i = 0;
+		while (split_cmd[i])
 		{
-
+			list_cmd->cmd_flags[i] = split_cmd[i];
 			i++;
 		}
+		list_cmd->cmd_flags[i] = NULL;
+	}
+}
+
+void	get_cmd_with_flags(t_node *list_cmd)
+{
+
+	while (list_cmd)
+	{
+		cmd_flags_1st_case(list_cmd);
 		list_cmd = list_cmd->next;
 	}
+}
+
+void	fill_my_env(char **env)
+{
+	int k = 0;
+	t_env *tmp;
+	char **split_env;
+	int len = 0;
+	while (env[len])
+		len++;
+
+	// 	printf("len %d\n", len);
+	// exit(1);
+	g_gb.my_env = malloc(sizeof(t_env));
+	tmp = g_gb.my_env;
+	while (env[k])
+	{
+		split_env = ft_split(env[k], '=');
+		g_gb.my_env->name = malloc(ft_strlen(split_env[0]));
+		g_gb.my_env->name = ft_strdup(split_env[0]);
+		g_gb.my_env->value = getenv(split_env[0]);
+
+		printf("%s=%s\n", g_gb.my_env->name, g_gb.my_env->value);
+		g_gb.my_env->next = malloc(sizeof(t_env));
+		g_gb.my_env = g_gb.my_env->next;
+
+		free_2d_table(split_env);
+		k++;
+	}
+	// while (tmp)
+	// {
+	// 	printf("%s=%s\n", tmp->name, tmp->value);
+	// 	tmp = tmp->next;
+	// }
 }
 
 int		main(int argc, char **argv, char **env)
@@ -580,7 +639,7 @@ int		main(int argc, char **argv, char **env)
 	char *full_cmd;
 	banner();
 	// signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, signal_C_received);
+
 
 	path = get_pwd(env);
 	path = ft_strjoin(path, "$ ");
@@ -588,50 +647,74 @@ int		main(int argc, char **argv, char **env)
 		path = "$ ";
 	else
 		path = ft_strchr(path, '/');
+	// g_gb = malloc(sizeof(t_gb));
+	// fill_my_env(env);
+
 	while ((full_cmd = readline(path)) != NULL)
 	{
 		add_history(full_cmd);
-		exit_code = all_error(full_cmd);
+		g_gb.exit_code = all_error(full_cmd);
+		signal(SIGINT, SIG_IGN);
+		signal(SIGINT, signal_C_received);
+
+		if(!g_gb.exit_code)
+			g_gb.exit_code = fill_struct(full_cmd, &list_cmd);
 
 
-		if(!exit_code)
-			exit_code = fill_struct(full_cmd, &list_cmd);
-
-
-		if (!exit_code)
+		if (!g_gb.exit_code)
 		{
 			get_number_of_tokens(full_cmd, list_cmd);
 
 			detail_cmd(list_cmd);
 			check_expanding(list_cmd);
 			check_herdocs(list_cmd);
+
 			get_cmd_with_flags(list_cmd);
+
+			if (!ft_strcmp(full_cmd, "env"))
+				fill_my_env(env);
+			if (!ft_strcmp(full_cmd, "echo $?"))
+				printf("%d\n", g_gb.exit_code);
+
+			// while (list_cmd)
+			// {
+			// 	i = 0;
+			// 	while (list_cmd->cmd_flags[i])
+			// 	{
+			// 		printf("flag %d : %s\n", i, list_cmd->cmd_flags[i]);
+			// 		i++;
+			// 	}
+			// 	printf("-----\n");
+			// 	list_cmd = list_cmd->next;
+			// }
 		}
-		int i;
-		while(list_cmd)
-		{
-			printf("cmd : %s\n", list_cmd->cmd);
-			i = 0;
-			while(list_cmd->exp_var[i])
-			{
-				printf("var  : %s\t",list_cmd->exp_var[i]);
-				i++;
-			}
-			while(list_cmd->cmd_dt->op[i])
-			{
-				printf("op  : |%s|\n",list_cmd->cmd_dt->op[i]);
-				printf("file  : |%s|\n",list_cmd->cmd_dt->file[i]);
-				i++;
-			}
-			printf("-----\n");
-			list_cmd = list_cmd->next;
-		}
+		// 	int i;
+		// while(list_cmd)
+		// {
+		// 	printf("cmd : %s\n", list_cmd->cmd);
+		// 	i = 0;
+		// 	while(list_cmd->exp_var[i])
+		// 	{
+		// 		printf("var  : %s\n",list_cmd->exp_var[i]);
+		// 		i++;
+		// 	}
+		// 	while(list_cmd->cmd_dt->op[i])
+		// 	{
+		// 		printf("op  : |%s|\n",list_cmd->cmd_dt->op[i]);
+		// 		printf("file  : |%s|\n",list_cmd->cmd_dt->file[i]);
+		// 		i++;
+		// 	}
+		// 	printf("-----\n");
+		// 	list_cmd = list_cmd->next;
+		// }
 
 
+		// signal(SIGQUIT, SIG_IGN);
+		// printf("exit_status : %d\n", g_gb.exit_code);
+		signal(SIGQUIT, signal_D_received);
 		ft_lstclear(&list_cmd);
 		free(full_cmd);
 	}
-		signal(SIGQUIT, signal_D_received);
 	// printf("hhh\n");
 	// signal_received('D');
 }

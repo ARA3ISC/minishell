@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/12 01:28:25 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/12 16:16:02 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,20 @@ typedef struct s_node
 	struct s_node *next;
 }				t_node;
 
-int exit_code;
+typedef struct s_env
+{
+	char *name;
+	char *value;
+	struct s_env *next;
+}				t_env;
+
+typedef struct s_gb
+{
+	int exit_code;
+	struct s_env *my_env;
+}				t_gb;
+
+t_gb g_gb;
 
 extern void			rl_replace_line(const char *, int);
 

@@ -27,4 +27,4 @@ fclean: clean
 re: fclean all
 
 #
-#  -I ~/Users/maneddam/goinfre/homebrew/Cellar/readline/8.2.1/include  -L /Users/maneddam/goinfre/homebrew/Cellar/readline/8.2.1/lib
+# -I ~/Users/maneddam/goinfre/homebrew/Cellar/readline/8.2.1/include  -L /Users/maneddam/goinfre/homebrew/Cellar/readline/8.2.1/lib
