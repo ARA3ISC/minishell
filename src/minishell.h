@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/16 15:02:47 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/16 15:33:41 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ typedef struct s_env
 typedef struct s_gb
 {
 	int exit_code;
-	bool filled;
+	bool error;
 	struct s_env *my_env;
 }				t_gb;
 

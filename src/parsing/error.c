@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/07 17:40:08 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/16 16:44:51 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	print_error(char *msg, int code)
 {
 	if (msg)
 		printf("%s\n", msg);
+	g_gb.exit_code = code;
 	// printf("exit code : %d\n", code);
 	return code;
 }
