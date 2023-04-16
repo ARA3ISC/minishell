@@ -1,6 +1,6 @@
-fill env
-expand variables
-open files
+fill env                     done
+expand variables             done
+open files                   not done
 
 
 handling ( ) and * and #
