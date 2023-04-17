@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:25:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/06 15:58:19 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:08:07 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,11 @@ int	syntax_error(char *cmd)
 	{
 		check = checking_quotes(cmd[i], &i, cmd);
 		if(check)
-		{
-			error = print_error("quote error", 101);
-			break;
-		}
+			return(print_error("quote error", 101));
 		if ((cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|') || cmd[i] == '&' || cmd[i] == '\\' || cmd[i] == ';')
-		{
-			error = print_error("syntax error", 102);
-			break;
-		}
+			return(print_error("syntax error", 102));
 		if (((i == 0 || i == ft_strlen(cmd) - 1) && cmd[i] == '|'))
-		{
-			error = print_error("syntax error near unexpected token `|'", 258);
-			break;
-		}
+			return(print_error("syntax error near unexpected token `|'", 258));
 		i++;
 	}
 	return error;
@@ -53,16 +44,10 @@ int	check_redirection_syntax(char *cmd)
 	{
 		if (cmd[i + 1]  && ((cmd[i] == '<' && cmd[i + 1] == '>')
 			|| (cmd[i] == '>' && cmd[i + 1] == '<')))
-		{
-			error = print_error("syntax error", 258);
-			break;
-		}
+			return(print_error("syntax error", 258));
 		if (cmd[i + 1] && cmd[i + 2] && ((cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 2] == '>')
 			|| (cmd[i] == '<' && cmd[i + 1] == '<' && cmd[i + 2] == '<')))
-		{
-			error = print_error("syntax error", 258);
-			break;
-		}
+			return (print_error("syntax error", 258));
 		i++;
 	}
 	return error;

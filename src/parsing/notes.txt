@@ -1,3 +1,11 @@
+syntax error :
+	(
+	>
+	*
+	<
+	>>
+	<<
+
 fill env                     done
 expand variables             done
 open files                   not done

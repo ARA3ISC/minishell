@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/16 17:13:24 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:10:44 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,20 +121,19 @@ int		checking_quotes(char c, int *i, char *cmd)
 
 int	checking_redirection_in_the_last(char *cmd)
 {
-	int error;
-
-	error = 0;
-	if (!cmd)
+	if (cmd != NULL)
 	{
 		int i = ft_strlen(cmd);
 		i--;
+		if(cmd[i] == '>' || cmd[i] == '<')
+			return (print_error("syntax error", 258));
 		while(cmd[i] == ' ')
 			i--;
 		if(cmd[i] == '>' || cmd[i] == '<')
-			error = print_error("syntax error", 258);
+			return (print_error("syntax error", 258));
 
 	}
-	return error;
+	return 0;
 }
 
 int allocate_for_op_and_file(t_node *tmp, int i, int j)
@@ -434,22 +433,26 @@ void	exit_herd(int signo)
 {
 	if (signo == SIGINT)
 	{
-		printf("\n");
-		exit(1);
+		// printf("ped ldakhel %d\n", g_gb.pid);
+		// signal(SIGINT, SIG_IGN);
+		kill(g_gb.pid, SIGTERM);
 	}
 }
+
 
 void	start_reading(t_node *list_cmd, char *eof)
 {
 	int fds[2];
 	char *rd = NULL;
 	char *input = NULL;
-	signal(SIGINT, SIG_IGN);
 	pipe(fds);
 	int id = fork();
 	if (id == 0)
 	{
-		signal(SIGINT, &exit_herd);
+		g_gb.pid = getpid();
+		// printf("ped bera %d\n", g_gb.pid);
+		// signal(SIGINT, SIG_IGN);
+		// signal(SIGINT, &exit_herd);
 		while(1)
 		{
 			rd = readline("herdoc> ");
@@ -463,6 +466,7 @@ void	start_reading(t_node *list_cmd, char *eof)
 			}
 			input = ft_strjoin2(input, rd);
 			input = ft_strjoin( input ,"\n");
+		printf("%s\n", input);
 			write(fds[1], input, ft_strlen(input) * sizeof(char));
 			close(fds[1]);
 		}
@@ -636,6 +640,22 @@ int	open_files(t_node *list_cmd)
 	return 0;
 }
 
+void	count_herdocs(char *full_cmd)
+{
+	int i = 0;
+	int count = 0;
+
+	while (full_cmd[i])
+	{
+		if (full_cmd[i + 1] && full_cmd[i] == '<' && full_cmd[i + 1] == '<')
+			count++;
+		i++;
+	}
+
+	if (count > 16)
+		exit(print_error("maximum here-document count exceeded", 2));
+}
+
 int		main(int argc, char **argv, char **env)
 {
 	(void)argc;
@@ -645,6 +665,10 @@ int		main(int argc, char **argv, char **env)
 	char *full_cmd;
 
 	banner();
+	// signal(SIGINT, SIG_IGN);
+
+
+	// signal(SIGQUIT, signal_D_received);
 	path = get_pwd(env);
 	path = ft_strjoin(path, "$ ");
 	if (!path)
@@ -652,20 +676,21 @@ int		main(int argc, char **argv, char **env)
 	else
 		path = ft_strchr(path, '/');
 	fill_my_env(env);
-
-	while ((full_cmd = readline(path)) != NULL)
+	signal(SIGINT, signal_C_received);
+	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
+
 		add_history(full_cmd);
 		g_gb.error = all_error(full_cmd);
-		signal(SIGINT, SIG_IGN);
-		signal(SIGINT, signal_C_received);
+
 
 		if(!g_gb.error)
 		{
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
 			if (g_gb.error != 0)
 			{
-
+				if (!ft_strcmp(full_cmd, "$?"))
+					printf("exit code :%d\n", g_gb.exit_code);
 				get_number_of_tokens(full_cmd, list_cmd);
 				detail_cmd(list_cmd);
 				open_files(list_cmd);
@@ -680,6 +705,6 @@ int		main(int argc, char **argv, char **env)
 		signal(SIGQUIT, signal_D_received);
 		free(full_cmd);
 	}
-	// printf("hhh\n");
+
 	// signal_received('D');
 }

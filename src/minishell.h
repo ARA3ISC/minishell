@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/16 15:33:41 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:11:07 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # define PURPLE "\e[35m"
 # define RESET "\n\033[0m"
 # define GREEN "\033[0;32m"
+# define MINISHELL "\033[0;32mminishell-0.1$ \033[0m"
 # define RED "\033[0;31m"
 
 typedef struct s_info
@@ -69,6 +70,7 @@ typedef struct s_gb
 {
 	int exit_code;
 	bool error;
+	int pid;
 	struct s_env *my_env;
 }				t_gb;
 
@@ -101,5 +103,6 @@ int					check_redirection_syntax(char *cmd);
 int 				checking_quotes(char c, int *i, char *cmd);
 int					checking_redirection_in_the_last(char *cmd);
 int					all_error(char *full_cmd);
-#endif
+void				count_herdocs(char *full_cmd);
 
+#endif

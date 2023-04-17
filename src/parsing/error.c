@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/16 16:44:51 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/16 18:29:25 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ int	all_error(char *full_cmd)
 		error = check_redirection_syntax(full_cmd);
 	if(!error)
 		error = invalid_expression(full_cmd);
+	if (!error)
+		count_herdocs(full_cmd);
 	return error;
 }
 
