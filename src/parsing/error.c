@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/16 18:29:25 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:43:26 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ int	all_error(char *full_cmd)
 		count_herdocs(full_cmd);
 	return error;
 }
-
-
 
 int	check_whitespaces(char **all_cmds)
 {
@@ -84,9 +82,7 @@ bool	check_next_cmd(char *cmd)
 int	invalid_expression(char *cmd)
 {
 	int i = 0;
-	int error;
 
-	error = 0;
 	while (cmd[i])
 	{
 		if ((cmd[i] == '>' || cmd[i] == '<'))
@@ -95,16 +91,16 @@ int	invalid_expression(char *cmd)
 			if (cmd[i] && (cmd[i] == '>' || cmd[i] =='<'))
 			{
 				if (check_next_cmd(&cmd[i + 1]) == false)
-					error = 1;
+					return 1;
 			}
 			else
 			{
 				if (check_next_cmd(&cmd[i]) == false)
-					error = 1;
+					return 1;
 			}
 		}
 		i++;
 	}
-	return error;
+	return 0;
 }
 

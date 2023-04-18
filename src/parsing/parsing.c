@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/17 16:10:44 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:26:19 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -604,7 +604,7 @@ void	output_redirections(t_node *list_cmd, int i)
 	else if (!ft_strcmp(list_cmd->cmd_dt->op[i], ">>"))
 		fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR | O_TRUNC, 0666);
 	if (fd == -1)
-		printf("error opening file\n");
+		print_error("Error opening file\n", 103);
 }
 
 void	input_redirections(t_node *list_cmd, int i)
@@ -616,8 +616,8 @@ void	input_redirections(t_node *list_cmd, int i)
 		fd = open(list_cmd->cmd_dt->file[i], O_RDWR);
 		if (fd == -1)
 		{
-			printf("%s: No such file or directory\n", list_cmd->cmd_dt->file[i]);
-			return;
+			printf("minishell: %s: No such file or directory\n", list_cmd->cmd_dt->file[i]);
+			print_error(NULL, 1);
 		}
 	}
 }
