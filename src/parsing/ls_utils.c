@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 10:36:43 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/07 15:41:37 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/13 18:39:05 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,9 @@ void	ft_lstclear(t_node **lst)
 
 	if (lst)
 	{
-		while (*lst)
+		while (*lst && p)
 		{
+			// printf ("lst->cmd = |%s|\n", (*lst)->cmd);
 			p = (*lst)->next;
 			ft_lstdelone((*lst));
 			*lst = p;

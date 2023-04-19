@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/11 17:55:04 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/17 16:11:07 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # define PURPLE "\e[35m"
 # define RESET "\n\033[0m"
 # define GREEN "\033[0;32m"
+# define MINISHELL "\033[0;32mminishell-0.1$ \033[0m"
 # define RED "\033[0;31m"
 
 typedef struct s_info
@@ -39,7 +40,7 @@ typedef struct s_info
 
 typedef struct s_cmd
 {
-	char *cmd;
+	// char *cmd;
 	char **file;
 	char **op;
 }			t_cmd;
@@ -54,10 +55,26 @@ typedef struct s_node
 	int inf_fd;
 	int outf_fd;
 	char **exp_var;
+	char *new_cmd;
 	struct s_node *next;
 }				t_node;
 
-int exit_code;
+typedef struct s_env
+{
+	char *name;
+	char *value;
+	struct s_env *next;
+}				t_env;
+
+typedef struct s_gb
+{
+	int exit_code;
+	bool error;
+	int pid;
+	struct s_env *my_env;
+}				t_gb;
+
+t_gb g_gb;
 
 extern void			rl_replace_line(const char *, int);
 
@@ -81,9 +98,11 @@ int					count_pipes(char *cmd);
 int					**alloc_pipes(char **all_cmds);
 void				signal_received(char s);
 void				signal_C_received(int signo);
+void				signal_D_received(int signo);
 int					check_redirection_syntax(char *cmd);
 int 				checking_quotes(char c, int *i, char *cmd);
 int					checking_redirection_in_the_last(char *cmd);
 int					all_error(char *full_cmd);
-#endif
+void				count_herdocs(char *full_cmd);
 
+#endif

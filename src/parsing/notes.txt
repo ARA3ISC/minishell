@@ -1,22 +1,25 @@
-ls >> ls > > ll		<======  done
-ls < > ll			<======  done
-> 					<======  done
-ls | | ll			<======  done
- " hjjhd | pp "     <======  done
+syntax error :
+	(
+	>
+	*
+	<
+	>>
+	<<
+
+fill env                     done
+expand variables             done
+open files                   not done
+
+
+handling ( ) and * and #
+Signals
+open files
+env
 
 
 
-ls > |jjj			<======  done
-ls > | ll			<======  done
-
-hahah \				<======  not yet  <====== done
 
 
---> baqi lblan li knty checkity dyal '|' rh commentitu   <======== done
-
---> baqi lblan dyal ila drna ctrl C khas l exit code ywli fih 1      <====== done
-	ms mmkn ykun struct baqi matalloca = seg
-
-<---- asas > | asa
-
-\ seg
+cat [Makefile]
+cat << eof file1
+cat > file1 [file2 file3]

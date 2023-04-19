@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 14:27:28 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/07 15:53:15 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/15 20:01:58 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,25 +71,25 @@ int	count_pipes(char *cmd)
 
 void	get_number_of_tokens(char *full_cmd, t_node *list_cmd)
 {
-	t_node *tmp;
+	// t_node *tmp;
 
-	tmp = list_cmd;
-	while (tmp)
+	// tmp = list_cmd;
+	while (list_cmd)
 	{
-		tmp->infos = malloc(sizeof(t_info));
-		if(!tmp->infos)
+		list_cmd->infos = malloc(sizeof(t_info));
+		if(!list_cmd->infos)
 			return ;
-		tmp->infos->op_count = count_op(tmp->cmd);
+		list_cmd->infos->op_count = count_op(list_cmd->cmd);
 
 
-		tmp->infos->pipe_count = count_pipes(full_cmd);
-		tmp->infos->cmd_count = tmp->infos->pipe_count + 1;
+		list_cmd->infos->pipe_count = count_pipes(full_cmd);
+		list_cmd->infos->cmd_count = list_cmd->infos->pipe_count + 1;
 
 
-		// printf("operators : %d\n", tmp->infos->op_count);
-		// printf("pipes  : %d\n", tmp->infos->pipe_count);
-		// printf("cmds  : %d\n", tmp->infos->cmd_count);
+		// printf("operators : %d\n", list_cmd->infos->op_count);
+		// printf("pipes  : %d\n", list_cmd->infos->pipe_count);
+		// printf("cmds  : %d\n", list_cmd->infos->cmd_count);
 		// // break ;
-		tmp = tmp->next;
+		list_cmd = list_cmd->next;
 	}
 }
