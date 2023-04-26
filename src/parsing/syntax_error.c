@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:25:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/17 16:08:07 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/26 09:40:11 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ int	syntax_error(char *cmd)
 		check = checking_quotes(cmd[i], &i, cmd);
 		if(check)
 			return(print_error("quote error", 101));
+		if (cmd[i] == '(' || cmd[i] == ')')
+			return (print_error("syntax error near unexpected token", 102));
 		if ((cmd[i + 1] && cmd[i] == '|' && cmd[i + 1] == '|') || cmd[i] == '&' || cmd[i] == '\\' || cmd[i] == ';')
-			return(print_error("syntax error", 102));
+			return (print_error("syntax error", 103));
 		if (((i == 0 || i == ft_strlen(cmd) - 1) && cmd[i] == '|'))
-			return(print_error("syntax error near unexpected token `|'", 258));
+			return (print_error("syntax error near unexpected token `|'", 258));
 		i++;
 	}
 	return error;

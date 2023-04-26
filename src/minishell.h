@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/17 16:11:07 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/26 10:52:10 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@
 # define PURPLE "\e[35m"
 # define RESET "\n\033[0m"
 # define GREEN "\033[0;32m"
-# define MINISHELL "\033[0;32mminishell-0.1$ \033[0m"
+# define MINISHELL "minishell-0.1$ "
+// # define MINISHELL "\033[0;32mminishell-0.1$ \033[0m"
 # define RED "\033[0;31m"
 
 typedef struct s_info

@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/25 20:25:01 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/26 11:46:54 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,6 +227,11 @@ void fill_file_name(t_node *tmp, int i, int j)
 	while(tmp->cmd[i] && tmp->cmd[i] != 32 && tmp->cmd[i] != '\t')
 	{
 		tmp->cmd_dt->file[j][k++] = tmp->cmd[i];
+		if(tmp->cmd_dt->file[j][0] == '#')
+		{
+			print_error("syntax error", 404);
+			return;
+		}
 		if(tmp->cmd[i] == 34)
 		{
 			i++;
@@ -287,21 +292,23 @@ void	get_details(t_node *tmp)
 	}
 }
 
-void	detail_cmd(t_node *list_cmd)
+int	detail_cmd(t_node *list_cmd)
 {
 	while (list_cmd)
 	{
 		list_cmd->cmd_dt = malloc(sizeof(t_cmd));
 		if(!list_cmd->cmd_dt)
-			return ;
+			return 0;
 		list_cmd->cmd_dt->op = malloc(sizeof(char *) * list_cmd->infos->op_count + 1);
 		if(!list_cmd->cmd_dt->op)
-			return ;
+			return 0;
 		list_cmd->cmd_dt->file = malloc(sizeof(char *) * list_cmd->infos->op_count + 1);
 		get_details(list_cmd);
-
+		if (g_gb.exit_code == 404)
+			return 0;
 		list_cmd = list_cmd->next;
 	}
+	return 1;
 }
 
 int var_count(char *cmd)
@@ -466,7 +473,7 @@ void	start_reading(t_node *list_cmd, char *eof)
 			}
 			input = ft_strjoin2(input, rd);
 			input = ft_strjoin( input ,"\n");
-		printf("%s\n", input);
+		// printf("%s\n", input);
 			write(fds[1], input, ft_strlen(input) * sizeof(char));
 			close(fds[1]);
 		}
@@ -499,33 +506,50 @@ void	check_herdocs(t_node *list_cmd)
 
 void	cmd_flags_1st_case(t_node *list_cmd)
 {
-	char	**split_cmd;
-	int len;
-	int i;
+	char	*new_cmd = NULL;
+	// char	**split_cmd;
+	int i = 0;
+
 	if (ft_isalpha(list_cmd->cmd[0]))
 	{
-		len = 0;
-		split_cmd = ft_split(list_cmd->cmd, 32);
-		while (split_cmd[len])
-			len++;
-		list_cmd->cmd_flags = malloc(sizeof(char *) * (len + 1));
-		i = 0;
-		while (split_cmd[i])
+		while (list_cmd->cmd[i])
 		{
-			list_cmd->cmd_flags[i] = split_cmd[i];
+			if (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<')
+			{
+				new_cmd = ft_strjoin_char(new_cmd, ' ');
+
+				i++;
+				if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<'))
+					i++;
+				while (list_cmd->cmd[i] && list_cmd->cmd[i] == 32)
+					i++;
+				while (list_cmd->cmd[i] && list_cmd->cmd[i] != 32)
+					i++;
+			}
+			else
+				new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i]);
 			i++;
 		}
-		list_cmd->cmd_flags[i] = NULL;
 	}
+	printf("new cmd : %s\n", new_cmd);
+	exit(0);
 }
 
 void	get_cmd_with_flags(t_node *list_cmd)
 {
+	int i;
 	while (list_cmd)
 	{
 		cmd_flags_1st_case(list_cmd);
+		i = 0;
+		while (list_cmd->cmd_flags[i])
+		{
+			printf("flags : %s\n", list_cmd->cmd_flags[i]);
+			i++;
+		}
 		list_cmd = list_cmd->next;
 	}
+
 }
 
 void	fill_my_env(char **env)
@@ -595,14 +619,37 @@ void	expanding(t_node *list_cmd)
 	}
 }
 
+char	*expanded_file_name(char *file)
+{
+	char *r;
+	if (file[1] && file[0] == '$' && ft_isalnum(file[1]))
+	{
+		r = getenv(&file[1]);
+		return r;
+	}
+	return NULL;
+}
+
 void	output_redirections(t_node *list_cmd, int i)
 {
 	int fd = -2;
-
+	char *file;
 	if (!ft_strcmp(list_cmd->cmd_dt->op[i], ">"))
-		fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR, 0666);
+	{
+		file = expanded_file_name(list_cmd->cmd_dt->file[i]);
+		if (file)
+			fd = open(file, O_CREAT | O_RDWR, 0666);
+		else
+			fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR, 0666);
+	}
 	else if (!ft_strcmp(list_cmd->cmd_dt->op[i], ">>"))
-		fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR | O_TRUNC, 0666);
+	{
+		file = expanded_file_name(list_cmd->cmd_dt->file[i]);
+		if (file)
+			fd = open(file, O_CREAT | O_RDWR, 0666);
+		else
+			fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR | O_TRUNC, 0666);
+	}
 	if (fd == -1)
 		print_error("Error opening file\n", 103);
 }
@@ -682,6 +729,7 @@ int		main(int argc, char **argv, char **env)
 
 		add_history(full_cmd);
 		g_gb.error = all_error(full_cmd);
+		g_gb.exit_code = all_error(full_cmd);
 
 
 		if(!g_gb.error)
@@ -689,10 +737,13 @@ int		main(int argc, char **argv, char **env)
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
 			if (g_gb.error != 0)
 			{
+				get_number_of_tokens(full_cmd, list_cmd);
+				g_gb.error = detail_cmd(list_cmd);
+			}
+			if (g_gb.error != 0)
+			{
 				if (!ft_strcmp(full_cmd, "$?"))
 					printf("exit code :%d\n", g_gb.exit_code);
-				get_number_of_tokens(full_cmd, list_cmd);
-				detail_cmd(list_cmd);
 				open_files(list_cmd);
 				check_expanding(list_cmd);
 				check_herdocs(list_cmd);
@@ -700,10 +751,14 @@ int		main(int argc, char **argv, char **env)
 				expanding(list_cmd);
 			}
 		}
+		else if (g_gb.error != 0)
+			g_gb.exit_code = 0;
+
 		ft_lstclear(&list_cmd);
 		// list_cmd = NULL;
 		signal(SIGQUIT, signal_D_received);
 		free(full_cmd);
+		g_gb.error = 0;
 	}
 
 	// signal_received('D');

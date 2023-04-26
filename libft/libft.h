@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 00:23:09 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/13 17:52:08 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/26 11:31:55 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int					ft_strlcat(char *dst, const char *src, int dstsize);
 int					ft_strlcpy(char *dst, const char *src, int dstsize);
 int					ft_strlen(const char *s);
 int					ft_strcmp(char *s1, char *s2);
+int					ft_strncmp(const char *s1, const char *s2, size_t n);
 char				*ft_strnstr(const char *haystack, const char *needle,
 						int len);
 char				*ft_strrchr(const char *s, int c);
