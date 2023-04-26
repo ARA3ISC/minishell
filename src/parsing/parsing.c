@@ -470,6 +470,7 @@ void	start_reading(t_node *list_cmd, char *eof)
 				g_gb.exit_code = print_error(NULL, 1);
 				list_cmd->inf_fd = fds[0];
 				exit(0);
+				
 			}
 			input = ft_strjoin2(input, rd);
 			input = ft_strjoin( input ,"\n");
@@ -502,6 +503,7 @@ void	check_herdocs(t_node *list_cmd)
 		}
 		list_cmd = list_cmd->next;
 	}
+				
 }
 
 void	cmd_flags_1st_case(t_node *list_cmd)
@@ -510,29 +512,27 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 	// char	**split_cmd;
 	int i = 0;
 
-	if (ft_isalpha(list_cmd->cmd[0]))
+	while (list_cmd->cmd[i])
 	{
-		while (list_cmd->cmd[i])
+		if (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<')
 		{
-			if (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<')
-			{
-				new_cmd = ft_strjoin_char(new_cmd, ' ');
-
-				i++;
-				if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<'))
-					i++;
-				while (list_cmd->cmd[i] && list_cmd->cmd[i] == 32)
-					i++;
-				while (list_cmd->cmd[i] && list_cmd->cmd[i] != 32)
-					i++;
-			}
-			else
-				new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i]);
+			new_cmd = ft_strjoin_char(new_cmd, ' ');
 			i++;
+			if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<'))
+				i++;
+			while (list_cmd->cmd[i] && list_cmd->cmd[i] == 32)
+				i++;
+			while (list_cmd->cmd[i] && list_cmd->cmd[i] != 32)
+				i++;
 		}
+		else
+			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i]);
+		i++;
 	}
-	printf("new cmd : %s\n", new_cmd);
-	exit(0);
+	
+	list_cmd->cmd_flags = ft_split(new_cmd, 32);
+	// printf("new cmd : %s\n", new_cmd);
+	// exit(0);
 }
 
 void	get_cmd_with_flags(t_node *list_cmd)
@@ -544,7 +544,7 @@ void	get_cmd_with_flags(t_node *list_cmd)
 		i = 0;
 		while (list_cmd->cmd_flags[i])
 		{
-			printf("flags : %s\n", list_cmd->cmd_flags[i]);
+			printf("flags : |%s|\n", list_cmd->cmd_flags[i]);
 			i++;
 		}
 		list_cmd = list_cmd->next;
@@ -746,7 +746,9 @@ int		main(int argc, char **argv, char **env)
 					printf("exit code :%d\n", g_gb.exit_code);
 				open_files(list_cmd);
 				check_expanding(list_cmd);
+				
 				check_herdocs(list_cmd);
+				
 				get_cmd_with_flags(list_cmd);
 				expanding(list_cmd);
 			}
