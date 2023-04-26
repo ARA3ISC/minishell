@@ -1,25 +1,17 @@
 syntax error :
 	(
-	>
 	*
-	<
-	>>
-	<<
+	#
 
-fill env                     done
-expand variables             done
-open files                   not done
-
-
-handling ( ) and * and #
-Signals
-open files
-env
+expand in herdoc
+cat >> $USER (must be expanded)
+save invalid file name
+cat > file1 file2 file3  (cat flags)
+(<< ll cat) and (cat << ll)
+signals
 
 
 
 
 
-cat [Makefile]
-cat << eof file1
-cat > file1 [file2 file3]
+

@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/18 21:56:38 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/25 20:25:01 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -693,7 +693,7 @@ int		main(int argc, char **argv, char **env)
 					printf("exit code :%d\n", g_gb.exit_code);
 				get_number_of_tokens(full_cmd, list_cmd);
 				detail_cmd(list_cmd);
-				// open_files(list_cmd);
+				open_files(list_cmd);
 				check_expanding(list_cmd);
 				check_herdocs(list_cmd);
 				get_cmd_with_flags(list_cmd);
