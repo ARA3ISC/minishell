@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/26 10:52:10 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/26 18:04:21 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,5 +105,7 @@ int 				checking_quotes(char c, int *i, char *cmd);
 int					checking_redirection_in_the_last(char *cmd);
 int					all_error(char *full_cmd);
 void				count_herdocs(char *full_cmd);
+void				parsing(char **env, t_node *list_cmd);
+void 				execution(t_node *list_cmd);
 
 #endif

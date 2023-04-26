@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/26 11:46:54 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/26 18:23:16 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -537,16 +537,9 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 
 void	get_cmd_with_flags(t_node *list_cmd)
 {
-	int i;
 	while (list_cmd)
 	{
 		cmd_flags_1st_case(list_cmd);
-		i = 0;
-		while (list_cmd->cmd_flags[i])
-		{
-			printf("flags : |%s|\n", list_cmd->cmd_flags[i]);
-			i++;
-		}
 		list_cmd = list_cmd->next;
 	}
 
@@ -599,6 +592,7 @@ void	expanding(t_node *list_cmd)
 	list_cmd->new_cmd = NULL;
 	while (list_cmd)
 	{
+		i = 0;
 		while (list_cmd->cmd[i])
 		{
 			if(list_cmd->cmd[i] && list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '$' && ft_isalnum(list_cmd->cmd[i + 1]))
@@ -703,11 +697,10 @@ void	count_herdocs(char *full_cmd)
 		exit(print_error("maximum here-document count exceeded", 2));
 }
 
-int		main(int argc, char **argv, char **env)
+void		parsing(char **env, t_node *list_cmd)
 {
-	(void)argc;
-	(void)argv;
-	t_node *list_cmd = NULL;
+	
+	
 	char *path;
 	char *full_cmd;
 
@@ -729,7 +722,7 @@ int		main(int argc, char **argv, char **env)
 
 		add_history(full_cmd);
 		g_gb.error = all_error(full_cmd);
-		g_gb.exit_code = all_error(full_cmd);
+		// g_gb.exit_code = all_error(full_cmd);
 
 
 		if(!g_gb.error)
@@ -749,8 +742,9 @@ int		main(int argc, char **argv, char **env)
 				
 				check_herdocs(list_cmd);
 				
-				get_cmd_with_flags(list_cmd);
 				expanding(list_cmd);
+				get_cmd_with_flags(list_cmd);				
+				execution(list_cmd);
 			}
 		}
 		else if (g_gb.error != 0)
