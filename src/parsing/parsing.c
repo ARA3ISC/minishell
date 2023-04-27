@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/26 11:46:54 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/27 12:57:41 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,6 +385,20 @@ void	look_for_dollar(t_node *tmp)
 		{
 			i++;
 			help_check_quote(tmp->cmd, &i, 39);
+		}
+		if(tmp->cmd[i] == 34)
+		{
+			i++;
+			while(tmp->cmd[i] && tmp->cmd[i] != 34)
+			{
+				if(tmp->cmd[i + 1] && tmp->cmd[i] == '$' && ft_isalnum(tmp->cmd[i + 1]))
+				{
+					get_var(&tmp->cmd[i + 1], tmp, j);
+					j++;
+				}
+				i++;
+			}
+			i++;
 		}
 		if(tmp->cmd[i] && tmp->cmd[i + 1] && tmp->cmd[i] == '$' && ft_isalnum(tmp->cmd[i + 1]))
 		{
