@@ -63,20 +63,30 @@ char	*ft_strjoin2(char const *s1, char const *s2)
 	str[i] = '\0';
 	return (str);
 }
-
+#include <stdio.h>
 char	*ft_strjoin_char(char *s1, char c)
 {
 	int		len;
 	char	*str;
 	int		i;
 	int		j;
+ 
 
+  // kkkkk 
 	if (s1 == NULL)
 	{
-		s1 = ft_strdup(&c);
+		s1 = malloc(2);
+		s1[0] = c;
+		s1[1] = '\0';
 		return (s1);
 	}
+
+
 	len = ft_strlen(s1) + 1;
+	
+	// printf("allocated :%d\n", len);
+	// exit(1);
+
 	str = malloc(len + 1);
 	if (!str)
 		return (NULL);
@@ -90,3 +100,19 @@ char	*ft_strjoin_char(char *s1, char c)
 	str[i] = '\0';
 	return (str);
 }
+
+// int main()
+// {
+// 	char *s1 = "NULL";
+// 	s1 = ft_strjoin_char(s1, 'o');
+// 	int i = 0;
+
+// 	// while (i < 5)
+// 	// {
+// 	// 	s1 = ft_strjoin_char(s1, 'a');
+// 	// 	i++;
+// 	// }
+
+// 	printf("%s\n", s1);
+// 	return 0;
+// }

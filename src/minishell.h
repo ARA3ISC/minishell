@@ -108,4 +108,5 @@ void				count_herdocs(char *full_cmd);
 void				parsing(char **env, t_node *list_cmd);
 void 				execution(t_node *list_cmd);
 
+int					ft_lstsize(t_node *lst);
 #endif

@@ -50,6 +50,20 @@ void	ft_lstdelone(t_node *lst)
 	}
 }
 
+int	ft_lstsize(t_node *lst)
+{
+	int len = 0;
+	if (lst)
+	{
+		while (lst)
+		{
+			len++;
+			lst = lst->next;
+		}
+	}
+	return len;
+}
+
 void	ft_lstclear(t_node **lst)
 {
 	t_node	*p;

@@ -15,6 +15,18 @@
 
 void execution(t_node *list_cmd)
 {
+    if (ft_lstsize(list_cmd) == 1)
+    {
+        if (is_builting())
+            // no forking;
+        else
+            // execution
+    }
+    else if (ft_lstsize(list_cmd) > 1)
+    {
+        // fork
+    }
+
     while(list_cmd)
     {
         printf("%s\n", list_cmd->new_cmd);

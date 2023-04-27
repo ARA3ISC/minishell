@@ -586,12 +586,12 @@ void	look_for_var(t_node *tmp, int j)
 void	expanding(t_node *list_cmd)
 {
 	char *var;
-	int i = 0;
+	int i;
 	int j = 0;
 
-	list_cmd->new_cmd = NULL;
 	while (list_cmd)
 	{
+		list_cmd->new_cmd = NULL;
 		i = 0;
 		while (list_cmd->cmd[i])
 		{
