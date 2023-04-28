@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/26 18:23:16 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/27 22:26:25 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,10 +299,10 @@ int	detail_cmd(t_node *list_cmd)
 		list_cmd->cmd_dt = malloc(sizeof(t_cmd));
 		if(!list_cmd->cmd_dt)
 			return 0;
-		list_cmd->cmd_dt->op = malloc(sizeof(char *) * list_cmd->infos->op_count + 1);
+		list_cmd->cmd_dt->op = malloc(sizeof(char *) * g_gb.infos->op_count + 1);
 		if(!list_cmd->cmd_dt->op)
 			return 0;
-		list_cmd->cmd_dt->file = malloc(sizeof(char *) * list_cmd->infos->op_count + 1);
+		list_cmd->cmd_dt->file = malloc(sizeof(char *) * g_gb.infos->op_count + 1);
 		get_details(list_cmd);
 		if (g_gb.exit_code == 404)
 			return 0;
@@ -545,29 +545,47 @@ void	get_cmd_with_flags(t_node *list_cmd)
 
 }
 
+
+// void	fill_my_env(char **env)
+// {
+// 	int k = 0;
+// 	// char **split_env;
+// 	int len = 0;
+// 	while (env[len])
+// 		len++;
+// 	g_gb.my_env = malloc(2 * (sizeof(char *) + 1));
+// 	while (env[k])
+// 	{
+// 		g_gb.my_env[k] = env[k];
+// 		k++;
+// 	}
+// 	g_gb.my_env[k] = NULL;
+// }
+
 void	fill_my_env(char **env)
 {
+	// printf("--> %s\n", env[0]);
+	// exit(0);
 	int k = 0;
-	t_env *tmp;
 	char **split_env;
+	// g_gb.my_env = NULL;
 	int len = 0;
 	while (env[len])
 		len++;
-
-	g_gb.my_env = malloc(sizeof(t_env));
-	tmp = g_gb.my_env;
+	// g_gb.my_env = malloc(sizeof(t_env));
 	while (env[k])
 	{
 		split_env = ft_split(env[k], '=');
-		g_gb.my_env->name = malloc(ft_strlen(split_env[0]));
-		g_gb.my_env->name = ft_strdup(split_env[0]);
-		g_gb.my_env->value = getenv(split_env[0]);
-		g_gb.my_env->next = malloc(sizeof(t_env));
-		g_gb.my_env = g_gb.my_env->next;
+		// printf("-----%d", ft_strlen(split_env[0]));
 
+		// printf("%s : %s\n", split_env[0], getenv(split_env[0]));
+		// exit(0);
+		ft_lstadd_back_env(&g_gb.my_env, ft_lstnew_env(ft_strdup(split_env[0]), getenv(split_env[0])));
 		free_2d_table(split_env);
 		k++;
 	}
+	
+	// exit(0);
 }
 
 void	look_for_var(t_node *tmp, int j)
@@ -716,7 +734,10 @@ void		parsing(char **env, t_node *list_cmd)
 	else
 		path = ft_strchr(path, '/');
 	fill_my_env(env);
+	// printf("--> %s\n", g_gb.my_env->value);
+	// exit(0);
 	signal(SIGINT, signal_C_received);
+		// printf("ddddddddddd\n");
 	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
 
@@ -741,9 +762,9 @@ void		parsing(char **env, t_node *list_cmd)
 				check_expanding(list_cmd);
 				
 				check_herdocs(list_cmd);
-				
 				expanding(list_cmd);
 				get_cmd_with_flags(list_cmd);				
+				
 				execution(list_cmd);
 			}
 		}

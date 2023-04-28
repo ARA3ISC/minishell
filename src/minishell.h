@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/27 13:16:00 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/27 22:22:26 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ typedef struct s_cmd
 typedef struct s_node
 {
 	char *cmd;
-	struct s_info *infos;
 	struct s_cmd *cmd_dt;
 	int *fds;
 	char **cmd_flags;
@@ -70,9 +69,10 @@ typedef struct s_env
 typedef struct s_gb
 {
 	int exit_code;
+	struct s_info *infos;
 	bool error;
 	int pid;
-	struct s_env *my_env;
+	t_env *my_env;
 }				t_gb;
 
 t_gb g_gb;
@@ -107,9 +107,12 @@ int					all_error(char *full_cmd);
 void				count_herdocs(char *full_cmd);
 void				parsing(char **env, t_node *list_cmd);
 void 				execution(t_node *list_cmd);
+t_env	*ft_lstnew_env(char *name, char *value);
+void	ft_lstadd_back_env(t_env **lst, t_env *new);
 
 // ! execution
 
 int					ft_lstsize(t_node *lst);
 int					is_builtin(t_node *list_cmd);
+void 				execute_list_of_cmds(t_node *list_cmd);
 #endif

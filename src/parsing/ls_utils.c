@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ls_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 10:36:43 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/13 18:39:05 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/27 22:22:36 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,3 +80,37 @@ void	ft_lstclear(t_node **lst)
 	}
 }
 
+
+t_env	*ft_lstnew_env(char *name, char *value)
+{
+	t_env	*n;
+	n = malloc(sizeof(t_env));
+	if (!n)
+		return (NULL);
+		
+	n->name = name;
+	n->value = value;
+	n->next = NULL;
+	return (n);
+}
+
+void	ft_lstadd_back_env(t_env **lst, t_env *new)
+{
+	// t_env	*p;
+	if (*lst == NULL)
+	{
+		*lst = new;
+	// printf("%s : %s \n", (*lst)->name , (*lst)->value);
+		
+	}
+	else
+	{
+		// p = *lst;
+		while ((*lst)->next != NULL)
+			(*lst) = (*lst)->next;
+		(*lst)->next = new;
+		// printf("%s : %s \n", (*lst)->name , (*lst)->value);
+		// if(ft_lstsize(*lst) == 3)
+		// 	exit(0);
+	}
+}
