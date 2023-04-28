@@ -6,21 +6,22 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:26:45 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/25 20:19:32 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/28 09:30:07 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	**alloc_pipes(char **all_cmds)
+int	** alloc_pipes(char **all_cmds)
 {
 	int **arr;
 	int i = 0;
 
+	//  ?normaly we  must allocate number of caommand minus 1
 	arr = malloc(sizeof(int *) * cmds_count(all_cmds));
 	if(!arr)
 		return NULL;
-	while (i < cmds_count(all_cmds))
+	while (i < cmds_count(all_cmds) )
 	{
 		arr[i] = malloc(sizeof(int) * 2);
 		if(!arr[i])

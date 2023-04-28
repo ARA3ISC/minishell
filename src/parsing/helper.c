@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 14:27:28 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/25 21:18:37 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/28 07:58:38 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@ int		cmds_count(char **cmds)
 
 char    *get_pwd(char **env)
 {
-    int i = 0;
+	int i = 0;
 
-    while (env[i])
-    {
-        if (env[i][0] == 'P' && env[i][1] == 'W' && env[i][2] == 'D')
-            return env[i];
-        i++;
-    }
-    return (NULL);
+	while (env[i])
+	{
+		if (env[i][0] == 'P' && env[i][1] == 'W' && env[i][2] == 'D')
+			return env[i];
+		i++;
+	}
+	return (NULL);
 }
 
 int	count_op(char *cmd)
@@ -76,14 +76,14 @@ void	get_number_of_tokens(char *full_cmd, t_node *list_cmd)
 	// tmp = list_cmd;
 	while (list_cmd)
 	{
-		list_cmd->infos = malloc(sizeof(t_info));
-		if(!list_cmd->infos)
+		g_gb.infos = malloc(sizeof(t_info));
+		if(!g_gb.infos)
 			return ;
-		list_cmd->infos->op_count = count_op(list_cmd->cmd);
+		g_gb.infos->op_count = count_op(list_cmd->cmd);
 
 
-		list_cmd->infos->pipe_count = count_pipes(full_cmd);
-		list_cmd->infos->cmd_count = list_cmd->infos->pipe_count + 1;
+		g_gb.infos->pipe_count = count_pipes(full_cmd);
+		g_gb.infos->cmd_count = g_gb.infos->pipe_count + 1;
 
 
 		// printf("operators : %d\n", list_cmd->infos->op_count);

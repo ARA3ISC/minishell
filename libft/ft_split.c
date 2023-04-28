@@ -6,11 +6,12 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 21:33:32 by eej-jama          #+#    #+#             */
-/*   Updated: 2022/10/30 00:24:20 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/27 21:18:22 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdio.h>
 
 static int	count_word(char const *s, char c)
 {
