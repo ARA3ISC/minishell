@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/28 22:06:57 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/28 22:40:15 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 
 	all_cmds = spliting_by_pipe(cmd);
 
-	printf("all_cmd[0] : %s\n", all_cmds[0]);
+	// printf("all_cmd[0] : %s\n", all_cmds[0]);
 
 	if (!all_cmds[0])
 	{
@@ -270,7 +270,7 @@ void	get_details(t_node *tmp)
 		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
 		{
 			len = allocate_for_op_and_file(tmp, i + 1, j);
-			printf("allocated for filename : %d\n", len);
+			// printf("allocated for filename : %d\n", len);
 			k = 0;
 			tmp->cmd_dt->op[j][0] = tmp->cmd[i];
 			i++;
@@ -287,7 +287,7 @@ void	get_details(t_node *tmp)
 				tmp->cmd_dt->op[j][1] = '\0';
 			fill_file_name(tmp, i, j);   //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
 			tmp->cmd_dt->file[j] = working_in_the_name_of_the_file(tmp->cmd_dt->file[j], len);
-			printf("file |%s|\n", tmp->cmd_dt->file[j]);
+			// printf("file |%s|\n", tmp->cmd_dt->file[j]);
 			j++;
 		}
 		i++;
@@ -304,8 +304,6 @@ void	get_details(t_node *tmp)
 
 int	detail_cmd(t_node *list_cmd)
 {
-	// t_node *tmp;
-	// tmp = list_cmd;
 
 	while (list_cmd)
 	{
@@ -773,7 +771,6 @@ void		parsing(char **env, t_node *list_cmd)
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
 			if (g_gb.error != 0)
 			{
-
 				get_number_of_tokens(full_cmd, list_cmd);
 				g_gb.error = detail_cmd(list_cmd);
 
@@ -793,13 +790,16 @@ void		parsing(char **env, t_node *list_cmd)
 				get_cmd_with_flags(list_cmd);
 
 
-				// execution(list_cmd);
+
+				execution(list_cmd);
 			}
 		}
 		else if (g_gb.error != 0)
 			g_gb.exit_code = 0;
 
-		ft_lstclear(&list_cmd);
+		// ft_lstclear(&list_cmd);
+		free(list_cmd);
+		list_cmd = NULL;
 		signal(SIGQUIT, signal_D_received);
 		free(full_cmd);
 		g_gb.error = 0;
