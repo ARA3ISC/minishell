@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/28 09:31:07 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/28 22:06:57 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	**spliting_by_pipe(char *cmd)
 	char **all_cmds;
 	while(cmd[i])
 	{
-		if(cmd[i] && cmd[i] == '|') // ! fiha mushkil fhad les cas (| dsfdf) (fadfa |) (sddf || dff)
+		if(cmd[i] && cmd[i] == '|')
 			cmd[i] = '&';
 		if(cmd[i] == 39)
 		{
@@ -58,25 +58,29 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 {
 	int i = 0;
 	char **all_cmds;
-	int **pipes_arr;
+	// int **pipes_arr;
 
 	all_cmds = spliting_by_pipe(cmd);
 
+	printf("all_cmd[0] : %s\n", all_cmds[0]);
+
 	if (!all_cmds[0])
 	{
+		printf(RED"errir hh\n"RESET);
 		print_error(NULL, 0);
 		return 0;
 	}
 	if (check_whitespaces(all_cmds) && all_cmds[1])
 	{
+		printf(RED"errir hh\n"RESET);
 		print_error("syntax error near unexpected token `|'", 258);
 		return 0;
 	}
-	pipes_arr = alloc_pipes(all_cmds);
+	// pipes_arr = alloc_pipes(all_cmds);
 	while (all_cmds[i])
 	{
 		all_cmds[i] = ft_strtrim(all_cmds[i], " ");
-		ft_lstadd_back(list_cmd, ft_lstnew(all_cmds[i], pipes_arr[i]));
+		ft_lstadd_back(list_cmd, ft_lstnew(all_cmds[i]));
 		i++;
 	}
 
@@ -176,6 +180,7 @@ int allocate_for_op_and_file(t_node *tmp, int i, int j)
 	tmp->cmd_dt->file[j] = malloc(sizeof(char) * len + 1);
 	if(!tmp->cmd_dt->file[j])
 		exit(1);
+	// printf("allocated : %d\n", len);
 	return len;
 }
 
@@ -216,6 +221,8 @@ char	*working_in_the_name_of_the_file(char *file_name, int len)
 		}
 	}
 	n_name[j] = '\0';
+	// printf("n_name : %s\n", n_name);
+	// exit(0);
 	return n_name;
 }
 
@@ -258,13 +265,12 @@ void	get_details(t_node *tmp)
 	int j = 0;
 	int len;
 	int k;
-
-
 	while (tmp->cmd[i])
 	{
 		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
 		{
 			len = allocate_for_op_and_file(tmp, i + 1, j);
+			printf("allocated for filename : %d\n", len);
 			k = 0;
 			tmp->cmd_dt->op[j][0] = tmp->cmd[i];
 			i++;
@@ -281,33 +287,41 @@ void	get_details(t_node *tmp)
 				tmp->cmd_dt->op[j][1] = '\0';
 			fill_file_name(tmp, i, j);   //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
 			tmp->cmd_dt->file[j] = working_in_the_name_of_the_file(tmp->cmd_dt->file[j], len);
+			printf("file |%s|\n", tmp->cmd_dt->file[j]);
 			j++;
 		}
 		i++;
 	}
-	if (tmp && tmp->cmd_dt && tmp->cmd_dt->op && tmp->cmd_dt->file)
-	{
+	// printf("*********\n");
+
+	// if (tmp && tmp->cmd_dt && tmp->cmd_dt->op && tmp->cmd_dt->file)
+	// {
 		tmp->cmd_dt->op[j] = NULL;
 		tmp->cmd_dt->file[j] = NULL;
-	}
+	// }
 }
+
 
 int	detail_cmd(t_node *list_cmd)
 {
+	// t_node *tmp;
+	// tmp = list_cmd;
+
 	while (list_cmd)
 	{
 		list_cmd->cmd_dt = malloc(sizeof(t_cmd));
 		if(!list_cmd->cmd_dt)
 			return 0;
-		list_cmd->cmd_dt->op = malloc(sizeof(char *) * g_gb.infos->op_count + 1);
+		list_cmd->cmd_dt->op = malloc(sizeof(char *) * (g_gb.infos->op_count + 1));
 		if(!list_cmd->cmd_dt->op)
 			return 0;
-		list_cmd->cmd_dt->file = malloc(sizeof(char *) * g_gb.infos->op_count + 1);
+		list_cmd->cmd_dt->file = malloc(sizeof(char *) * (g_gb.infos->op_count + 1));
 		get_details(list_cmd);
 		if (g_gb.exit_code == 404)
 			return 0;
 		list_cmd = list_cmd->next;
 	}
+
 	return 1;
 }
 
@@ -506,6 +520,10 @@ void	check_herdocs(t_node *list_cmd)
 
 }
 
+// cmd1 : infile "0" outfile "4"
+// cmd2 : infile "5" outfile "6"
+// cmd3 : infile "0" outfile "1"
+
 void	cmd_flags_1st_case(t_node *list_cmd)
 {
 	char	*new_cmd = NULL;
@@ -545,54 +563,6 @@ void	get_cmd_with_flags(t_node *list_cmd)
 
 }
 
-
-// void	fill_my_env(char **env)
-// {
-// 	int k = 0;
-// 	// char **split_env;
-// 	int len = 0;
-// 	while (env[len])
-// 		len++;
-// 	g_gb.my_env = malloc(2 * (sizeof(char *) + 1));
-// 	while (env[k])
-// 	{
-// 		g_gb.my_env[k] = env[k];
-// 		k++;
-// 	}
-// 	g_gb.my_env[k] = NULL;
-// }
-
-// void	fill_my_env(char **env)
-// {
-// 	// printf("--> %s\n", env[0]);
-// 	// exit(0);
-// 	int k = 0;
-// 	char **split_env;
-// 	// g_gb.my_env = NULL;
-// 	int len = 0;
-// 	while (env[len])
-// 		len++;
-// 	// g_gb.my_env = malloc(sizeof(t_env));
-// 	while (env[k])
-// 	{
-
-// 		split_env = ft_split(env[k], '=');
-// 		// printf("-----%d", ft_strlen(split_env[0]));
-
-// 		// printf("%s : %s\n", split_env[0], getenv(split_env[0]));
-// 		// exit(0);
-// 		ft_lstadd_back_env(&g_gb.my_env, ft_lstnew_env(split_env[0], getenv(split_env[0])));
-// 		free_2d_table(split_env);
-// 		k++;
-// 	}
-// 	// while (g_gb.my_env)
-// 	// {
-// 	// 	printf("va : %s\n", g_gb.my_env->value);
-// 	// 	g_gb.my_env = g_gb.my_env->next;
-// 	// }
-// 	// exit(0);
-// }
-
 void	fill_my_env(char **env)
 {
 	int k = 0;
@@ -617,12 +587,6 @@ void	fill_my_env(char **env)
 		free_2d_table(split_env);
 		k++;
 	}
-
-	// while (tmp)
-	// {
-	// 	printf("va : %s\n", tmp->name);
-	// 	tmp = tmp->next;
-	// }
 }
 
 void	look_for_var(t_node *tmp, int j)
@@ -690,7 +654,8 @@ void	output_redirections(t_node *list_cmd, int i)
 			fd = open(file, O_CREAT | O_RDWR, 0666);
 		else
 			fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR, 0666);
-		list_cmd->fds[1] = fd;
+		list_cmd->outf_fd = fd;
+		// printf("%s outfile opened %d\n",list_cmd->cmd_dt->file[i], list_cmd->outf_fd);
 	}
 	else if (!ft_strcmp(list_cmd->cmd_dt->op[i], ">>"))
 	{
@@ -699,6 +664,8 @@ void	output_redirections(t_node *list_cmd, int i)
 			fd = open(file, O_CREAT | O_RDWR, 0666);
 		else
 			fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR | O_TRUNC, 0666);
+		list_cmd->outf_fd = fd;
+		// printf("%s outfile opened %d\n",list_cmd->cmd_dt->file[i], list_cmd->outf_fd);
 	}
 	if (fd == -1)
 		print_error("Error opening file\n", 103);
@@ -716,6 +683,8 @@ void	input_redirections(t_node *list_cmd, int i)
 			printf("minishell: %s: No such file or directory\n", list_cmd->cmd_dt->file[i]);
 			print_error(NULL, 1);
 		}
+		list_cmd->inf_fd = fd;
+		// printf("%s infile opened %d\n",list_cmd->cmd_dt->file[i], list_cmd->inf_fd);
 	}
 }
 
@@ -723,6 +692,8 @@ int	open_files(t_node *list_cmd)
 {
 	int i;
 
+		// printf("%s\n");
+		// exit(0);
 	while (list_cmd)
 	{
 		i = 0;
@@ -753,6 +724,21 @@ void	count_herdocs(char *full_cmd)
 		exit(print_error("maximum here-document count exceeded", 2));
 }
 
+void	print_list(t_node *list_cmd)
+{
+	int i;
+	while (list_cmd)
+	{
+		i = 0;
+		while (list_cmd->cmd_dt->file[i])
+		{
+			// printf("file [%d] : %s\n", i, list_cmd->cmd_dt->file[i]);
+			i++;
+		}
+		list_cmd = list_cmd->next;
+	}
+}
+
 void		parsing(char **env, t_node *list_cmd)
 {
 
@@ -772,10 +758,8 @@ void		parsing(char **env, t_node *list_cmd)
 	else
 		path = ft_strchr(path, '/');
 	fill_my_env(env);
-	// printf("--> %s\n", g_gb.my_env->value);
-	// exit(0);
+
 	signal(SIGINT, signal_C_received);
-		// printf("ddddddddddd\n");
 	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
 
@@ -789,28 +773,33 @@ void		parsing(char **env, t_node *list_cmd)
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
 			if (g_gb.error != 0)
 			{
+
 				get_number_of_tokens(full_cmd, list_cmd);
 				g_gb.error = detail_cmd(list_cmd);
+
+
 			}
 			if (g_gb.error != 0)
 			{
 				if (!ft_strcmp(full_cmd, "$?"))
 					printf("exit code :%d\n", g_gb.exit_code);
+
+
+
 				open_files(list_cmd);
 				check_expanding(list_cmd);
-
 				check_herdocs(list_cmd);
 				expanding(list_cmd);
 				get_cmd_with_flags(list_cmd);
 
-				execution(list_cmd);
+
+				// execution(list_cmd);
 			}
 		}
 		else if (g_gb.error != 0)
 			g_gb.exit_code = 0;
 
 		ft_lstclear(&list_cmd);
-		// list_cmd = NULL;
 		signal(SIGQUIT, signal_D_received);
 		free(full_cmd);
 		g_gb.error = 0;
