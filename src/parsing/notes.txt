@@ -1,14 +1,7 @@
 syntax error :
-	(											done
-	*											done
-	#	                 						done
 
-# must not be in the start of the eof (<<)		done
-expand in herdoc								done
-cat >> $USER (must be expanded)                 done
 save invalid file name
-cat > file1 file2 file3  (cat flags)            done
-(<< ll cat) and (cat << ll)						done
 signals
+exit code
 
 

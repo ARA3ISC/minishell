@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   helper.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 14:27:28 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/27 15:47:06 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/28 07:58:38 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@ int		cmds_count(char **cmds)
 
 char    *get_pwd(char **env)
 {
-    int i = 0;
+	int i = 0;
 
-    while (env[i])
-    {
-        if (env[i][0] == 'P' && env[i][1] == 'W' && env[i][2] == 'D')
-            return env[i];
-        i++;
-    }
-    return (NULL);
+	while (env[i])
+	{
+		if (env[i][0] == 'P' && env[i][1] == 'W' && env[i][2] == 'D')
+			return env[i];
+		i++;
+	}
+	return (NULL);
 }
 
 int	count_op(char *cmd)
