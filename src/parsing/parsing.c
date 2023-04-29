@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/29 20:09:04 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/29 21:45:20 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -570,7 +570,7 @@ void	fill_my_env(char **env)
 	while (env[len])
 		len++;
 
-	g_gb.my_env = malloc(sizeof(t_env));
+	g_gb.wewee = malloc(sizeof(t_env));
 	tmp = g_gb.my_env;
 	while (env[k])
 	{
