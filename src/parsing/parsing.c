@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/27 22:26:25 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/29 16:02:34 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -564,28 +564,28 @@ void	get_cmd_with_flags(t_node *list_cmd)
 
 void	fill_my_env(char **env)
 {
-	// printf("--> %s\n", env[0]);
-	// exit(0);
 	int k = 0;
+	t_env *tmp;
 	char **split_env;
-	// g_gb.my_env = NULL;
 	int len = 0;
 	while (env[len])
 		len++;
-	// g_gb.my_env = malloc(sizeof(t_env));
+
+	g_gb.my_env = malloc(sizeof(t_env));
+	tmp = g_gb.my_env;
 	while (env[k])
 	{
 		split_env = ft_split(env[k], '=');
-		// printf("-----%d", ft_strlen(split_env[0]));
+		tmp->name = malloc(ft_strlen(split_env[0]));
+		tmp->name = ft_strdup(split_env[0]);
+		tmp->value = getenv(split_env[0]);
+		if (env[k + 1])
+			tmp->next = malloc(sizeof(t_env));
+		tmp = tmp->next;
 
-		// printf("%s : %s\n", split_env[0], getenv(split_env[0]));
-		// exit(0);
-		ft_lstadd_back_env(&g_gb.my_env, ft_lstnew_env(ft_strdup(split_env[0]), getenv(split_env[0])));
 		free_2d_table(split_env);
 		k++;
 	}
-	
-	// exit(0);
 }
 
 void	look_for_var(t_node *tmp, int j)
@@ -743,11 +743,14 @@ void		parsing(char **env, t_node *list_cmd)
 
 		add_history(full_cmd);
 		g_gb.error = all_error(full_cmd);
+		
 		// g_gb.exit_code = all_error(full_cmd);
 
 
 		if(!g_gb.error)
 		{
+		// printf("ffffff\n");
+    	// exit(0);
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
 			if (g_gb.error != 0)
 			{
@@ -759,13 +762,25 @@ void		parsing(char **env, t_node *list_cmd)
 				if (!ft_strcmp(full_cmd, "$?"))
 					printf("exit code :%d\n", g_gb.exit_code);
 				open_files(list_cmd);
+				// while(list_cmd)
+				// {
+				// 	int i = 0;
+				// 	while(list_cmd->cmd_dt->file[i])
+				// 	{
+				// 		printf("file %s\n", list_cmd->cmd_dt->file[i]);
+				// 		i++;
+				// 	}
+				// 	list_cmd = list_cmd->next;
+				// }
+				// exit(0);
 				check_expanding(list_cmd);
 				
 				check_herdocs(list_cmd);
 				expanding(list_cmd);
-				get_cmd_with_flags(list_cmd);				
-				
-				execution(list_cmd);
+				get_cmd_with_flags(list_cmd);
+				builtins(full_cmd);
+								
+				// execution(list_cmd);
 			}
 		}
 		else if (g_gb.error != 0)
