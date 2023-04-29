@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/28 09:41:09 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/29 18:00:32 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,6 @@ void	check_cmds(t_node *list_cmd)
 	char *f_cmd;
 	int i = 0;
 
-	// exit(10);
-
-
-
 	paths = get_paths();
 	// printf("path[0]\n");
 	// cmd_flags = check_flags(cmd);
@@ -87,7 +83,6 @@ void	check_cmds(t_node *list_cmd)
 
 void execute_list_of_cmds(t_node *list_cmd)
 {
-
 	int p;
 	int fk;
 
@@ -102,27 +97,31 @@ void execute_list_of_cmds(t_node *list_cmd)
 
 			printf("***\n");
 			if (list_cmd->next != NULL)
-				close(list_cmd->fds[0]);
-			if (dup2(list_cmd->fds[1], 1) == -1)
+				close(list_cmd->inf_fd);
+			if (dup2(list_cmd->outf_fd, 1) == -1)
 				perror("error dup");
 			if (list_cmd->next == NULL)
 			{
-				if (dup2(1, list_cmd->fds[1]) == -1)
+				if (dup2(1, list_cmd->outf_fd) == -1)
 					perror("error dup");
 			}
 
 		}
-		printf("%d\t%d\t%d", list_cmd->outf_fd, list_cmd->fds[1], list_cmd->fds[0]);
-		dup2(list_cmd->fds[1], 1);
+		// printf("%d\t%d\t%d", list_cmd->outf_fd, list_cmd->outf_fd, list_cmd->inf_fd);
+		dup2(list_cmd->outf_fd, 1);
 		fk = fork();
+		printf("******\n");
 		if(fk == 0)
 		{
-			check_cmds(list_cmd);
+			printf("m going to exit\n");
+			exit(1);
+			// check_cmds(list_cmd);
 		}
-		close(list_cmd->fds[1]);
-		close(list_cmd->fds[0]);
-		dup2(list_cmd->fds[0], 0);
-		while (wait(NULL) != -1);
+		close(list_cmd->outf_fd);
+		close(list_cmd->inf_fd);
+		dup2(list_cmd->inf_fd, 0);
+		// while (wait(NULL) != -1);
+		wait(NULL);
 		list_cmd = list_cmd->next;
 	}
 }

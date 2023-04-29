@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 17:54:30 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/28 08:17:04 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/29 18:01:21 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,6 @@ void	execution(t_node *list_cmd)
 	}
 	else
 	{
-		execute_list_of_cmds(list_cmd);
+		// execute_list_of_cmds(list_cmd);
 	}
 }

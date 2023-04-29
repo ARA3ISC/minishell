@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 10:36:43 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/28 08:03:50 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/28 14:25:15 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	ft_lstadd_back(t_node **lst, t_node *new)
 	}
 }
 
-t_node	*ft_lstnew(char *_cmd, int *fds)
+t_node	*ft_lstnew(char *_cmd)
 {
 	t_node	*n;
 
@@ -35,7 +35,8 @@ t_node	*ft_lstnew(char *_cmd, int *fds)
 	if (!n)
 		return (NULL);
 	n->cmd = _cmd;
-	n->fds = fds;
+	n->inf_fd = 0;
+	n->outf_fd = 1;
 	n->next = NULL;
 	return (n);
 }
