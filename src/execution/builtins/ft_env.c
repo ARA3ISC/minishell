@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 12:59:14 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/29 14:18:27 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/29 21:55:45 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void ft_env(char *full_cmd)
 {
+    // printf(RED"cmd : hhhh\n"RESET);
+    // exit(0);
     (void)full_cmd;
     t_env *tmp;
     int i;
@@ -26,6 +28,6 @@ void ft_env(char *full_cmd)
             printf("%s\n", tmp->value);
         else
             printf("\n");
-        tmp = tmp->next; 
+        tmp = tmp->next;
     }
 }

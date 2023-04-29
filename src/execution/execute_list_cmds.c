@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/29 20:15:43 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/29 22:38:22 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,16 +110,17 @@ void execute_list_of_cmds(t_node *list_cmd)
 		// printf("%d\t%d\t%d", list_cmd->outf_fd, list_cmd->outf_fd, list_cmd->inf_fd);
 		dup2(list_cmd->outf_fd, 1);
 		fk = fork();
-		printf("******\n");
+		printf("fk : %d\n", fk);
+		// printf("******\n");
 		if(fk == 0)
 		{
-			printf("m going to exit\n");
-			exit(1);
+			// printf("m going to exit\n");
+			// exit(1);
 			// check_cmds(list_cmd);
 		}
-		close(list_cmd->outf_fd);
-		close(list_cmd->inf_fd);
-		dup2(list_cmd->inf_fd, 0);
+		// close(list_cmd->outf_fd);
+		// close(list_cmd->inf_fd);
+		// dup2(list_cmd->inf_fd, 0);
 		// while (wait(NULL) != -1);
 		wait(NULL);
 		list_cmd = list_cmd->next;

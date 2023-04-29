@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 14:27:28 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/28 21:10:20 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/29 21:09:46 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	get_number_of_tokens(char *full_cmd, t_node *list_cmd)
 		g_gb.infos = malloc(sizeof(t_info));
 		if(!g_gb.infos)
 			return ;
-		g_gb.infos->op_count = count_op(list_cmd->cmd);
+		list_cmd->op_count = count_op(list_cmd->cmd);
 
 
 		g_gb.infos->pipe_count = count_pipes(full_cmd);
