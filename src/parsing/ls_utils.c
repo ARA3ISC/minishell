@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 10:36:43 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/28 14:25:15 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/29 21:51:42 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,19 +97,15 @@ t_env	*ft_lstnew_env(char *name, char *value)
 
 void	ft_lstadd_back_env(t_env **lst, t_env *new)
 {
-	// t_env	*p;
+	t_env	*p;
 	if (*lst == NULL)
-	{
 		*lst = new;
-	// printf("%s : %s \n", (*lst)->name , (*lst)->value);
-
-	}
 	else
 	{
-		// p = *lst;
-		while ((*lst)->next != NULL)
-			(*lst) = (*lst)->next;
-		(*lst)->next = new;
+		p = *lst;
+		while (p->next)
+			p = p->next;
+		p->next = new;
 		// printf("%s : %s \n", (*lst)->name , (*lst)->value);
 		// if(ft_lstsize(*lst) == 3)
 		// 	exit(0);

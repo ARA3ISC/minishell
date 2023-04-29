@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/28 16:03:59 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/29 21:08:53 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@
 
 typedef struct s_info
 {
-	int op_count;
 	int pipe_count;
 	int cmd_count;
 }			t_info;
@@ -50,6 +49,7 @@ typedef struct s_node
 {
 	char *cmd;
 	struct s_cmd *cmd_dt;
+	int op_count;
 	int *fds;
 	char **cmd_flags;
 	int inf_fd;
@@ -107,12 +107,23 @@ int					all_error(char *full_cmd);
 void				count_herdocs(char *full_cmd);
 void				parsing(char **env, t_node *list_cmd);
 void 				execution(t_node *list_cmd);
-t_env	*ft_lstnew_env(char *name, char *value);
-void	ft_lstadd_back_env(t_env **lst, t_env *new);
+t_env				*ft_lstnew_env(char *name, char *value);
+void				ft_lstadd_back_env(t_env **lst, t_env *new);
 
 // ! execution
 
 int					ft_lstsize(t_node *lst);
 int					is_builtin(t_node *list_cmd);
 void 				execute_list_of_cmds(t_node *list_cmd);
+void 				builtins(char *full_cmd);
+void 				ft_echo(char *cmd);
+void				ft_cd(char *full_cmd);
+void 				ft_pwd(char *full_cmd);
+void 				ft_exit(char *full_cmd);
+void 				ft_export(char *full_cmd);
+void 				ft_env(char *full_cmd);
+void 				ft_unset(char *cmd);
+int 				name_is_exist(char *name);
+
+
 #endif
