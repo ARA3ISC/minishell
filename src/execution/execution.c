@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 17:54:30 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/28 20:54:47 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/29 20:06:15 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,6 @@ void	execution(t_node *list_cmd)
 	}
 	else
 	{
-		// int k = 0;
-		// while (g_gb.my_env[k])
-		// {
-		// 	printf("--- %s\n", g_gb.my_env[k]);
-		// 	k++;
-		// }
-		// exit(0);
 		execute_list_of_cmds(list_cmd);
 	}
 }
