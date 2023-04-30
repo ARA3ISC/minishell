@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/29 22:47:36 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/30 14:27:35 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 	// int **pipes_arr;
 
 	all_cmds = spliting_by_pipe(cmd);
+	
 
 	if (!all_cmds[0])
 	{
@@ -74,6 +75,11 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 		print_error("syntax error near unexpected token `|'", 258);
 		return 0;
 	}
+	// while(all_cmds[i])
+	// {
+	// 	i++;
+	// }
+	// exit(0);
 	// pipes_arr = alloc_pipes(all_cmds);
 	while (all_cmds[i])
 	{
@@ -81,8 +87,13 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 		ft_lstadd_back(list_cmd, ft_lstnew(all_cmds[i]));
 		i++;
 	}
-
-	// exit(10);
+		// ft_lstadd_back(list_cmd, ft_lstnew(NULL));
+	// printf("cmd %s\n", (*list_cmd)->cmd);
+	// // if((*list_cmd)->next)
+	// printf("cmd %s\n", (*list_cmd)->next->cmd);
+	// printf("cmd %s\n", (*list_cmd)->next->next->cmd);
+	// printf("cmd %s\n", (*list_cmd)->next->next->next->cmd);
+	// exit(0);
 	return 1;
 }
 
@@ -759,7 +770,7 @@ int	open_files(t_node *list_cmd)
 			input_redirections(list_cmd, i);
 			i++;
 		}
-		printf("infile : %d\noutfile : %d\n", list_cmd->inf_fd, list_cmd->outf_fd);
+		// printf("infile : %d\noutfile : %d\n", list_cmd->inf_fd, list_cmd->outf_fd);
 		list_cmd = list_cmd->next;
 	}
 	return 0;
@@ -823,10 +834,19 @@ void		parsing(char **env, t_node *list_cmd)
 		g_gb.error = all_error(full_cmd);
 		if(!g_gb.error)
 		{
+			
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
+			// while(list_cmd)
+			// {
+			// 	printf("cmds %s\n", (list_cmd)->cmd);
+			// 	(list_cmd) = (list_cmd)->next;
+			// }
+
+			// exit(10);
 			if (g_gb.error != 0)
 			{
 				get_number_of_tokens(full_cmd, list_cmd);
+				
 				g_gb.error = detail_cmd(list_cmd);
 			}
 			if (g_gb.error != 0)
@@ -838,6 +858,7 @@ void		parsing(char **env, t_node *list_cmd)
 				check_herdocs(list_cmd);
 				expanding(list_cmd);
 				get_cmd_with_flags(list_cmd);
+				
 				// builtins(list_cmd->new_cmd);
 				execution(list_cmd);
 			}

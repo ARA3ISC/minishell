@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/29 22:38:22 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/30 12:32:29 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	check_cmds(t_node *list_cmd)
 			f_cmd = ft_strjoin(paths[i], list_cmd->cmd_flags[0]);
 			if (access(f_cmd, X_OK) == 0)
 			{
-				printf("hhh\n");
+				// printf("hhh\n");
 				execve(f_cmd, list_cmd->cmd_flags, NULL);
 			}
 			i++;
@@ -81,48 +81,65 @@ void	check_cmds(t_node *list_cmd)
 	cmd_not_found(list_cmd->cmd_flags[0]);
 }
 
+void	initialize_fds(t_node *list_cmd, int *fds)
+{
+	int len;
+	(void)fds;
+
+	
+	len = ft_lstsize(list_cmd);
+	
+	// if(len == 2)
+	// {
+	// 	l
+	// }
+		printf("len :%d\n", len);
+}
+
 void execute_list_of_cmds(t_node *list_cmd)
 {
 	int p;
-	int fk;
-
+	// int fk;
+	int fds[2];
 
 	while(list_cmd)
 	{
+		
 		if (ft_lstsize(list_cmd) > 1)
 		{
-			p = pipe(list_cmd->fds);
+			p = pipe(fds);
 			if(p == -1)
 				perror("error open pipe");
+			initialize_fds(list_cmd, fds);
 
-			printf("***\n");
-			if (list_cmd->next != NULL)
-				close(list_cmd->inf_fd);
-			if (dup2(list_cmd->outf_fd, 1) == -1)
-				perror("error dup");
-			if (list_cmd->next == NULL)
-			{
-				if (dup2(1, list_cmd->outf_fd) == -1)
-					perror("error dup");
-			}
+			// printf("***\n");
+			// if (list_cmd->next != NULL)
+			// 	close(list_cmd->inf_fd);
+			// if (dup2(list_cmd->outf_fd, 1) == -1)
+			// 	perror("error dup");
+			// if (list_cmd->next == NULL)
+			// {
+			// 	if (dup2(1, list_cmd->outf_fd) == -1)
+			// 		perror("error dup");
+			// }
 
 		}
 		// printf("%d\t%d\t%d", list_cmd->outf_fd, list_cmd->outf_fd, list_cmd->inf_fd);
-		dup2(list_cmd->outf_fd, 1);
-		fk = fork();
-		printf("fk : %d\n", fk);
-		// printf("******\n");
-		if(fk == 0)
-		{
-			// printf("m going to exit\n");
-			// exit(1);
-			// check_cmds(list_cmd);
-		}
+		// dup2(list_cmd->outf_fd, 1);
+		// fk = fork();
+		// printf("fk : %d\n", fk);
+		// // printf("******\n");
+		// if(fk == 0)
+		// {
+		// 	// printf("m going to exit\n");
+		// 	// exit(1);
+		// 	// check_cmds(list_cmd);
+		// }
 		// close(list_cmd->outf_fd);
 		// close(list_cmd->inf_fd);
 		// dup2(list_cmd->inf_fd, 0);
 		// while (wait(NULL) != -1);
-		wait(NULL);
+		// wait(NULL);
 		list_cmd = list_cmd->next;
 	}
 }
