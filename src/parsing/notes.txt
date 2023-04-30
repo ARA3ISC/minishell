@@ -1,7 +1,14 @@
 syntax error :
 
-save invalid file name
 signals
 exit code
+
+
+
+
+
+eof for this example : << eod < llll << eof2
+herdoc hung
+
 
 

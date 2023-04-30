@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/30 14:27:35 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/30 15:58:40 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -513,15 +513,14 @@ void	start_reading(t_node *list_cmd, char *eof)
 	if (id == 0)
 	{
 		g_gb.pid = getpid();
-		// printf("ped bera %d\n", g_gb.pid);
-		// signal(SIGINT, SIG_IGN);
-		// signal(SIGINT, &exit_herd);
+
 		while(1)
 		{
+			// close(fds[0]);
 			rd = readline("herdoc> ");
-
 			if (!ft_strcmp(rd, eof))
 			{
+				write(fds[1], input, ft_strlen(input) * sizeof(char));
 				close(fds[1]);
 				g_gb.exit_code = print_error(NULL, 1);
 				list_cmd->inf_fd = fds[0];
@@ -531,10 +530,11 @@ void	start_reading(t_node *list_cmd, char *eof)
 			input = ft_strjoin2(input, rd);
 			input = ft_strjoin( input ,"\n");
 		// printf("%s\n", input);
-			write(fds[1], input, ft_strlen(input) * sizeof(char));
-			close(fds[1]);
+			
+			// close(fds[1]);
 		}
 	}
+	close(fds[0]);
 	wait(NULL);
 }
 
@@ -557,6 +557,7 @@ void	check_herdocs(t_node *list_cmd)
 			}
 			i++;
 		}
+		printf("out\n");
 		list_cmd = list_cmd->next;
 	}
 
@@ -860,7 +861,7 @@ void		parsing(char **env, t_node *list_cmd)
 				get_cmd_with_flags(list_cmd);
 				
 				// builtins(list_cmd->new_cmd);
-				execution(list_cmd);
+				// execution(list_cmd);
 			}
 		}
 		else if (g_gb.error != 0)
@@ -875,4 +876,5 @@ void		parsing(char **env, t_node *list_cmd)
 	}
 
 	// signal_received('D');
+
 }

@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/30 12:32:29 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/30 16:12:16 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ void	check_cmds(t_node *list_cmd)
 			f_cmd = ft_strjoin(paths[i], list_cmd->cmd_flags[0]);
 			if (access(f_cmd, X_OK) == 0)
 			{
-				// printf("hhh\n");
 				execve(f_cmd, list_cmd->cmd_flags, NULL);
+				// printf("hhh\n");
 			}
 			i++;
 		}
@@ -83,23 +83,31 @@ void	check_cmds(t_node *list_cmd)
 
 void	initialize_fds(t_node *list_cmd, int *fds)
 {
-	int len;
-	(void)fds;
-
 	
-	len = ft_lstsize(list_cmd);
-	
-	// if(len == 2)
-	// {
-	// 	l
-	// }
-		printf("len :%d\n", len);
+	if(!list_cmd->index)
+	{
+		if(list_cmd->outf_fd == 1)
+			list_cmd->outf_fd = fds[1];
+		g_gb.save_fd = fds[0];
+	}
+	else if(list_cmd->index == g_gb.infos->cmd_count - 1)
+	{
+		list_cmd->inf_fd = g_gb.save_fd;
+	}
+	else
+	{
+		if(list_cmd->outf_fd == 1)
+			list_cmd->outf_fd = fds[1];
+		list_cmd->outf_fd = g_gb.save_fd;
+		g_gb.save_fd = fds[0];
+			
+	}
 }
 
 void execute_list_of_cmds(t_node *list_cmd)
 {
 	int p;
-	// int fk;
+	int fk;
 	int fds[2];
 
 	while(list_cmd)
@@ -107,10 +115,25 @@ void execute_list_of_cmds(t_node *list_cmd)
 		
 		if (ft_lstsize(list_cmd) > 1)
 		{
-			p = pipe(fds);
-			if(p == -1)
-				perror("error open pipe");
-			initialize_fds(list_cmd, fds);
+			if(list_cmd->index != g_gb.infos->cmd_count - 1)
+			{
+				p = pipe(fds);
+				if(p == -1)
+					perror("error open pipe");
+				initialize_fds(list_cmd, fds);
+				fk = fork();
+				if(fk == 0)
+				{
+					close(fds[0]);
+					dup2(g_gb.save_fd, 0);
+					dup2(list_cmd->outf_fd, 1);
+					printf("ldkhl\n");
+					check_cmds(list_cmd);
+					
+				}
+				wait(NULL);
+				
+			}
 
 			// printf("***\n");
 			// if (list_cmd->next != NULL)
@@ -124,22 +147,27 @@ void execute_list_of_cmds(t_node *list_cmd)
 			// }
 
 		}
+		else
+		{
+			fk = fork();
+			if(fk == 0)
+			{
+				dup2(list_cmd->outf_fd, 1);
+				dup2(list_cmd->inf_fd, 0);
+				printf("ldkhl\n");
+				check_cmds(list_cmd);
+				
+			}
+		}
 		// printf("%d\t%d\t%d", list_cmd->outf_fd, list_cmd->outf_fd, list_cmd->inf_fd);
 		// dup2(list_cmd->outf_fd, 1);
-		// fk = fork();
-		// printf("fk : %d\n", fk);
-		// // printf("******\n");
-		// if(fk == 0)
-		// {
-		// 	// printf("m going to exit\n");
-		// 	// exit(1);
-		// 	// check_cmds(list_cmd);
-		// }
+		
 		// close(list_cmd->outf_fd);
 		// close(list_cmd->inf_fd);
 		// dup2(list_cmd->inf_fd, 0);
 		// while (wait(NULL) != -1);
-		// wait(NULL);
+		wait(NULL);
+		printf("hello\n");
 		list_cmd = list_cmd->next;
 	}
 }
