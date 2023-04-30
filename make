@@ -1,0 +1,12 @@
+Makefile
+arr
+costumizing
+irr
+libft
+make
+minishell
+orr
+src
+z1
+z2
+z3

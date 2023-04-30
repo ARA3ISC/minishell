@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/30 16:29:39 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/30 21:22:25 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ typedef struct s_gb
 {
 	int exit_code;
 	struct s_info *infos;
+	char **env_array;
 	int save_fd;
 	bool error;
 	int pid;

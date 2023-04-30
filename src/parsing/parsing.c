@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/30 18:17:15 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/30 21:46:15 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,7 +319,6 @@ void	get_details(t_node *tmp)
 			tmp->cmd_dt->file[j] = working_in_the_name_of_the_file(tmp->cmd_dt->file[j], len);
 			if (is_eof)
 				tmp->cmd_dt->eofs[k++] = tmp->cmd_dt->file[j];
-			// printf("k : %d\n", k);
 			j++;
 		}
 		if (tmp->cmd[i])
@@ -354,7 +353,7 @@ int	detail_cmd(t_node *list_cmd)
 			return 0;
 		list_cmd->cmd_dt->file = malloc(sizeof(char *) * (list_cmd->op_count + 1));
 
-		printf("*** we will allocate %d\n", list_cmd->herdocs_count + 1);
+		// printf("*** we will allocate %d\n", list_cmd->herdocs_count + 1);
 		list_cmd->cmd_dt->eofs = malloc(sizeof(char *) * (list_cmd->herdocs_count + 1));
 
 		get_details(list_cmd);
@@ -828,6 +827,25 @@ void	print_list(t_node *list_cmd)
 	}
 }
 
+void	fill_my_array_env(char **env)
+{
+	int len = 0;
+	int i = 0;
+
+	while (env[len])
+		len++;
+	g_gb.env_array = malloc(sizeof(char *) * (len + 1));
+
+
+	while (env[i])
+	{
+		// g_gb.env_array[i] = malloc(ft_strlen(env[i]));
+		g_gb.env_array[i] = ft_strdup(env[i]);
+		i++;
+	}
+	g_gb.env_array[i] = NULL;
+}
+
 void		parsing(char **env, t_node *list_cmd)
 {
 
@@ -847,6 +865,7 @@ void		parsing(char **env, t_node *list_cmd)
 	else
 		path = ft_strchr(path, '/');
 	fill_my_env(env);
+	fill_my_array_env(env);
 	signal(SIGINT, signal_C_received);
 	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
@@ -857,11 +876,6 @@ void		parsing(char **env, t_node *list_cmd)
 		{
 
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
-			// while(list_cmd)
-			// {
-			// 	printf("cmds %s\n", (list_cmd)->cmd);
-			// 	(list_cmd) = (list_cmd)->next;
-			// }
 
 			// exit(10);
 			if (g_gb.error != 0)
@@ -869,18 +883,6 @@ void		parsing(char **env, t_node *list_cmd)
 				get_number_of_tokens(full_cmd, list_cmd);
 
 				g_gb.error = detail_cmd(list_cmd);
-				// while (list_cmd)
-				// {
-				// 	int i = 0;
-				// 	while (list_cmd->cmd_dt->eofs[i])
-				// 	{
-				// 		printf("eof [%d] : %s\n", i, list_cmd->cmd_dt->eofs[i]);
-				// 		i++;
-				// 	}
-
-				// 	list_cmd = list_cmd->next;
-				// }
-				// exit(10);
 			}
 			if (g_gb.error != 0)
 			{
@@ -889,14 +891,12 @@ void		parsing(char **env, t_node *list_cmd)
 				open_files(list_cmd);
 				check_expanding(list_cmd);
 				check_herdocs(list_cmd);
-				// expanding(list_cmd);
-				// get_cmd_with_flags(list_cmd);
-	// 			printf(RED"cmd : hhhh\n"RESET);
-    // exit(0);
-				// builtins(list_cmd->new_cmd);
+				expanding(list_cmd);
+				get_cmd_with_flags(list_cmd);
+				builtins(list_cmd->new_cmd);
 
 
-				// execution(list_cmd);
+				execution(list_cmd);
 			}
 		}
 		else if (g_gb.error != 0)

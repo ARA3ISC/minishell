@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/30 16:15:35 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/30 21:28:06 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	check_cmds(t_node *list_cmd)
 
 	if (access(list_cmd->cmd_flags[0], X_OK) == 0)
 	{
-		execve(list_cmd->cmd_flags[0], list_cmd->cmd_flags, NULL);
+		execve(list_cmd->cmd_flags[0], list_cmd->cmd_flags, g_gb.env_array);
 	}
 	else
 	{
@@ -70,7 +70,7 @@ void	check_cmds(t_node *list_cmd)
 			f_cmd = ft_strjoin(paths[i], list_cmd->cmd_flags[0]);
 			if (access(f_cmd, X_OK) == 0)
 			{
-				execve(f_cmd, list_cmd->cmd_flags, NULL);
+				execve(f_cmd, list_cmd->cmd_flags, g_gb.env_array);
 				// printf("hhh\n");
 			}
 			i++;
@@ -126,7 +126,7 @@ void execute_list_of_cmds(t_node *list_cmd)
 					close(fds[0]);
 					dup2(g_gb.save_fd, 0);
 					dup2(list_cmd->outf_fd, 1);
-					printf("ldkhl\n");
+					// printf("ldkhl\n");
 					check_cmds(list_cmd);
 
 				}
@@ -153,7 +153,7 @@ void execute_list_of_cmds(t_node *list_cmd)
 			{
 				dup2(list_cmd->outf_fd, 1);
 				dup2(list_cmd->inf_fd, 0);
-				printf("ldkhl\n");
+				// printf("ldkhl\n");
 				check_cmds(list_cmd);
 
 			}
@@ -166,7 +166,6 @@ void execute_list_of_cmds(t_node *list_cmd)
 		// dup2(list_cmd->inf_fd, 0);
 		// while (wait(NULL) != -1);
 		wait(NULL);
-		printf("hello\n");
 		list_cmd = list_cmd->next;
 	}
 }
