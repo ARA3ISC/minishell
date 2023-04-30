@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/29 21:08:53 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/30 16:29:39 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_cmd
 {
 	// char *cmd;
 	char **file;
+	char **eofs;
 	char **op;
 }			t_cmd;
 
@@ -50,12 +51,15 @@ typedef struct s_node
 	char *cmd;
 	struct s_cmd *cmd_dt;
 	int op_count;
+	int herdocs_count;
 	int *fds;
 	char **cmd_flags;
 	int inf_fd;
 	int outf_fd;
 	char **exp_var;
 	char *new_cmd;
+	int index;
+
 	struct s_node *next;
 }				t_node;
 
@@ -70,6 +74,7 @@ typedef struct s_gb
 {
 	int exit_code;
 	struct s_info *infos;
+	int save_fd;
 	bool error;
 	int pid;
 	t_env *my_env;
