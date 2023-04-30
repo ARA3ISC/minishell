@@ -6,7 +6,7 @@
 /*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/29 21:54:40 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/04/29 22:19:23 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -886,7 +886,7 @@ void		parsing(char **env, t_node *list_cmd)
 				builtins(list_cmd->new_cmd);
 
 
-				// execution(list_cmd);
+				execution(list_cmd);
 			}
 		}
 		else if (g_gb.error != 0)
