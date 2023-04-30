@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 17:54:30 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/30 14:32:28 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/30 22:28:03 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	execution(t_node *list_cmd)
 	// int i = 0;
 	// while(list_cmd)
 	// {
-	// 	printf("index : %d", list_cmd->index);
+	// 	printf("inf : %d\n out : %d\n", list_cmd->inf_fd, list_cmd->outf_fd);
 	// 	list_cmd = list_cmd->next;
 	// }
 	// exit(10);

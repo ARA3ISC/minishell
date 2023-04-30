@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/30 15:58:40 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/30 16:59:18 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ char	**spliting_by_pipe(char *cmd)
 		else
 			i++;
 	}
+	
 	all_cmds = ft_split(cmd, '&');
 	return (all_cmds);
 }
@@ -58,9 +59,10 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 {
 	int i = 0;
 	char **all_cmds;
+	char *cmd_tmp = ft_strdup(cmd);
 	// int **pipes_arr;
 
-	all_cmds = spliting_by_pipe(cmd);
+	all_cmds = spliting_by_pipe(cmd_tmp);
 	
 
 	if (!all_cmds[0])
@@ -557,7 +559,7 @@ void	check_herdocs(t_node *list_cmd)
 			}
 			i++;
 		}
-		printf("out\n");
+		// printf("out\n");
 		list_cmd = list_cmd->next;
 	}
 
@@ -861,7 +863,7 @@ void		parsing(char **env, t_node *list_cmd)
 				get_cmd_with_flags(list_cmd);
 				
 				// builtins(list_cmd->new_cmd);
-				// execution(list_cmd);
+				execution(list_cmd);
 			}
 		}
 		else if (g_gb.error != 0)

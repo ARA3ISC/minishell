@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/30 16:01:39 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/30 21:25:33 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct s_node
 	char *cmd;
 	struct s_cmd *cmd_dt;
 	int op_count;
-	int *fds;
+	int fds[2];
 	char **cmd_flags;
 	int inf_fd;
 	int outf_fd;
@@ -72,7 +72,8 @@ typedef struct s_gb
 {
 	int exit_code;
 	struct s_info *infos;
-	int save_fd;
+	int save_infd;
+	int save_outfd;
 	bool error;
 	int pid;
 	t_env *my_env;

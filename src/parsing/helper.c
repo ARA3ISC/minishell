@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 14:27:28 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/30 13:11:52 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/04/30 17:01:17 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,31 +57,42 @@ int	count_pipes(char *cmd)
 
 	int i = 0;
 	int count = 0;
-	while (cmd[i])
+	while(cmd[i])
 	{
-		if (cmd[i] == '|')
-		{
+		// printf("cmd : %c\n", cmd[i]);
+		if(cmd[i] && cmd[i] == '|')
 			count++;
+		if(cmd[i] == 39)
+		{
+			i++;
+			while(cmd[i] && cmd[i] != 39)
+				i++;
+			i++;
 		}
-		i++;
+		else if(cmd[i] && cmd[i] == 34)
+		{
+			i++;
+			while(cmd[i] && cmd[i] != 34)
+				i++;
+			i++;
+		}
+		else
+			i++;
 	}
 	return (count);
 }
 
 void	get_number_of_tokens(char *full_cmd, t_node *list_cmd)
 {
-	
 
+	g_gb.infos = malloc(sizeof(t_info));
 	while (list_cmd)
 	{
-		g_gb.infos = malloc(sizeof(t_info));
 		if(!g_gb.infos)
 			return ;
 		list_cmd->op_count = count_op(list_cmd->cmd);
-
-
-		g_gb.infos->pipe_count = count_pipes(full_cmd);
-		g_gb.infos->cmd_count = g_gb.infos->pipe_count + 1;
 		list_cmd = list_cmd->next;
 	}
+	g_gb.infos->pipe_count = count_pipes(full_cmd);
+	g_gb.infos->cmd_count = g_gb.infos->pipe_count + 1;
 }
