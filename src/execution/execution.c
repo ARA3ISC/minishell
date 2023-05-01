@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/26 17:54:30 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/01 11:54:35 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/01 19:11:42 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ void	execution(t_node *list_cmd)
 			builtins(list_cmd);
 			exit(0);
 		}
-		while (wait(NULL) != -1)
-				;
+		while (wait(NULL) != -1) ;
 	}
 	else
 	{
+		
 		execute_list_of_cmds(list_cmd);
 	}
 }

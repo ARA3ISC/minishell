@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/01 16:14:22 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/01 21:34:04 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -513,55 +513,52 @@ char	*get_eof(char *after_herd)
 	return eof;
 }
 
-void	exit_herd(int signo)
+void    exit_herdoc(int signo)
 {
-	if (signo == SIGINT)
-	{
-		// printf("ped ldakhel %d\n", g_gb.pid);
-		// signal(SIGINT, SIG_IGN);
-		kill(g_gb.pid, SIGTERM);
-	}
+    if (signo == SIGINT)
+        exit(1);
 }
 
 
-void	start_reading(t_node *list_cmd, char *eof)
+void    start_reading(t_node *list_cmd, char *eof)
 {
-	int fds[2];
-	char *rd = NULL;
-	char *input = NULL;
-	pipe(fds);
-	int id = fork();
-	if (id == 0)
-	{
-		g_gb.pid = getpid();
+    int fds[2];
+    char *rd = NULL;
+    char *input = NULL;
+    pipe(fds);
+    int id = fork();
+    if (id == 0)
+    {
+        signal(SIGINT, exit_herdoc);
+        while(1)
+        {
+            rd = readline("herdoc> ");
+            if (!rd)
+            {
+                printf("**\n");
+                exit(0);
+            }
+            if (!ft_strcmp(rd, eof))
+            {
+                write(fds[1], input, ft_strlen(input) * sizeof(char));
+                
+				// printf("before : %d\n", fds[1]);
+                exit(0);
 
-		while(1)
-		{
-			// close(fds[0]);
-			rd = readline("herdoc> ");
-			if (!rd)
-			{
-				print_error(NULL, 0);
-				exit(0);
-			}
-			if (!ft_strcmp(rd, eof))
-			{
-				write(fds[1], input, ft_strlen(input) * sizeof(char));
-				close(fds[1]);
-				g_gb.exit_code = print_error(NULL, 1);
-				list_cmd->inf_fd = fds[0];
-				exit(0);
-
-			}
-			input = ft_strjoin2(input, rd);
-			input = ft_strjoin( input ,"\n");
-		// printf("%s\n", input);
-
-			// close(fds[1]);
-		}
-	}
-	close(fds[0]);
-	wait(NULL);
+            }
+            input = ft_strjoin2(input, rd);
+            input = ft_strjoin( input ,"\n");
+        }
+    }
+    else
+    {
+		// close(fds[0]);
+		wait(&g_gb.exit_code);
+		g_gb.exit_code = WEXITSTATUS(g_gb.exit_code);
+        list_cmd->inf_fd = fds[0];
+		close(fds[1]);
+    }
+	// printf("fd[0] dyal lpipe : %d\n", fds[0]);
 }
 
 void	check_herdocs(t_node *list_cmd)
@@ -772,20 +769,24 @@ void	output_redirections(t_node *list_cmd, int i)
 	{
 		file = expanded_file_name(list_cmd->cmd_dt->file[i]);
 		if (file)
-			fd = open(file, O_CREAT | O_RDWR, 0666);
+			fd = open(file, O_CREAT | O_RDWR | O_TRUNC, 0666);
 		else
-			fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR, 0666);
+			fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR | O_TRUNC , 0666);
 		list_cmd->outf_fd = fd;
+		// close(fd);
 		// printf("%s outfile opened %d\n",list_cmd->cmd_dt->file[i], list_cmd->outf_fd);
 	}
 	else if (!ft_strcmp(list_cmd->cmd_dt->op[i], ">>"))
 	{
+
 		file = expanded_file_name(list_cmd->cmd_dt->file[i]);
 		if (file)
-			fd = open(file, O_CREAT | O_RDWR, 0666);
+			fd = open(file, O_CREAT | O_RDWR | O_APPEND, 0666);
 		else
-			fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR | O_TRUNC, 0666);
+			fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR | O_APPEND, 0666);
 		list_cmd->outf_fd = fd;
+
+		// close(fd);
 		// printf("%s outfile opened %d\n",list_cmd->cmd_dt->file[i], list_cmd->outf_fd);
 	}
 	if (fd == -1)
@@ -805,6 +806,7 @@ void	input_redirections(t_node *list_cmd, int i)
 			print_error(NULL, 1);
 		}
 		list_cmd->inf_fd = fd;
+		// close(fd);
 		// printf("%s infile opened %d\n",list_cmd->cmd_dt->file[i], list_cmd->inf_fd);
 	}
 }
@@ -928,6 +930,7 @@ void		parsing(char **env, t_node *list_cmd)
 				check_herdocs(list_cmd);
 				expanding(list_cmd);
 				get_cmd_with_flags(list_cmd);
+				
 				execution(list_cmd);
 				// printf("exit code : %d\n", g_gb.exit_code);
 				g_gb.exit_code = 0;
