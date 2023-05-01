@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/26 09:21:38 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/05/01 16:09:17 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	print_error(char *msg, int code)
 	if (msg)
 		printf("%s\n", msg);
 	g_gb.exit_code = code;
-	// printf("exit code : %d\n", code);
 	return code;
 }
 

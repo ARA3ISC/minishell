@@ -3,12 +3,8 @@ syntax error :
 signals
 exit code
 
-
-
-
-
-eof for this example : << eod < llll << eof2
-herdoc hung
-
+compare this examle in the fucking minishell in bash
+cat Makefile  | echo -n  wc hhhh | wc 
+echo -n  kkkk -n > mmmmn
 
 

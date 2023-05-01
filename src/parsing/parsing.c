@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/30 16:59:18 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/01 16:14:22 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,15 +287,21 @@ void	get_details(t_node *tmp)
 {
 	int i;
 	int j;
+	int k;
 	int len;
+	int is_eof;
 
 	// printf("cmd : %s\n", tmp->cmd);
 	i = 0;
 	j = 0;
+	k = 0;
 	while (tmp->cmd[i])
 	{
+		is_eof = 0;
 		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
 		{
+			if (tmp->cmd[i] && tmp->cmd[i] == '<' && tmp->cmd[i + 1] == '<')
+				is_eof = 1;
 			len = allocate_for_op_and_file(tmp, i + 1, j);
 
 			tmp->cmd_dt->op[j][0] = tmp->cmd[i];
@@ -313,7 +319,8 @@ void	get_details(t_node *tmp)
 				tmp->cmd_dt->op[j][1] = '\0';
 			fill_file_name(tmp, i, j);   //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
 			tmp->cmd_dt->file[j] = working_in_the_name_of_the_file(tmp->cmd_dt->file[j], len);
-			// printf("file |%s|\n", tmp->cmd_dt->file[j]);
+			if (is_eof)
+				tmp->cmd_dt->eofs[k++] = tmp->cmd_dt->file[j];
 			j++;
 		}
 		if (tmp->cmd[i])
@@ -321,6 +328,8 @@ void	get_details(t_node *tmp)
 	}
 	tmp->cmd_dt->op[j] = NULL;
 	tmp->cmd_dt->file[j] = NULL;
+	// printf("k : %d\n", k);
+	tmp->cmd_dt->eofs[k] = NULL;
 
 	// i = 0;
 	// while (tmp->cmd_dt->file[i])
@@ -341,10 +350,17 @@ int	detail_cmd(t_node *list_cmd)
 		list_cmd->cmd_dt = malloc(sizeof(t_cmd));
 		if(!list_cmd->cmd_dt)
 			return 0;
+			// printf("count op : %d\n", list_cmd->op_count);
 		list_cmd->cmd_dt->op = malloc(sizeof(char *) * (list_cmd->op_count + 1));
 		if(!list_cmd->cmd_dt->op)
 			return 0;
+		// printf("file : %d\n", list_cmd->op_count);
 		list_cmd->cmd_dt->file = malloc(sizeof(char *) * (list_cmd->op_count + 1));
+		if(!list_cmd->cmd_dt->file)
+			return 0;
+			
+		// printf("*** we will allocate %d\n", list_cmd->herdocs_count + 1);
+		list_cmd->cmd_dt->eofs = malloc(sizeof(char *) * (list_cmd->herdocs_count + 1));
 
 		get_details(list_cmd);
 		if (g_gb.exit_code == 404)
@@ -369,7 +385,7 @@ int var_count(char *cmd)
 			i++;
 			help_check_quote(cmd, &i, 39);
 		}
-		if(cmd[i] && cmd[i + 1] && cmd[i] == '$' && ft_isalnum(cmd[i + 1]))
+		if(cmd[i] && cmd[i + 1] && cmd[i] == '$' && ( cmd[i + 1] == '?' || ft_isalnum(cmd[i + 1])))
 			len++;
 		i++;
 	}
@@ -391,17 +407,16 @@ char	*get_var(char *str, t_node *tmp, int j)
 	int len;
 	int i;
 	char *exp;
-
 	len = 0;
-	while (ft_isalnum(str[len]) && str[len])
+	if(ft_isalnum(str[len]))
+		while (ft_isalnum(str[len]) && str[len])
+			len++;
+	else if(str[len] == '?')
 		len++;
 
 	exp = malloc(len + 1);
 	if (!exp)
-	{
-		printf("lkherr\n");
 		return NULL;
-	}
 	i = 0;
 	while (i < len)
 	{
@@ -425,6 +440,7 @@ void	look_for_dollar(t_node *tmp)
 	alloc_variables(tmp);
 	while (tmp->cmd[i])
 	{
+		
 		if(tmp->cmd[i] == 39)
 		{
 			i++;
@@ -435,7 +451,7 @@ void	look_for_dollar(t_node *tmp)
 			i++;
 			while(tmp->cmd[i] && tmp->cmd[i] != 34)
 			{
-				if(tmp->cmd[i + 1] && tmp->cmd[i] == '$' && ft_isalnum(tmp->cmd[i + 1]))
+				if(tmp->cmd[i + 1] && tmp->cmd[i] == '$' && (tmp->cmd[i + 1] == '?' || ft_isalnum(tmp->cmd[i + 1])))
 				{
 					get_var(&tmp->cmd[i + 1], tmp, j);
 					j++;
@@ -444,12 +460,13 @@ void	look_for_dollar(t_node *tmp)
 			}
 			i++;
 		}
-		if(tmp->cmd[i] && tmp->cmd[i + 1] && tmp->cmd[i] == '$' && ft_isalnum(tmp->cmd[i + 1]))
+		if(tmp->cmd[i] && tmp->cmd[i] == '$' && tmp->cmd[i + 1]  && (tmp->cmd[i + 1] == '?' || ft_isalnum(tmp->cmd[i + 1])))
 		{
 			get_var(&tmp->cmd[i + 1], tmp, j);
 			j++;
 		}
-		i++;
+		if(tmp->cmd[i]) 
+			i++;
 	}
 	tmp->exp_var[j] = NULL;
 
@@ -462,6 +479,8 @@ void	check_expanding(t_node *list_cmd)
 		look_for_dollar(list_cmd);
 		list_cmd = list_cmd->next;
 	}
+	
+	// exit(0);
 }
 
 char	*get_eof(char *after_herd)
@@ -520,6 +539,11 @@ void	start_reading(t_node *list_cmd, char *eof)
 		{
 			// close(fds[0]);
 			rd = readline("herdoc> ");
+			if (!rd)
+			{
+				print_error(NULL, 0);
+				exit(0);
+			}
 			if (!ft_strcmp(rd, eof))
 			{
 				write(fds[1], input, ft_strlen(input) * sizeof(char));
@@ -532,7 +556,7 @@ void	start_reading(t_node *list_cmd, char *eof)
 			input = ft_strjoin2(input, rd);
 			input = ft_strjoin( input ,"\n");
 		// printf("%s\n", input);
-			
+
 			// close(fds[1]);
 		}
 	}
@@ -554,9 +578,11 @@ void	check_herdocs(t_node *list_cmd)
 		{
 			if (list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '<' && list_cmd->cmd[i + 1] == '<')
 			{
-				eof = list_cmd->cmd_dt->file[j++];
+				eof = list_cmd->cmd_dt->eofs[j++];
+				// printf("eof : %s\n", eof);
 				start_reading(list_cmd, eof);
 			}
+
 			i++;
 		}
 		// printf("out\n");
@@ -677,16 +703,33 @@ void	expanding(t_node *list_cmd)
 	char *var;
 	int i;
 	int j = 0;
-
+	// printf("exit code :%d\n", g_gb.exit_code);
 	while (list_cmd)
 	{
 		list_cmd->new_cmd = NULL;
 		i = 0;
+		
+		// printf("cmd : %s\n", list_cmd->cmd);
 		while (list_cmd->cmd[i])
 		{
-			if(list_cmd->cmd[i] && list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '$' && ft_isalnum(list_cmd->cmd[i + 1]))
+			if(list_cmd->cmd[i] == 39)
 			{
-				var = getenv(list_cmd->exp_var[j]);
+				i++;
+				while(list_cmd->cmd[i] && list_cmd->cmd[i] != 39)
+				{
+					list_cmd->new_cmd = ft_strjoin_char(list_cmd->new_cmd, list_cmd->cmd[i]);
+					i++;
+				}
+				i++;
+			}
+			if(list_cmd->cmd[i] && list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '$'&& (list_cmd->cmd[i + 1] == '?' || ft_isalnum(list_cmd->cmd[i + 1])))
+			{
+				if(list_cmd->cmd[i + 1] == '?')
+				{
+					var = ft_strdup(ft_itoa(g_gb.exit_code));
+				}
+				else
+					var = getenv(list_cmd->exp_var[j]);
 				if (var)
 					list_cmd->new_cmd = ft_strjoin2(list_cmd->new_cmd, var);
 				else
@@ -695,9 +738,14 @@ void	expanding(t_node *list_cmd)
 				j++;
 				continue;
 			}
-			list_cmd->new_cmd = ft_strjoin_char(list_cmd->new_cmd, list_cmd->cmd[i]);
-			i++;
+			if(list_cmd->cmd[i])
+			{
+				list_cmd->new_cmd = ft_strjoin_char(list_cmd->new_cmd, list_cmd->cmd[i]);
+				i++;
+				
+			}
 		}
+		// printf("cmd : %s\n", list_cmd->new_cmd);
 		list_cmd = list_cmd->next;
 	}
 }
@@ -705,9 +753,12 @@ void	expanding(t_node *list_cmd)
 char	*expanded_file_name(char *file)
 {
 	char *r;
-	if (file[1] && file[0] == '$' && ft_isalnum(file[1]))
+	if (file[1] && file[0] == '$' && (file[1] == '?' || ft_isalnum(file[1])))
 	{
-		r = getenv(&file[1]);
+		if(file[1] == '?')
+			r = ft_strdup(ft_itoa(g_gb.exit_code));
+		else
+			r = getenv(&file[1]);
 		return r;
 	}
 	return NULL;
@@ -810,6 +861,25 @@ void	print_list(t_node *list_cmd)
 	}
 }
 
+void	fill_my_array_env(char **env)
+{
+	int len = 0;
+	int i = 0;
+
+	while (env[len])
+		len++;
+	g_gb.env_array = malloc(sizeof(char *) * (len + 1));
+
+
+	while (env[i])
+	{
+		// g_gb.env_array[i] = malloc(ft_strlen(env[i]));
+		g_gb.env_array[i] = ft_strdup(env[i]);
+		i++;
+	}
+	g_gb.env_array[i] = NULL;
+}
+
 void		parsing(char **env, t_node *list_cmd)
 {
 
@@ -829,45 +899,41 @@ void		parsing(char **env, t_node *list_cmd)
 	else
 		path = ft_strchr(path, '/');
 	fill_my_env(env);
+	fill_my_array_env(env);
 	signal(SIGINT, signal_C_received);
 	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
 
 		add_history(full_cmd);
 		g_gb.error = all_error(full_cmd);
+		
+		
 		if(!g_gb.error)
 		{
-			
+
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
-			// while(list_cmd)
-			// {
-			// 	printf("cmds %s\n", (list_cmd)->cmd);
-			// 	(list_cmd) = (list_cmd)->next;
-			// }
 
 			// exit(10);
 			if (g_gb.error != 0)
 			{
-				get_number_of_tokens(full_cmd, list_cmd);
 				
+				get_number_of_tokens(full_cmd, list_cmd);
 				g_gb.error = detail_cmd(list_cmd);
 			}
 			if (g_gb.error != 0)
 			{
-				if (!ft_strcmp(full_cmd, "$?"))
-					printf("exit code :%d\n", g_gb.exit_code);
 				open_files(list_cmd);
 				check_expanding(list_cmd);
+				
 				check_herdocs(list_cmd);
 				expanding(list_cmd);
 				get_cmd_with_flags(list_cmd);
-				
-				// builtins(list_cmd->new_cmd);
 				execution(list_cmd);
+				// printf("exit code : %d\n", g_gb.exit_code);
+				g_gb.exit_code = 0;
 			}
 		}
-		else if (g_gb.error != 0)
-			g_gb.exit_code = 0;
+		// else if (g_gb.error != 0)
 
 		ft_lstclear(&list_cmd);
 		// free(list_cmd);
@@ -876,7 +942,4 @@ void		parsing(char **env, t_node *list_cmd)
 		free(full_cmd);
 		g_gb.error = 0;
 	}
-
-	// signal_received('D');
-
 }

@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/30 22:49:36 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/01 16:28:30 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,22 @@ char	**check_flags(char *cmd)
 	return (new_cmd);
 }
 
-void	cmd_not_found(char *cmd)
+
+void cmd_not_found(char *full_cmd)
 {
-	printf("%s: command not found\n", cmd);
+	char *cmd = NULL;
+	int i;
+
+	i = 0;
+	while(full_cmd[i] && full_cmd[i] != ' ' && full_cmd[i] != '<' && full_cmd[i] != '>')
+	{
+		cmd = ft_strjoin_char(cmd, full_cmd[i]);
+		i++;
+	}
+	printf("minishell: %s: command not found\n", cmd);
 	g_gb.exit_code = 127;
 	exit(127);
+
 }
 
 void	check_cmds(t_node *list_cmd)
@@ -73,29 +84,6 @@ void	check_cmds(t_node *list_cmd)
 	cmd_not_found(list_cmd->cmd_flags[0]);
 }
 
-// void	initialize_fds(t_node **list_cmd, int *fds)
-// {
-
-// 	if(!(*list_cmd)->index)
-// 	{
-// 		// if((*list_cmd)->outf_fd == 1)
-// 		// 	(*list_cmd)->outf_fd = fds[1];
-// 		g_gb.save_fd = fds[0];
-// 	}
-// 	else if((*list_cmd)->index == g_gb.infos->cmd_count - 1)
-// 	{
-// 		(*list_cmd)->inf_fd = g_gb.save_fd;
-// 	}
-// 	else
-// 	{
-// 		if((*list_cmd)->outf_fd == 1)
-// 			(*list_cmd)->outf_fd = fds[1];
-// 		(*list_cmd)->outf_fd = g_gb.save_fd;
-// 		g_gb.save_fd = fds[0];
-
-// 	}
-// }
-
 void	ft_putstrfd(char *str, int fd)
 {
 	int	i;
@@ -112,19 +100,31 @@ void	ft_putstrfd(char *str, int fd)
 
 void close_fds(t_node *node, t_node *tmp)
 {
-	// printf("tmp : %s\nnode : %s\n", tmp->cmd, node->cmd);
 	while(tmp && tmp->index < node->index)
 	{
 		if(tmp->index + 1 == node->index)
 		{
 			close(tmp->fds[1]);
-			dup2(tmp->fds[0], 0);
+			if(tmp->inf_fd == 0)
+				dup2(tmp->fds[0], 0);
+			else if (tmp->inf_fd > 2)
+				dup2(tmp->inf_fd, 0);
 		}
 		else
 		{
 			close(tmp->fds[0]);
 			close(tmp->fds[1]);
 		}
+		tmp = tmp->next;
+	}
+}
+
+void close_all_fds(t_node *node, t_node *tmp)
+{
+	while(tmp && tmp->index <= node->index)
+	{
+		close(tmp->fds[0]);
+		close(tmp->fds[1]);
 		tmp = tmp->next;
 	}
 }
@@ -151,24 +151,36 @@ void	execute_list_of_cmds(t_node *list_cmd)
 				if (fk == 0)
 				{
 					close(list_cmd->fds[0]);
-					dup2(list_cmd->fds[1], 1);
+					if(list_cmd->outf_fd == 1)
+						dup2(list_cmd->fds[1], 1);
+					if(list_cmd->outf_fd > 2)
+						dup2(list_cmd->outf_fd, 1);
 					close_fds(list_cmd, tmp);
-					check_cmds(list_cmd);
+					if(is_builtin(list_cmd))
+						builtins(list_cmd);
+					else
+						check_cmds(list_cmd);
 				}
 			}
 			else
 			{
-				// fk = fork();
-				// if (fk == 0)
-				// {
+				fk = fork();
+				if (fk == 0)
+				{
 					close_fds(list_cmd, tmp);
-					// printf("ana hna\n");
-					check_cmds(list_cmd);
+					if(list_cmd->outf_fd > 2)
+						dup2(list_cmd->outf_fd, 1);
+					else if (list_cmd->outf_fd == 1)
+						dup2(1, list_cmd->outf_fd);
+					if(is_builtin(list_cmd))
+						builtins(list_cmd);
+					else
+						check_cmds(list_cmd);
 					
-				// }
+				}
+				close_all_fds(list_cmd, tmp);
 				while (wait(NULL) != -1)
-						;
-				
+					;
 			}
 		}
 		else
@@ -183,7 +195,6 @@ void	execute_list_of_cmds(t_node *list_cmd)
 			while (wait(NULL) != -1)
 					;
 		}
-		
 		list_cmd = list_cmd->next;
 	}
 }

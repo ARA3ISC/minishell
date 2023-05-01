@@ -6,11 +6,11 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/22 17:35:08 by eej-jama          #+#    #+#             */
-/*   Updated: 2022/10/30 10:17:02 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/01 14:59:57 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../src/minishell.h"
 
 static int	nbr_chiffre(long nbr)
 {

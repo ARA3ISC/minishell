@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/30 21:25:33 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/01 11:16:20 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_cmd
 {
 	// char *cmd;
 	char **file;
+	char **eofs;
 	char **op;
 }			t_cmd;
 
@@ -51,13 +52,15 @@ typedef struct s_node
 	struct s_cmd *cmd_dt;
 	int op_count;
 	int fds[2];
+	int herdocs_count;
+	// int *fds;
 	char **cmd_flags;
 	int inf_fd;
 	int outf_fd;
 	char **exp_var;
 	char *new_cmd;
 	int index;
-	
+
 	struct s_node *next;
 }				t_node;
 
@@ -74,6 +77,8 @@ typedef struct s_gb
 	struct s_info *infos;
 	int save_infd;
 	int save_outfd;
+	char **env_array;
+	int save_fd;
 	bool error;
 	int pid;
 	t_env *my_env;
@@ -119,8 +124,8 @@ void				ft_lstadd_back_env(t_env **lst, t_env *new);
 int					ft_lstsize(t_node *lst);
 int					is_builtin(t_node *list_cmd);
 void 				execute_list_of_cmds(t_node *list_cmd);
-void 				builtins(char *full_cmd);
-void 				ft_echo(char *cmd);
+void 				builtins(t_node *full_cmd);
+void 				ft_echo(t_node *cmd);
 void				ft_cd(char *full_cmd);
 void 				ft_pwd(char *full_cmd);
 void 				ft_exit(char *full_cmd);

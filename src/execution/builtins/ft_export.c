@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 11:33:14 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/29 21:22:11 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/01 09:51:04 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void ft_export(char *full_cmd)
                 else
                     name = ft_strjoin_char(name, cmd[i++]);
             }
-            printf("char : |%c|\n", cmd[i]);
+            // printf("char : |%c|\n", cmd[i]);
             if(cmd[i] == ' ' || cmd[i] == '\0')
             {
                 free(name);
@@ -120,7 +120,7 @@ void ft_export(char *full_cmd)
                 }
                 else
                 {
-                    printf("name : %s\nvalue : %s\n", name, value);
+                    // printf("name : %s\nvalue : %s\n", name, value);
                     ft_lstadd_back_env(&tmp, ft_lstnew_env(name, value));
                     
                 }

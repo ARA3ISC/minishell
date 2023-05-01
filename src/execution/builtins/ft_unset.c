@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 16:52:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/29 17:54:28 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/01 09:50:50 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void ft_unset(char *full_cmd)
                 else 
                     name = ft_strjoin_char(name, cmd[i++]);
             }
-            printf("--- %s\n", name);
+            // printf("--- %s\n", name);
             if(name_is_exist(name))
                 remove_it(name);
             name = NULL;
