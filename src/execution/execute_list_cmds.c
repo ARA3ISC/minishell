@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/01 21:31:07 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/01 21:38:29 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ void	execute_list_of_cmds(t_node *list_cmd)
 			fk = fork();
 			if (fk == 0)
 			{
-				printf("after : %d\n", list_cmd->inf_fd);
+				// printf("after : %d\n", list_cmd->inf_fd);
 				// exit(10);
 				dup2(list_cmd->outf_fd, 1);
 				dup2(list_cmd->inf_fd, 0);
@@ -198,7 +198,7 @@ void	execute_list_of_cmds(t_node *list_cmd)
 			}
 			else
 			{
-			printf("pipe out : %d\npipe in : %d\n", list_cmd->outf_fd, list_cmd->inf_fd);
+			// printf("pipe out : %d\npipe in : %d\n", list_cmd->outf_fd, list_cmd->inf_fd);
 				if (list_cmd->inf_fd > 2)
 					close(list_cmd->inf_fd);
 				if (list_cmd->outf_fd > 2)

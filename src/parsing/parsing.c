@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/01 21:34:04 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/01 21:47:30 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -927,8 +927,8 @@ void		parsing(char **env, t_node *list_cmd)
 				open_files(list_cmd);
 				check_expanding(list_cmd);
 				
-				check_herdocs(list_cmd);
 				expanding(list_cmd);
+				check_herdocs(list_cmd);
 				get_cmd_with_flags(list_cmd);
 				
 				execution(list_cmd);

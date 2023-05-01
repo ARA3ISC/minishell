@@ -1,4 +1,13 @@
-syntax error :
+export
+<>bbjbjb
+<< ll
+    > $USER
+ambiguis
+echo $? | echo $?
+>l
+ls >""
+<< ""
+
 
 signals
 exit code
