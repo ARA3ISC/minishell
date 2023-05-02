@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 12:59:14 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/29 22:17:06 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/05/02 15:01:42 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void ft_env(char *full_cmd)
+void ft_env(t_node *full_cmd)
 {
 	// printf(RED"cmd : hhhh\n"RESET);
 	// exit(0);
@@ -23,11 +23,14 @@ void ft_env(char *full_cmd)
 	i = 0;
 	while(tmp)
 	{
-		printf("%s=", tmp->name);
+		ft_putstr_fd(tmp->name, full_cmd->outf_fd);
+		ft_putstr_fd("=", full_cmd->outf_fd);
 		if(tmp->value)
-			printf("%s\n", tmp->value);
-		else
-			printf("\n");
+			ft_putstr_fd(tmp->value, full_cmd->outf_fd);
+		// else
+		// 	ft_putstr_fd("\n", full_cmd->outf_fd);
+		ft_putstr_fd("\n", full_cmd->outf_fd);
+		
 		tmp = tmp->next;
 	}
 }

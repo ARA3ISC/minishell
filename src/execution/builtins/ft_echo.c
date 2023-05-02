@@ -6,13 +6,13 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 22:17:18 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/01 14:50:44 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/02 14:32:49 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void ft_echo(t_node *cmd)
+void      ft_echo(t_node *cmd)
 {
     char *cmd_tmp;
     int i;
@@ -49,7 +49,7 @@ void ft_echo(t_node *cmd)
                 }
                 i++;
             }
-            else if(cmd_tmp[i] == '-' && cmd_tmp[i + 1] == 'n' && (cmd_tmp[i + 2] == 'n' || cmd_tmp[i + 2] == ' ' || cmd_tmp[i + 2] == '\0'))
+            else if(cmd_tmp[i] == '-' && cmd_tmp[i   + 1] == 'n' && (cmd_tmp[i + 2] == 'n' || cmd_tmp[i + 2] == ' ' || cmd_tmp[i + 2] == '\0'))
             {
                 k = i;
                 i = i + 2;
@@ -91,17 +91,15 @@ void ft_echo(t_node *cmd)
             }
         }   
     }
-    if(cmd->outf_fd > 2)
-    {
-		dup2(cmd->outf_fd, 1);
-    }
+   
     if(print) 
     {
         print  = ft_strtrim(print, " ");
-        printf("%s", print);
+        // printf("%s", print);
+        ft_putstr_fd(print, cmd->outf_fd);
     }   
     if(nl)
-        printf("\n");
-    
-    
+        ft_putstr_fd("\n", cmd->outf_fd);
+    // dup2( 1,cmd->outf_fd);
+    // close(cmd->outf_fd);
 }

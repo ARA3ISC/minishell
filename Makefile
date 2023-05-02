@@ -7,7 +7,7 @@ src/parsing/signals.c src/parsing/syntax_error.c libft/ft_split.c libft/ft_strch
 libft/ft_strtrim.c libft/ft_itoa.c libft/ft_strdup.c libft/ft_strncmp.c libft/ft_strlen.c libft/ft_isalnum.c libft/ft_isdigit.c libft/ft_isalpha.c libft/ft_strcmp.c \
 src/execution/execution.c src/execution/utils.c src/execution/execute_list_cmds.c src/execution/builtins.c src/execution/builtins/ft_echo.c \
 src/execution/builtins/ft_cd.c src/execution/builtins/ft_pwd.c src/execution/builtins/ft_exit.c src/execution/builtins/ft_export.c \
-src/execution/builtins/ft_env.c src/execution/builtins/ft_unset.c
+src/execution/builtins/ft_env.c src/execution/builtins/ft_unset.c libft/ft_putstr_fd.c
 
 
 

@@ -6,19 +6,19 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 22:25:53 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/29 11:12:53 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/02 14:55:41 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void	ft_cd(char *full_cmd)
+void	ft_cd(t_node *full_cmd)
 {
 	char *path = NULL;
 	char *cmd_tmp;
 	int i;
 
-	cmd_tmp = &full_cmd[2];
+	cmd_tmp = &(full_cmd->new_cmd[2]);
 	if (cmd_tmp[0] == ' ')
 	{
 			// printf("mmmmmmmmm\n");

@@ -1,20 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/29 11:26:33 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/02 14:55:55 by eej-jama         ###   ########.fr       */
+/*   Created: 2023/05/02 14:34:17 by eej-jama          #+#    #+#             */
+/*   Updated: 2023/05/02 14:52:42 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "../../minishell.h"
-
-void ft_exit(t_node *full_cmd)
+#include "../src/minishell.h"
+void    ft_putstr_fd(char *str, int fd)
 {
-    (void)full_cmd;
-    exit(127);
+    int i;
+
+    i = 0;
+    while (str[i])
+    {
+        write(fd, &str[i], 1);
+        i++;
+    }
 }

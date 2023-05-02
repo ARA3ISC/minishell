@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/01 11:16:20 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/02 14:53:48 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,8 @@ void				parsing(char **env, t_node *list_cmd);
 void 				execution(t_node *list_cmd);
 t_env				*ft_lstnew_env(char *name, char *value);
 void				ft_lstadd_back_env(t_env **lst, t_env *new);
+void    			ft_putstr_fd(char *str, int fd);
+
 
 // ! execution
 
@@ -126,12 +128,12 @@ int					is_builtin(t_node *list_cmd);
 void 				execute_list_of_cmds(t_node *list_cmd);
 void 				builtins(t_node *full_cmd);
 void 				ft_echo(t_node *cmd);
-void				ft_cd(char *full_cmd);
-void 				ft_pwd(char *full_cmd);
-void 				ft_exit(char *full_cmd);
-void 				ft_export(char *full_cmd);
-void 				ft_env(char *full_cmd);
-void 				ft_unset(char *cmd);
+void				ft_cd(t_node *full_cmd);
+void 				ft_pwd(t_node *full_cmd);
+void 				ft_exit(t_node *full_cmd);
+void 				ft_export(t_node *full_cmd);
+void 				ft_env(t_node *full_cmd);
+void 				ft_unset(t_node *cmd);
 int 				name_is_exist(char *name);
 
 

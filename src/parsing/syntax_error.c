@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_error.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:25:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/26 09:40:11 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/05/02 14:02:38 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,7 @@ int	check_redirection_syntax(char *cmd)
 	error = 0;
 	while (cmd[i])
 	{
-		if (cmd[i + 1]  && ((cmd[i] == '<' && cmd[i + 1] == '>')
-			|| (cmd[i] == '>' && cmd[i + 1] == '<')))
+		if ((cmd[i] == '>' && cmd[i + 1] == '<'))
 			return(print_error("syntax error", 258));
 		if (cmd[i + 1] && cmd[i + 2] && ((cmd[i] == '>' && cmd[i + 1] == '>' && cmd[i + 2] == '>')
 			|| (cmd[i] == '<' && cmd[i + 1] == '<' && cmd[i + 2] == '<')))

@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 16:52:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/01 09:50:50 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/02 14:56:42 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void remove_it(char *name)
     }
 }
 
-void ft_unset(char *full_cmd)
+void ft_unset(t_node *full_cmd)
 {
     // t_env *tmp;
 	char *cmd;
@@ -38,7 +38,7 @@ void ft_unset(char *full_cmd)
 	int i;
     i = 0;
 
-	cmd = &full_cmd[5];
+	cmd = &(full_cmd->new_cmd[5]);
 	while(cmd[i])
     {
         if (cmd[i] == '>' || cmd[i] == '<')

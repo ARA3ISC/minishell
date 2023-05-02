@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 11:33:14 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/01 09:51:04 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/02 14:56:20 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int name_is_exist(char *name)
     return 0;
 }
 
-void ft_export(char *full_cmd)
+void ft_export(t_node *full_cmd)
 {
     t_env *tmp;
     char *name = NULL;
@@ -39,7 +39,7 @@ void ft_export(char *full_cmd)
     int plus = 0;
     i = 0;
 
-	cmd = &full_cmd[6];
+	cmd = &(full_cmd->new_cmd[6]);
 	while(cmd[i])
     {
         if (cmd[i] == '>' || cmd[i] == '<')
@@ -103,6 +103,7 @@ void ft_export(char *full_cmd)
                     else 
                         value = ft_strjoin_char(value, cmd[i++]);
                 }
+                
                 tmp = g_gb.my_env;
                 if(name_is_exist(name))
                 {
@@ -120,8 +121,9 @@ void ft_export(char *full_cmd)
                 }
                 else
                 {
-                    // printf("name : %s\nvalue : %s\n", name, value);
+                    
                     ft_lstadd_back_env(&tmp, ft_lstnew_env(name, value));
+                    
                     
                 }
                 name = NULL;
