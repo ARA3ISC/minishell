@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/03 20:57:48 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 21:21:01 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -442,6 +442,7 @@ char	*get_var(char *str, t_node *tmp, int j)
 	exp[i] = '\0';
 	if(tmp)
 		tmp->exp_var[j] = exp;
+	
 	return exp;
 }
 
@@ -541,28 +542,38 @@ char * expend_herdocc(char *input)
 {
 	int i = 0;
 	char *result;
-	char **var = NULL;
+	int len = 0;
+	char **var ;
 	char *new_cmd = NULL;
 	int j = 0;
+
+
+	while(input[i])
+	{
+		if(input[i] == '$' && input[i + 1]  && (input[i + 1] == '?' || ft_isalnum(input[i + 1])))
+			len++;
+		i++;
+	}
+	var = malloc(sizeof(char *) * (len + 1));
+	i = 0;
 	while (input[i])
 	{
 		if(input[i] == '$' && input[i + 1]  && (input[i + 1] == '?' || ft_isalnum(input[i + 1])))
 		{
-
-			var[j++] = get_var(&input[i + 1], NULL, 0);
-			printf("oooooooo\n");
-			
+			var[j] = get_var(&input[i + 1], NULL, 0);
+			j++;
 		}
 		i++;
 	}
-	exit(0);
-	j = 0;
-	while (var[j])
-	{
-		printf("var : %s\n", var[j]);
-		j++;
-	}
-	exit(0);
+	var[j] = NULL;
+	// exit(0);
+	// j = 0;
+	// while (var[j])
+	// {
+	// 	printf("var : %s\n", var[j]);
+	// 	j++;
+	// }
+	// exit(0);
 	// printf
 	i = 0;
 	j = 0;
@@ -623,12 +634,12 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
             if (!ft_strcmp(rd, eof))
             {
 				
-				// if(coted[0] == '0')
-				// {
-				// 	result = expend_herdocc(input);
-                // 	write(fds[1], result, ft_strlen(result) * sizeof(char));
-				// }
-				// else
+				if(coted[0] == '0')
+				{
+					result = expend_herdocc(input);
+                	write(fds[1], result, ft_strlen(result) * sizeof(char));
+				}
+				else
                 	write(fds[1], input, ft_strlen(input) * sizeof(char));
                 exit(0);
             }
