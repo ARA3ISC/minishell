@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 22:17:18 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/03 01:58:33 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 22:16:10 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void      ft_echo(t_node *cmd)
     char *print = NULL;
     int nl = 1; 
     cmd_tmp = &(cmd->new_cmd[4]);
-    // if (cmd_tmp[0] == ' ' || cmd_tmp[0] == '<' || cmd_tmp[0] == '>')
+    
     if (cmd_tmp[0] == ' ' || cmd_tmp[0] == '<' || cmd_tmp[0] == '>')
     {
         i = 0;

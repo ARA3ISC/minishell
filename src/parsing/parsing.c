@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/03 21:21:01 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 22:12:36 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -716,7 +716,7 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 		}
 		else if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<'))
 		{
-			new_cmd = ft_strjoin_char(new_cmd, ' ');
+			new_cmd = ft_strjoin_char(new_cmd, '&');
 			i++;
 			if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<'))
 				i++;
@@ -728,8 +728,13 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 		else
 			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i++]);
 	}
-
-	list_cmd->cmd_flags = ft_split(new_cmd, 32);
+	list_cmd->cmd_flags = ft_split(new_cmd, '&');
+	//  i = 0;
+	// while(list_cmd->cmd_flags[i])
+	// {
+	// 	printf("cmd : |%s|\n", list_cmd->cmd_flags[i]);
+	// 	i++;
+	// }
 	 
 	// printf("new cmd : %s\n", new_cmd);
 	// exit(10);

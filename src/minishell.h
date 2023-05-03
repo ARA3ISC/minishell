@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/03 16:08:01 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 23:10:34 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ void 				execution(t_node *list_cmd);
 t_env				*ft_lstnew_env(char *name, char *value);
 void				ft_lstadd_back_env(t_env **lst, t_env *new);
 void    			ft_putstr_fd(char *str, int fd);
+int					ft_atoi(const char *str);
 
 
 // ! execution

@@ -18,21 +18,21 @@ echo -n  kkkk -n > mmmmn                                done
 
 
 
-ls > '>'                                            done
-rm '|'                                             done
-spaces                                             done
+ls > '>'                                          done
+rm '|'                                            done
+spaces                                            done
 
+<< ll                                             done
+    > $USER                                       done
+"ls  "                                            done
+exit with arguments                               done
 
-
-unset the env and taper ls
-"ls  "
 export
-exit with arguments
+unset the env and taper ls
 
 signals
 exit code
 
 ambiguis
 
-<< ll
-    > $USER
+   
