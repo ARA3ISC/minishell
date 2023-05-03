@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/03 16:39:56 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 18:48:03 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,14 @@ void	check_cmds(t_node *list_cmd)
 	char	*f_cmd;
 	int		i;
 
-	i = 0;
+	// i = 0;
 	paths = get_paths();
-	// printf("path[0]\n");
+	// while(list_cmd->cmd_flags[i])
+	// {
+	// printf("flags : %s\n", list_cmd->cmd_flags[i]);
+	// 	i++;
+	// }
+	i = 0;
 	// cmd_flags = check_flags(cmd);
 	if (access(list_cmd->cmd_flags[0], X_OK) == 0)
 		execve(list_cmd->cmd_flags[0], list_cmd->cmd_flags, g_gb.env_array);
@@ -230,7 +235,7 @@ void	execute_list_of_cmds(t_node *list_cmd)
 		}
 		else
 		{
-
+			
 			fk = fork();
 			if (fk == 0)
 			{

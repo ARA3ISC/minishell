@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/03 16:21:22 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 20:57:48 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,42 +60,30 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 	int i = 0;
 	char **all_cmds;
 	char *cmd_tmp = ft_strdup(cmd);
-	// int **pipes_arr;
-
 	all_cmds = spliting_by_pipe(cmd_tmp);
 	
 
 	if (!all_cmds[0])
 	{
-		// printf(RED"errir hh\n"RESET);
 		print_error(NULL, 0);
 		return 0;
 	}
 	if (check_whitespaces(all_cmds) && all_cmds[1])
 	{
-		// printf(RED"errir hh\n"RESET);
 		print_error("syntax error near unexpected token `|'", 258);
 		return 0;
 	}
-	// while(all_cmds[i])
-	// {
-	// 	i++;
-	// }
-	// exit(0);
-	// pipes_arr = alloc_pipes(all_cmds);
 	while (all_cmds[i])
 	{
 		all_cmds[i] = ft_strtrim(all_cmds[i], " ");
 		ft_lstadd_back(list_cmd, ft_lstnew(all_cmds[i]));
 		i++;
 	}
-		// ft_lstadd_back(list_cmd, ft_lstnew(NULL));
-	// printf("cmd %s\n", (*list_cmd)->cmd);
-	// // if((*list_cmd)->next)
-	// printf("cmd %s\n", (*list_cmd)->next->cmd);
-	// printf("cmd %s\n", (*list_cmd)->next->next->cmd);
-	// printf("cmd %s\n", (*list_cmd)->next->next->next->cmd);
-	// exit(0);
+	if (all_cmds[0][0] == '\0')
+	{
+		print_error(NULL, 0);
+		return 0;
+	}
 	return 1;
 }
 
@@ -142,11 +130,7 @@ int	checking_redirection_in_the_last(char *cmd)
 		int i = ft_strlen(cmd);
 		if (i != 0)
 			i--;
-		// printf("i = %d\n", i);
-		// exit(0);
-		if(cmd[i] == '>' || cmd[i] == '<')
-			return (print_error("syntax error", 258));
-		while(cmd[i] == ' ')
+		while(i > 0 && cmd[i] == ' ')
 			i--;
 		if(cmd[i] == '>' || cmd[i] == '<')
 			return (print_error("syntax error", 258));
@@ -298,6 +282,7 @@ void	get_details(t_node *tmp)
 	int i;
 	int j;
 	int k;
+	// int d;
 	int len;
 	int is_eof;
 
@@ -337,6 +322,7 @@ void	get_details(t_node *tmp)
 					tmp->cmd_dt->op[j][1] = '\0';
 			}
 			fill_file_name(tmp, i, j);   //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
+			
 			// printf("file : |%s|\n", tmp->cmd_dt->file[j]);
 			tmp->cmd_dt->file[j] = working_in_the_name_of_the_file(tmp, len, j);
 			// printf("finale file : |%s|\n", tmp->cmd_dt->file[j]);
@@ -444,7 +430,6 @@ char	*get_var(char *str, t_node *tmp, int j)
 			len++;
 	else if(str[len] == '?')
 		len++;
-
 	exp = malloc(len + 1);
 	if (!exp)
 		return NULL;
@@ -562,9 +547,22 @@ char * expend_herdocc(char *input)
 	while (input[i])
 	{
 		if(input[i] == '$' && input[i + 1]  && (input[i + 1] == '?' || ft_isalnum(input[i + 1])))
+		{
+
 			var[j++] = get_var(&input[i + 1], NULL, 0);
+			printf("oooooooo\n");
+			
+		}
 		i++;
 	}
+	exit(0);
+	j = 0;
+	while (var[j])
+	{
+		printf("var : %s\n", var[j]);
+		j++;
+	}
+	exit(0);
 	// printf
 	i = 0;
 	j = 0;
@@ -608,8 +606,7 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
     int fds[2];
     char *rd = NULL;
     char *input = NULL;
-	// char *result;
-	(void)coted;
+	char *result;
     pipe(fds);
     int id = fork();
     if (id == 0)
@@ -632,7 +629,7 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
                 // 	write(fds[1], result, ft_strlen(result) * sizeof(char));
 				// }
 				// else
-                write(fds[1], input, ft_strlen(input) * sizeof(char));
+                	write(fds[1], input, ft_strlen(input) * sizeof(char));
                 exit(0);
             }
             input = ft_strjoin2(input, rd);
@@ -684,14 +681,29 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 	char	*new_cmd = NULL;
 	// char	**split_cmd;
 	int i = 0;
-
-	// printf("1 : %c\n", list_cmd->cmd[i]);
-	// printf("2 : %c\n", list_cmd->cmd[i + 1]);
-	// printf("3 : %c\n", list_cmd->cmd[i + 2]);
-	// exit(10);
 	while (list_cmd->cmd[i])
 	{
-		if (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<')
+		if(list_cmd->cmd[i] == 34)
+		{
+			i++;
+			while(list_cmd->cmd[i] && list_cmd->cmd[i] != 34)
+			{
+				new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i]);
+				i++;
+			}
+			i++;
+		}
+		else if(list_cmd->cmd[i] == 39)
+		{
+			i++;
+			while(list_cmd->cmd[i] && list_cmd->cmd[i] != 39)
+			{
+				new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i]);
+				i++;
+			}
+			i++;
+		}
+		else if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<'))
 		{
 			new_cmd = ft_strjoin_char(new_cmd, ' ');
 			i++;
@@ -703,13 +715,11 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 				i++;
 		}
 		else
-			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i]);
-
-		if (list_cmd->cmd[i])
-			i++;
+			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i++]);
 	}
 
 	list_cmd->cmd_flags = ft_split(new_cmd, 32);
+	 
 	// printf("new cmd : %s\n", new_cmd);
 	// exit(10);
 }
@@ -984,6 +994,7 @@ void		parsing(char **env, t_node *list_cmd)
 
 	char *path;
 	char *full_cmd;
+	// int i;
 
 	banner();
 	// signal(SIGINT, SIG_IGN);
@@ -1025,20 +1036,12 @@ void		parsing(char **env, t_node *list_cmd)
 			}
 			if (g_gb.error != 0)
 			{
-				// printf()
-					
-				// g_gb.error = open_files(list_cmd);
-				// printf("\nerror : %d\n\n", g_gb.error);
-				// if(g_gb.error != 0)
-				// {
-					// printf("statsus : %d\n", g_gb.exit_code);
-					
 					check_expanding(list_cmd);
 					expanding(list_cmd);
 
 					check_herdocs(list_cmd);
-					get_cmd_with_flags(list_cmd);
 					
+					get_cmd_with_flags(list_cmd);
 					execution(list_cmd);
 					
 				// }

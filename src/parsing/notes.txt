@@ -16,6 +16,16 @@ echo -n  kkkk -n > mmmmn                                done
 
 
 
+
+
+ls > '>'                                            done
+rm '|'                                             done
+spaces                                             done
+
+
+
+unset the env and taper ls
+"ls  "
 export
 exit with arguments
 
