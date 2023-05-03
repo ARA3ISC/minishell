@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 22:17:18 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/02 14:32:49 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 01:58:33 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void      ft_echo(t_node *cmd)
     int k;
     char *print = NULL;
     int nl = 1; 
-
     cmd_tmp = &(cmd->new_cmd[4]);
     // if (cmd_tmp[0] == ' ' || cmd_tmp[0] == '<' || cmd_tmp[0] == '>')
     if (cmd_tmp[0] == ' ' || cmd_tmp[0] == '<' || cmd_tmp[0] == '>')
@@ -91,7 +90,6 @@ void      ft_echo(t_node *cmd)
             }
         }   
     }
-   
     if(print) 
     {
         print  = ft_strtrim(print, " ");
@@ -100,6 +98,7 @@ void      ft_echo(t_node *cmd)
     }   
     if(nl)
         ft_putstr_fd("\n", cmd->outf_fd);
+    free(print);
     // dup2( 1,cmd->outf_fd);
     // close(cmd->outf_fd);
 }

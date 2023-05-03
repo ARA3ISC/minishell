@@ -1,19 +1,20 @@
-export
-<>bbjbjb
+export                                               done
+<>bbjbjb                                             done
 << ll
     > $USER
 ambiguis
-echo $? | echo $?
->l
-ls >""
-<< ""
+echo $? | echo $?                                     done
+>l                                                    done
+ls >""                                                done
+<< ""                                                 done
+ash: export: `e+-=5': not a valid identifier          done
 
 
 signals
-exit code
+exit code 
 
-compare this examle in the fucking minishell in bash
-cat Makefile  | echo -n  wc hhhh | wc 
-echo -n  kkkk -n > mmmmn
+compare this examle in the fucking minishell in bash    done
+cat Makefile  | echo -n  wc hhhh | wc                   done
+echo -n  kkkk -n > mmmmn                                done
 
 

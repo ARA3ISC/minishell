@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 17:28:22 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/02 14:44:27 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/02 16:01:17 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void builtins(t_node *full_cmd)
 	// 	g_gb.my_env = g_gb.my_env->next;
 	// }
 
-	// exit(0);
+	
 }
 
 // echo (ualu)

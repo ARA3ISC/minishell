@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/01 21:38:29 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 01:59:40 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ void	check_cmds(t_node *list_cmd)
 	// printf("flags : %s\n", list_cmd->cmd_flags[0]);
 	if (list_cmd->cmd_flags[0])
 		cmd_not_found(list_cmd->cmd_flags[0]);
+	else
+		exit(0);
 }
 
 void	ft_putstrfd(char *str, int fd)
@@ -135,14 +137,37 @@ void close_all_fds(t_node *node, t_node *tmp)
 void	execute_list_of_cmds(t_node *list_cmd)
 {
 	int	fk;
+	int i;
+	int chek;
 	int	len;
 	t_node *tmp;
 
 	tmp = list_cmd;
-
 	len = ft_lstsize(list_cmd);
 	while (list_cmd)
 	{
+
+		// printf("exit code : %s\n", list_cmd->cmd);
+		
+		chek = 0;
+		i = 0;
+		while(list_cmd->cmd_dt->file[i])
+		{
+			if(list_cmd->cmd_dt->file[i][0] == '\0' && ft_strcmp("<<", list_cmd->cmd_dt->op[i]))
+			{
+				chek = 1;
+				break ;
+			}
+			
+			
+			i++;
+			// if(list_cmd->cmd_dt->file[i])
+		}
+		if(chek)
+		{
+			list_cmd = list_cmd->next;
+			continue; 
+		}
 		if (len > 1)
 		{
 			if (list_cmd->index != g_gb.infos->cmd_count - 1)
@@ -154,18 +179,29 @@ void	execute_list_of_cmds(t_node *list_cmd)
 				{
 					close(list_cmd->fds[0]);
 					if(list_cmd->outf_fd == 1)
+					{
+						list_cmd->outf_fd = list_cmd->fds[1];
 						dup2(list_cmd->fds[1], 1);
+					}
 					if(list_cmd->outf_fd > 2)
 						dup2(list_cmd->outf_fd, 1);
 					close_fds(list_cmd, tmp);
 					if(is_builtin(list_cmd))
+					{
 						builtins(list_cmd);
+					}
 					else
+					{
+						
 						check_cmds(list_cmd);
+					}
+					exit(0);
 				}
+
 			}
 			else
 			{
+				
 				fk = fork();
 				if (fk == 0)
 				{
@@ -175,9 +211,13 @@ void	execute_list_of_cmds(t_node *list_cmd)
 					else if (list_cmd->outf_fd == 1)
 						dup2(1, list_cmd->outf_fd);
 					if(is_builtin(list_cmd))
+					{
 						builtins(list_cmd);
+						
+					}
 					else
 						check_cmds(list_cmd);
+					exit(0);
 					
 				}
 				close_all_fds(list_cmd, tmp);
@@ -187,13 +227,14 @@ void	execute_list_of_cmds(t_node *list_cmd)
 		}
 		else
 		{
+
 			fk = fork();
 			if (fk == 0)
 			{
-				// printf("after : %d\n", list_cmd->inf_fd);
-				// exit(10);
-				dup2(list_cmd->outf_fd, 1);
-				dup2(list_cmd->inf_fd, 0);
+				if(list_cmd->outf_fd > 2)
+					dup2(list_cmd->outf_fd, 1);
+				if(list_cmd->inf_fd > 2)
+					dup2(list_cmd->inf_fd, 0);
 				check_cmds(list_cmd);
 			}
 			else
@@ -204,6 +245,7 @@ void	execute_list_of_cmds(t_node *list_cmd)
 				if (list_cmd->outf_fd > 2)
 					close(list_cmd->outf_fd);
 			}
+
 			while (wait(NULL) != -1)
 					;
 			// close(list_cmd->outf_fd);

@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 11:33:14 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/02 14:56:20 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 00:03:11 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,12 @@ void ft_export(t_node *full_cmd)
                 {
                     i++;
                     plus = 1;
+                    if(cmd[i] != '=')
+                    {
+                        ft_putstr_fd("not a valid identifier", full_cmd->outf_fd );
+                        ft_putstr_fd("\n", full_cmd->outf_fd );
+                        return;
+                    }
                 }
                 i++;
                 while(cmd[i] && cmd[i] != ' ')

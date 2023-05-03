@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/02 14:53:48 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 03:22:16 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct s_cmd
 {
 	// char *cmd;
 	char **file;
+	char **coted;
 	char **eofs;
 	char **op;
 }			t_cmd;
@@ -135,6 +136,7 @@ void 				ft_export(t_node *full_cmd);
 void 				ft_env(t_node *full_cmd);
 void 				ft_unset(t_node *cmd);
 int 				name_is_exist(char *name);
+char           *get_from_my_env(char *exp);
 
 
 #endif

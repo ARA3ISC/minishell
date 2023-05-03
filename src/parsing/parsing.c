@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/02 14:24:44 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 03:49:05 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,45 +207,54 @@ int allocate_for_op_and_file(t_node *tmp, int i, int j)
 
 
 
-char	*working_in_the_name_of_the_file(char *file_name, int len)
+char	*working_in_the_name_of_the_file(t_node *cmd, int len, int d)
 {
 	int i = 0;
 	int j = 0;
 
 	char *n_name;
-
-	n_name = malloc(len + 1);
-	while(file_name[i])
+	
+	cmd->cmd_dt->coted[d] = malloc(2);
+	cmd->cmd_dt->coted[d][0] = '0';
+	cmd->cmd_dt->coted[d][1] = '\0';
+	
+	while(cmd->cmd_dt->file[d][i])
 	{
-		if(file_name[i] == 34)
+		if(cmd->cmd_dt->file[d][i] == '\"' || cmd->cmd_dt->file[d][i] == '\'')
+			cmd->cmd_dt->coted[d][0] = '1';
+		i++;
+	}
+	i = 0;
+	n_name = malloc(len + 1);
+	while(cmd->cmd_dt->file[d][i])
+	{
+		if(cmd->cmd_dt->file[d][i] == 34)
 		{
 			i++;
-			while (file_name[i] && file_name[i] != 34)
+			while (cmd->cmd_dt->file[d][i] && cmd->cmd_dt->file[d][i] != 34)
 			{
-				n_name[j++] = file_name[i];
+				n_name[j++] = cmd->cmd_dt->file[d][i];
 				i++;
 			}
 			i++;
 		}
-		if(file_name[i] == 39)
+		if(cmd->cmd_dt->file[d][i] && cmd->cmd_dt->file[d][i] == 39)
 		{
 			i++;
-			while (file_name[i] && file_name[i] != 39)
+			while (cmd->cmd_dt->file[d][i] && cmd->cmd_dt->file[d][i] != 39)
 			{
-				n_name[j++] = file_name[i];
+				n_name[j++] = cmd->cmd_dt->file[d][i];
 				i++;
 			}
 			i++;
 		}
-		if(file_name[i] != 34 && file_name[i] != 39)
+		if(cmd->cmd_dt->file[d][i] && cmd->cmd_dt->file[d][i] != 34 && cmd->cmd_dt->file[d][i] != 39)
 		{
-			n_name[j++] = file_name[i];
+			n_name[j++] = cmd->cmd_dt->file[d][i];
 			i++;
 		}
 	}
 	n_name[j] = '\0';
-	// printf("n_name : %s\n", n_name);
-	// exit(0);
 	return n_name;
 }
 
@@ -307,7 +316,8 @@ void	get_details(t_node *tmp)
 			if (tmp->cmd[i] && tmp->cmd[i] == '<' && tmp->cmd[i + 1] == '>')
 			{
 				tmp->cmd_dt->op[j][0] = '>';
-				tmp->cmd_dt->op[j][0] = '\0';
+				tmp->cmd_dt->op[j][1] = '\0';
+				i = i + 2;
 				
 			}
 			else 
@@ -327,7 +337,9 @@ void	get_details(t_node *tmp)
 					tmp->cmd_dt->op[j][1] = '\0';
 			}
 			fill_file_name(tmp, i, j);   //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
-			tmp->cmd_dt->file[j] = working_in_the_name_of_the_file(tmp->cmd_dt->file[j], len);
+			// printf("file : |%s|\n", tmp->cmd_dt->file[j]);
+			tmp->cmd_dt->file[j] = working_in_the_name_of_the_file(tmp, len, j);
+			// printf("finale file : |%s|\n", tmp->cmd_dt->file[j]);
 			if (is_eof)
 				tmp->cmd_dt->eofs[k++] = tmp->cmd_dt->file[j];
 			j++;
@@ -353,6 +365,7 @@ void	get_details(t_node *tmp)
 
 int	detail_cmd(t_node *list_cmd)
 {
+	// int i = 0;
 	while (list_cmd)
 	{
 		list_cmd->cmd_dt = malloc(sizeof(t_cmd));
@@ -366,12 +379,20 @@ int	detail_cmd(t_node *list_cmd)
 		list_cmd->cmd_dt->file = malloc(sizeof(char *) * (list_cmd->op_count + 1));
 		if(!list_cmd->cmd_dt->file)
 			return 0;
+		list_cmd->cmd_dt->coted = malloc(sizeof(char *) * (list_cmd->op_count + 1));
+		if(!list_cmd->cmd_dt->coted)
+			return 0;
 			
 		// printf("*** we will allocate %d\n", list_cmd->herdocs_count + 1);
 		list_cmd->cmd_dt->eofs = malloc(sizeof(char *) * (list_cmd->herdocs_count + 1));
-
+		// printf
 		get_details(list_cmd);
-		// while(list_cmd.)
+		// i = 0;
+		// while(list_cmd->cmd_dt->op[i])
+		// {
+		// 	// printf("op : %s\n", list_cmd->cmd_dt->op[i]);
+		// 	i++;
+		// }
 		if (g_gb.exit_code == 404)
 			return 0;
 		list_cmd = list_cmd->next;
@@ -434,8 +455,8 @@ char	*get_var(char *str, t_node *tmp, int j)
 		i++;
 	}
 	exp[i] = '\0';
-
-	tmp->exp_var[j] = exp;
+	if(tmp)
+		tmp->exp_var[j] = exp;
 	return exp;
 }
 
@@ -530,11 +551,64 @@ void    exit_herdoc(int signo)
 }
 
 
-void    start_reading(t_node *list_cmd, char *eof)
+char * expend_herdocc(char *input)
+{
+	int i = 0;
+	char *result;
+	char **var = NULL;
+	char *new_cmd = NULL;
+	int j = 0;
+	while (input[i])
+	{
+		if(input[i] == '$' && input[i + 1]  && (input[i + 1] == '?' || ft_isalnum(input[i + 1])))
+			var[j++] = get_var(&input[i + 1], NULL, 0);
+		i++;
+	}
+	// printf
+	i = 0;
+	j = 0;
+	while (input[i])
+	{
+		if(input[i] && input[i + 1] && input[i] == '$' && (input[i + 1] == '?' || ft_isalnum(input[i + 1])))
+		{
+			if(input[i + 1] == '?')
+			{
+				result = ft_strdup(ft_itoa(g_gb.exit_code));
+				i = i + 2;
+			}
+			else
+			{
+				result = get_from_my_env(var[j]);
+				// printf("var  ")
+				i = i + ft_strlen(var[j]) + 1;
+			}
+			if (result)
+			{
+				new_cmd = ft_strjoin2(new_cmd, result);
+			}
+			else
+				new_cmd = ft_strjoin2(new_cmd, "\n");
+			
+			j++;
+			continue;
+		}
+		else if(input[i])
+		{
+			new_cmd = ft_strjoin_char(new_cmd, input[i]);
+			i++;
+		}
+	}
+	return new_cmd;
+}
+
+
+void    start_reading(t_node *list_cmd, char *eof, char *coted)
 {
     int fds[2];
     char *rd = NULL;
     char *input = NULL;
+	// char *result;
+	(void)coted;
     pipe(fds);
     int id = fork();
     if (id == 0)
@@ -545,16 +619,20 @@ void    start_reading(t_node *list_cmd, char *eof)
             rd = readline("herdoc> ");
             if (!rd)
             {
-                printf("**\n");
+                // printf("**\n");
                 exit(0);
             }
             if (!ft_strcmp(rd, eof))
             {
+				
+				// if(coted[0] == '0')
+				// {
+				// 	result = expend_herdocc(input);
+                // 	write(fds[1], result, ft_strlen(result) * sizeof(char));
+				// }
+				// else
                 write(fds[1], input, ft_strlen(input) * sizeof(char));
-                
-				// printf("before : %d\n", fds[1]);
                 exit(0);
-
             }
             input = ft_strjoin2(input, rd);
             input = ft_strjoin( input ,"\n");
@@ -566,7 +644,9 @@ void    start_reading(t_node *list_cmd, char *eof)
 		wait(&g_gb.exit_code);
 		g_gb.exit_code = WEXITSTATUS(g_gb.exit_code);
         list_cmd->inf_fd = fds[0];
+		// printf("here outf : %d\n", fds[0]);
 		close(fds[1]);
+		// close(fds[0]);
     }
 	// printf("fd[0] dyal lpipe : %d\n", fds[0]);
 }
@@ -585,9 +665,8 @@ void	check_herdocs(t_node *list_cmd)
 		{
 			if (list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '<' && list_cmd->cmd[i + 1] == '<')
 			{
-				eof = list_cmd->cmd_dt->eofs[j++];
-				// printf("eof : %s\n", eof);
-				start_reading(list_cmd, eof);
+				eof = list_cmd->cmd_dt->eofs[j];
+				start_reading(list_cmd, eof, list_cmd->cmd_dt->coted[j++]);
 			}
 
 			i++;
@@ -597,10 +676,6 @@ void	check_herdocs(t_node *list_cmd)
 	}
 
 }
-
-// cmd1 : infile "0" outfile "4"
-// cmd2 : infile "5" outfile "6"
-// cmd3 : infile "0" outfile "1"
 
 void	cmd_flags_1st_case(t_node *list_cmd)
 {
@@ -651,45 +726,20 @@ void	fill_my_env(char **env)
 {
 	int k = 0;
 	int i;
-	// t_env *tmp;
-	// char **split_env;
 	char *name = NULL;
-	// char *value = NULL;
-
-	// g_gb.my_env = malloc(sizeof(t_env));
-	// tmp = g_gb.my_env;
 	while (env[k])
 	{
-		// split_env = ft_split(env[k], '=');
 		i = 0;
 		while (env[k][i] && env[k][i] != '=')
 		{
-			// printf("c : %c\n", env[k][i]);
 			name = ft_strjoin_char(name, env[k][i]);
 			i++;
 		}
-		// printf("name : %s\n", name);
-		// i++;
-		// while (env[k][i])
-		// {
-		// 	value = ft_strjoin_char(value, env[k][i]);
-		// 	i++;
-		// }
-		// tmp->name = malloc(ft_strlen(split_env[0]));
-		// tmp->name = ft_strdup(split_env[0]);
-		// tmp->value = getenv(split_env[0]);
-		// if (env[k])
-		// 	tmp->next = malloc(sizeof(t_env));
-		// tmp = tmp->next;
 
 		ft_lstadd_back_env(&g_gb.my_env, ft_lstnew_env(name, getenv(name)));
-
-		// free_2d_table(split_env);
-		// free(name);
 		name = NULL;
 		k++;
 	}
-	// tmp = NULL;
 }
 
 void	look_for_var(t_node *tmp, int j)
@@ -703,6 +753,21 @@ void	look_for_var(t_node *tmp, int j)
 		printf("var : %s\n", var);
 	else
 		printf("Not exist\n");
+}
+
+char *get_from_my_env(char *exp)
+{
+	char *exp_to_rtn = NULL;
+	
+	t_env *tmp;
+	tmp = g_gb.my_env;
+	while(tmp)
+	{
+		if(!ft_strcmp(exp, tmp->name))
+			exp_to_rtn = tmp->value;
+		tmp = tmp->next;
+	}
+	return exp_to_rtn;
 }
 
 void	expanding(t_node *list_cmd)
@@ -729,19 +794,26 @@ void	expanding(t_node *list_cmd)
 				}
 				i++;
 			}
-			if(list_cmd->cmd[i] && list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '$'&& (list_cmd->cmd[i + 1] == '?' || ft_isalnum(list_cmd->cmd[i + 1])))
+			if(list_cmd->cmd[i] && list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '$' && (list_cmd->cmd[i + 1] == '?' || ft_isalnum(list_cmd->cmd[i + 1])))
 			{
 				if(list_cmd->cmd[i + 1] == '?')
 				{
 					var = ft_strdup(ft_itoa(g_gb.exit_code));
+					i = i + 2;
 				}
 				else
-					var = getenv(list_cmd->exp_var[j]);
+				{
+					var = get_from_my_env(list_cmd->exp_var[j]);
+					// printf("var  ")
+					i = i + ft_strlen(list_cmd->exp_var[j]) + 1;
+				}
 				if (var)
+				{
 					list_cmd->new_cmd = ft_strjoin2(list_cmd->new_cmd, var);
+				}
 				else
 					list_cmd->new_cmd = ft_strjoin2(list_cmd->new_cmd, "\n");
-				i = i + ft_strlen(list_cmd->exp_var[j]) + 1;
+				
 				j++;
 				continue;
 			}
@@ -752,7 +824,10 @@ void	expanding(t_node *list_cmd)
 				
 			}
 		}
+		// if(var)
+		// 	free(var);
 		// printf("cmd : %s\n", list_cmd->new_cmd);
+		g_gb.exit_code = 0;
 		list_cmd = list_cmd->next;
 	}
 }
@@ -931,20 +1006,21 @@ void		parsing(char **env, t_node *list_cmd)
 				
 				get_number_of_tokens(full_cmd, list_cmd);
 				g_gb.error = detail_cmd(list_cmd);
+				
 			}
 			if (g_gb.error != 0)
 			{
 				open_files(list_cmd);
 				check_expanding(list_cmd);
-				
 				expanding(list_cmd);
+				// printf("new cmd : %s\n", list_cmd->new_cmd);
+				// printf("new cmd : %s\n", list_cmd->next->new_cmd);
 				check_herdocs(list_cmd);
 				get_cmd_with_flags(list_cmd);
 				
 				execution(list_cmd);
 
 				// printf("exit code : %d\n", g_gb.exit_code);
-				g_gb.exit_code = 0;
 			}
 		}
 		// else if (g_gb.error != 0)
