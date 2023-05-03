@@ -1,8 +1,6 @@
 export                                               done
 <>bbjbjb                                             done
-<< ll
-    > $USER
-ambiguis
+
 echo $? | echo $?                                     done
 >l                                                    done
 ls >""                                                done
@@ -10,11 +8,21 @@ ls >""                                                done
 ash: export: `e+-=5': not a valid identifier          done
 
 
-signals
-exit code 
+
 
 compare this examle in the fucking minishell in bash    done
 cat Makefile  | echo -n  wc hhhh | wc                   done
 echo -n  kkkk -n > mmmmn                                done
 
 
+
+export
+exit with arguments
+
+signals
+exit code
+
+ambiguis
+
+<< ll
+    > $USER

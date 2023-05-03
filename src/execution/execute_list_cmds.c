@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/03 01:59:40 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 16:39:56 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,9 +146,13 @@ void	execute_list_of_cmds(t_node *list_cmd)
 	len = ft_lstsize(list_cmd);
 	while (list_cmd)
 	{
-
-		// printf("exit code : %s\n", list_cmd->cmd);
-		
+		g_gb.error = open_files(list_cmd);
+		if (g_gb.error == 0)
+		{
+			if (list_cmd)
+				list_cmd = list_cmd->next;
+			continue; 
+		}
 		chek = 0;
 		i = 0;
 		while(list_cmd->cmd_dt->file[i])
@@ -158,8 +162,6 @@ void	execute_list_of_cmds(t_node *list_cmd)
 				chek = 1;
 				break ;
 			}
-			
-			
 			i++;
 			// if(list_cmd->cmd_dt->file[i])
 		}
@@ -197,7 +199,7 @@ void	execute_list_of_cmds(t_node *list_cmd)
 					}
 					exit(0);
 				}
-
+	
 			}
 			else
 			{
@@ -223,6 +225,7 @@ void	execute_list_of_cmds(t_node *list_cmd)
 				close_all_fds(list_cmd, tmp);
 				while (wait(NULL) != -1)
 					;
+					g_gb.exit_code = 0;
 			}
 		}
 		else

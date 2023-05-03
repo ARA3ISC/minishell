@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/03 03:49:05 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/03 16:21:22 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -489,7 +489,8 @@ void	look_for_dollar(t_node *tmp)
 				}
 				i++;
 			}
-			i++;
+			if(tmp->cmd[i])
+				i++;
 		}
 		if(tmp->cmd[i] && tmp->cmd[i] == '$' && tmp->cmd[i + 1]  && (tmp->cmd[i + 1] == '?' || ft_isalnum(tmp->cmd[i + 1])))
 		{
@@ -643,6 +644,7 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
 		// close(fds[0]);
 		wait(&g_gb.exit_code);
 		g_gb.exit_code = WEXITSTATUS(g_gb.exit_code);
+		// printf("status : %d\n", g_gb.exit_code);
         list_cmd->inf_fd = fds[0];
 		// printf("here outf : %d\n", fds[0]);
 		close(fds[1]);
@@ -846,13 +848,14 @@ char	*expanded_file_name(char *file)
 	return NULL;
 }
 
-void	output_redirections(t_node *list_cmd, int i)
+int	output_redirections(t_node *list_cmd, int i)
 {
 	int fd = -2;
 	char *file;
 	if (!ft_strcmp(list_cmd->cmd_dt->op[i], ">"))
 	{
 		file = expanded_file_name(list_cmd->cmd_dt->file[i]);
+		// printf("file : %s\n", file);
 		if (file)
 			fd = open(file, O_CREAT | O_RDWR | O_TRUNC, 0666);
 		else
@@ -870,15 +873,16 @@ void	output_redirections(t_node *list_cmd, int i)
 		else
 			fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR | O_APPEND, 0666);
 		list_cmd->outf_fd = fd;
-
-		// close(fd);
-		// printf("%s outfile opened %d\n",list_cmd->cmd_dt->file[i], list_cmd->outf_fd);
 	}
 	if (fd == -1)
-		print_error("Error opening file\n", 103);
+	{
+		print_error("minishell: : No such file or directory", 103);
+		return 0;
+	}
+	return 1;
 }
 
-void	input_redirections(t_node *list_cmd, int i)
+int	input_redirections(t_node *list_cmd, int i)
 {
 	int fd;
 
@@ -889,32 +893,39 @@ void	input_redirections(t_node *list_cmd, int i)
 		{
 			printf("minishell: %s: No such file or directory\n", list_cmd->cmd_dt->file[i]);
 			print_error(NULL, 1);
+			return 0;
 		}
 		list_cmd->inf_fd = fd;
 		// close(fd);
 		// printf("%s infile opened %d\n",list_cmd->cmd_dt->file[i], list_cmd->inf_fd);
 	}
+	return 1;
 }
 
 int	open_files(t_node *list_cmd)
 {
 	int i;
-
-		// printf("%s\n");
-		// exit(0);
-	while (list_cmd)
-	{
+	int rd;
+	
+	rd = 1;
+	// while (list_cmd)
+	// {
+		// printf("cmd : %s\n", list_cmd->cmd);
 		i = 0;
 		while (list_cmd->cmd_dt->file[i])
 		{
-			output_redirections(list_cmd, i);
-			input_redirections(list_cmd, i);
+			rd = output_redirections(list_cmd, i);
+			if(rd)
+				rd = input_redirections(list_cmd, i);
+			if (!rd)
+				break;
 			i++;
 		}
-		// printf("infile : %d\noutfile : %d\n", list_cmd->inf_fd, list_cmd->outf_fd);
-		list_cmd = list_cmd->next;
-	}
-	return 0;
+		// list_cmd = list_cmd->next;
+	// }
+	
+	
+	return rd;
 }
 
 void	count_herdocs(char *full_cmd)
@@ -990,15 +1001,18 @@ void		parsing(char **env, t_node *list_cmd)
 	signal(SIGINT, signal_C_received);
 	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
+		
+		// printf("statsus : %d\n", g_gb.exit_code);
 
+		// g_gb.exit_code = 0;
 		add_history(full_cmd);
 		g_gb.error = all_error(full_cmd);
-		
 		
 		if(!g_gb.error)
 		{
 
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
+
 
 			// exit(10);
 			if (g_gb.error != 0)
@@ -1006,19 +1020,29 @@ void		parsing(char **env, t_node *list_cmd)
 				
 				get_number_of_tokens(full_cmd, list_cmd);
 				g_gb.error = detail_cmd(list_cmd);
+	
 				
 			}
 			if (g_gb.error != 0)
 			{
-				open_files(list_cmd);
-				check_expanding(list_cmd);
-				expanding(list_cmd);
-				// printf("new cmd : %s\n", list_cmd->new_cmd);
-				// printf("new cmd : %s\n", list_cmd->next->new_cmd);
-				check_herdocs(list_cmd);
-				get_cmd_with_flags(list_cmd);
-				
-				execution(list_cmd);
+				// printf()
+					
+				// g_gb.error = open_files(list_cmd);
+				// printf("\nerror : %d\n\n", g_gb.error);
+				// if(g_gb.error != 0)
+				// {
+					// printf("statsus : %d\n", g_gb.exit_code);
+					
+					check_expanding(list_cmd);
+					expanding(list_cmd);
+
+					check_herdocs(list_cmd);
+					get_cmd_with_flags(list_cmd);
+					
+					execution(list_cmd);
+					
+				// }
+					
 
 				// printf("exit code : %d\n", g_gb.exit_code);
 			}
@@ -1028,9 +1052,9 @@ void		parsing(char **env, t_node *list_cmd)
         		// printf("out : %d\n", list_cmd->outf_fd);
 		ft_lstclear(&list_cmd);
 		// free(list_cmd);
-		// list_cmd = NULL;
+		list_cmd = NULL;
 		signal(SIGQUIT, signal_D_received);
-		free(full_cmd);
+		// free(full_cmd);
 		g_gb.error = 0;
 	}
 }
