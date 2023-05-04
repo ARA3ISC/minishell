@@ -6,12 +6,51 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 11:33:14 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/03 00:03:11 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/04 18:04:18 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../../minishell.h"
+
+void display_export(t_node *full_cmd)
+{
+    t_env *tmp;
+     tmp = g_gb.my_export;
+     
+    while(tmp)
+    {
+        // printf("equal : %d\n", tmp->equal);
+        ft_putstr_fd("declare -x ", full_cmd->outf_fd);
+        ft_putstr_fd(tmp->name, full_cmd->outf_fd);
+        
+        if(tmp->equal)
+        {
+            ft_putstr_fd("=\"", full_cmd->outf_fd);
+            if(tmp->value)
+                ft_putstr_fd(tmp->value, full_cmd->outf_fd);
+            ft_putstr_fd("\"\n", full_cmd->outf_fd);
+        
+        }
+        else
+            ft_putstr_fd("\n", full_cmd->outf_fd);
+        
+
+        
+        tmp = tmp->next;
+    }
+}
+
+// void fill_my_export(void)
+// {
+//     char *alpha;
+//     while(g_gb.my_env)
+//     {
+//         alpha = 
+        
+//         g_gb.my_env = g_gb.my_env->value;
+//     }
+// }
 
 int name_is_exist(char *name)
 {
@@ -32,6 +71,7 @@ int name_is_exist(char *name)
 void ft_export(t_node *full_cmd)
 {
     t_env *tmp;
+    t_env *tmp2;
     char *name = NULL;
     char *value = NULL;
 	char *cmd;
@@ -40,6 +80,8 @@ void ft_export(t_node *full_cmd)
     i = 0;
 
 	cmd = &(full_cmd->new_cmd[6]);
+    if(!cmd[0])
+        display_export(full_cmd);
 	while(cmd[i])
     {
         if (cmd[i] == '>' || cmd[i] == '<')
@@ -49,8 +91,21 @@ void ft_export(t_node *full_cmd)
                 i++;
             while(cmd[i] && (cmd[i] == 32 || cmd[i] == '\t'))
                 i++;
-            while(cmd[i] && cmd[i] != 32 && cmd[i] != '\t')
+            if(cmd[i] && cmd[i] == 34)
+            {
+                while(cmd[i] && cmd[i] != 34)
+                    i++;
                 i++;
+            }
+            else if(cmd[i] && cmd[i] == 39)
+            {
+                while(cmd[i] && cmd[i] != 39)
+                    i++;
+                i++;
+            }
+            else
+                while(cmd[i] && cmd[i] != 32 && cmd[i] != '\t')
+                    i++;
         }
         else if (cmd[i] == ' ')
             while(cmd[i] && (cmd[i] == 32 || cmd[i] == '\t'))
@@ -67,7 +122,9 @@ void ft_export(t_node *full_cmd)
             // printf("char : |%c|\n", cmd[i]);
             if(cmd[i] == ' ' || cmd[i] == '\0')
             {
-                free(name);
+                tmp2 = g_gb.my_export;
+                ft_lstadd_back_env(&tmp2, ft_lstnew_env(name, "" , 0, existe_spaces("")));
+                // tmp2->equal = 0;
                 break;
             }
             else 
@@ -84,7 +141,7 @@ void ft_export(t_node *full_cmd)
                     }
                 }
                 i++;
-                while(cmd[i] && cmd[i] != ' ')
+                while(cmd[i])
                 {
                     if(cmd[i] == 34)
                     {
@@ -111,6 +168,7 @@ void ft_export(t_node *full_cmd)
                 }
                 
                 tmp = g_gb.my_env;
+                tmp2 =  g_gb.my_export;
                 if(name_is_exist(name))
                 {
                     while(tmp)
@@ -128,7 +186,8 @@ void ft_export(t_node *full_cmd)
                 else
                 {
                     
-                    ft_lstadd_back_env(&tmp, ft_lstnew_env(name, value));
+                    ft_lstadd_back_env(&tmp, ft_lstnew_env(name, value , 1, existe_spaces(value)));
+                    ft_lstadd_back_env(&tmp2, ft_lstnew_env(name, value, 1, existe_spaces(value)));
                     
                     
                 }
@@ -141,3 +200,5 @@ void ft_export(t_node *full_cmd)
     }
     
 }
+
+

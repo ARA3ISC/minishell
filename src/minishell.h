@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/03 23:10:34 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/04 18:34:21 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ typedef struct s_env
 {
 	char *name;
 	char *value;
+	int equal;
+	int space;
 	struct s_env *next;
 }				t_env;
 
@@ -83,6 +85,8 @@ typedef struct s_gb
 	bool error;
 	int pid;
 	t_env *my_env;
+	t_env *my_export;
+	
 }				t_gb;
 
 t_gb g_gb;
@@ -117,7 +121,7 @@ int					all_error(char *full_cmd);
 void				count_herdocs(char *full_cmd);
 void				parsing(char **env, t_node *list_cmd);
 void 				execution(t_node *list_cmd);
-t_env				*ft_lstnew_env(char *name, char *value);
+t_env				*ft_lstnew_env(char *name, char *value, int equal, int space);
 void				ft_lstadd_back_env(t_env **lst, t_env *new);
 void    			ft_putstr_fd(char *str, int fd);
 int					ft_atoi(const char *str);
@@ -137,8 +141,9 @@ void 				ft_export(t_node *full_cmd);
 void 				ft_env(t_node *full_cmd);
 void 				ft_unset(t_node *cmd);
 int 				name_is_exist(char *name);
-char	           *get_from_my_env(char *exp);
+char	           *get_from_my_env(char *exp, char *quot);
 int					open_files(t_node *list_cmd);
+int 				existe_spaces(char *value);
 
 
 #endif

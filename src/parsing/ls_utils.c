@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 10:36:43 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/01 22:36:50 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:22:26 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,15 +96,18 @@ void	ft_lstclear(t_node **lst)
 }
 
 
-t_env	*ft_lstnew_env(char *name, char *value)
+t_env	*ft_lstnew_env(char *name, char *value, int equal, int space)
 {
 	t_env	*n;
 	n = malloc(sizeof(t_env));
 	if (!n)
 		return (NULL);
-
+	n->equal = (int )malloc(4);
+	n->space = (int )malloc(4);
 	n->name = name;
 	n->value = value;
+	n->equal = equal;
+	n->space = space;
 	n->next = NULL;
 	return (n);
 }

@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/03 22:12:36 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/04 18:47:58 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,8 +204,11 @@ char	*working_in_the_name_of_the_file(t_node *cmd, int len, int d)
 	
 	while(cmd->cmd_dt->file[d][i])
 	{
-		if(cmd->cmd_dt->file[d][i] == '\"' || cmd->cmd_dt->file[d][i] == '\'')
+		if(cmd->cmd_dt->file[d][i] == '\"' )
 			cmd->cmd_dt->coted[d][0] = '1';
+		else if(cmd->cmd_dt->file[d][i] == '\'')
+			cmd->cmd_dt->coted[d][0] = '2';
+			
 		i++;
 	}
 	i = 0;
@@ -547,7 +550,8 @@ char * expend_herdocc(char *input)
 	char *new_cmd = NULL;
 	int j = 0;
 
-
+	if(input == NULL)
+		return NULL;
 	while(input[i])
 	{
 		if(input[i] == '$' && input[i + 1]  && (input[i + 1] == '?' || ft_isalnum(input[i + 1])))
@@ -588,7 +592,7 @@ char * expend_herdocc(char *input)
 			}
 			else
 			{
-				result = get_from_my_env(var[j]);
+				result = get_from_my_env(var[j], "5"); 
 				// printf("var  ")
 				i = i + ft_strlen(var[j]) + 1;
 			}
@@ -692,47 +696,53 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 	char	*new_cmd = NULL;
 	// char	**split_cmd;
 	int i = 0;
-	while (list_cmd->cmd[i])
+	while (list_cmd->new_cmd[i])
 	{
-		if(list_cmd->cmd[i] == 34)
+		if(list_cmd->new_cmd[i] == 34)
 		{
 			i++;
-			while(list_cmd->cmd[i] && list_cmd->cmd[i] != 34)
+			while(list_cmd->new_cmd[i] && list_cmd->new_cmd[i] != 34)
 			{
-				new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i]);
+				new_cmd = ft_strjoin_char(new_cmd, list_cmd->new_cmd[i]);
 				i++;
 			}
 			i++;
 		}
-		else if(list_cmd->cmd[i] == 39)
+		else if(list_cmd->new_cmd[i] == 39)
 		{
 			i++;
-			while(list_cmd->cmd[i] && list_cmd->cmd[i] != 39)
+			while(list_cmd->new_cmd[i] && list_cmd->new_cmd[i] != 39)
 			{
-				new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i]);
+				new_cmd = ft_strjoin_char(new_cmd, list_cmd->new_cmd[i]);
 				i++;
 			}
 			i++;
 		}
-		else if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<'))
+		else if (list_cmd->new_cmd[i] && (list_cmd->new_cmd[i] == '>' || list_cmd->new_cmd[i] == '<'))
 		{
 			new_cmd = ft_strjoin_char(new_cmd, '&');
 			i++;
-			if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<'))
+			if (list_cmd->new_cmd[i] && (list_cmd->new_cmd[i] == '>' || list_cmd->new_cmd[i] == '<'))
 				i++;
-			while (list_cmd->cmd[i] && list_cmd->cmd[i] == 32)
+			while (list_cmd->new_cmd[i] && list_cmd->new_cmd[i] == 32)
 				i++;
-			while (list_cmd->cmd[i] && list_cmd->cmd[i] != 32)
+			while (list_cmd->new_cmd[i] && list_cmd->new_cmd[i] != 32)
 				i++;
 		}
+		else if(list_cmd->new_cmd[i] == 32)
+		{
+			while(list_cmd->new_cmd[i] && list_cmd->new_cmd[i] == 32)
+				i++;
+			new_cmd = ft_strjoin_char(new_cmd, '&');
+		}
 		else
-			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i++]);
+			new_cmd = ft_strjoin_char(new_cmd, list_cmd->new_cmd[i++]);
 	}
 	list_cmd->cmd_flags = ft_split(new_cmd, '&');
 	//  i = 0;
 	// while(list_cmd->cmd_flags[i])
 	// {
-	// 	printf("cmd : |%s|\n", list_cmd->cmd_flags[i]);
+	// 	printf("flags : |%s|\n", list_cmd->cmd_flags[i]);
 	// 	i++;
 	// }
 	 
@@ -750,6 +760,18 @@ void	get_cmd_with_flags(t_node *list_cmd)
 
 }
 
+int existe_spaces(char *value)
+{
+	int i = 0;
+	while(value[i])
+	{
+		if(value[i] == 32)
+			return 1;
+		i++;
+	}	
+	return 0;
+}
+
 void	fill_my_env(char **env)
 {
 	int k = 0;
@@ -764,7 +786,8 @@ void	fill_my_env(char **env)
 			i++;
 		}
 
-		ft_lstadd_back_env(&g_gb.my_env, ft_lstnew_env(name, getenv(name)));
+		ft_lstadd_back_env(&g_gb.my_env, ft_lstnew_env(name, getenv(name), 1, existe_spaces(getenv(name))));
+		ft_lstadd_back_env(&g_gb.my_export, ft_lstnew_env(name, getenv(name), 1, existe_spaces(getenv(name))));
 		name = NULL;
 		k++;
 	}
@@ -783,19 +806,26 @@ void	look_for_var(t_node *tmp, int j)
 		printf("Not exist\n");
 }
 
-char *get_from_my_env(char *exp)
+char *get_from_my_env(char *exp, char *quot)
 {
-	char *exp_to_rtn = NULL;
 	
 	t_env *tmp;
 	tmp = g_gb.my_env;
+	
 	while(tmp)
 	{
 		if(!ft_strcmp(exp, tmp->name))
-			exp_to_rtn = tmp->value;
+		{
+			if(tmp->space && quot[0] == '0')
+			{
+				printf("minishell: ambiguous redirect\n");
+				return "";
+			}
+			return tmp->value;
+		}
 		tmp = tmp->next;
 	}
-	return exp_to_rtn;
+	return NULL;
 }
 
 void	expanding(t_node *list_cmd)
@@ -822,6 +852,8 @@ void	expanding(t_node *list_cmd)
 				}
 				i++;
 			}
+			if(list_cmd->cmd[i] == 34)
+				i++;
 			if(list_cmd->cmd[i] && list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '$' && (list_cmd->cmd[i + 1] == '?' || ft_isalnum(list_cmd->cmd[i + 1])))
 			{
 				if(list_cmd->cmd[i + 1] == '?')
@@ -831,7 +863,7 @@ void	expanding(t_node *list_cmd)
 				}
 				else
 				{
-					var = get_from_my_env(list_cmd->exp_var[j]);
+					var = get_from_my_env(list_cmd->exp_var[j], "3");
 					// printf("var  ")
 					i = i + ft_strlen(list_cmd->exp_var[j]) + 1;
 				}
@@ -860,15 +892,15 @@ void	expanding(t_node *list_cmd)
 	}
 }
 
-char	*expanded_file_name(char *file)
+char	*expanded_file_name(t_node *cmd, int i)
 {
 	char *r;
-	if (file[1] && file[0] == '$' && (file[1] == '?' || ft_isalnum(file[1])))
-	{
-		if(file[1] == '?')
+	if (cmd->cmd_dt->file[i][1] && cmd->cmd_dt->file[i][0] == '$' && cmd->cmd_dt->coted[i][0] != '2' && (cmd->cmd_dt->file[i][1] == '?' || ft_isalnum(cmd->cmd_dt->file[i][1])))
+	{	
+		if(cmd->cmd_dt->file[i][1] == '?')
 			r = ft_strdup(ft_itoa(g_gb.exit_code));
 		else
-			r = getenv(&file[1]);
+			r = get_from_my_env(&cmd->cmd_dt->file[i][1], cmd->cmd_dt->coted[i]);
 		return r;
 	}
 	return NULL;
@@ -880,8 +912,9 @@ int	output_redirections(t_node *list_cmd, int i)
 	char *file;
 	if (!ft_strcmp(list_cmd->cmd_dt->op[i], ">"))
 	{
-		file = expanded_file_name(list_cmd->cmd_dt->file[i]);
-		// printf("file : %s\n", file);
+		file = expanded_file_name(list_cmd , i);
+		if(file && file[0] == '\0')
+			return 0;
 		if (file)
 			fd = open(file, O_CREAT | O_RDWR | O_TRUNC, 0666);
 		else
@@ -893,7 +926,7 @@ int	output_redirections(t_node *list_cmd, int i)
 	else if (!ft_strcmp(list_cmd->cmd_dt->op[i], ">>"))
 	{
 
-		file = expanded_file_name(list_cmd->cmd_dt->file[i]);
+		file = expanded_file_name(list_cmd , i);
 		if (file)
 			fd = open(file, O_CREAT | O_RDWR | O_APPEND, 0666);
 		else
@@ -1024,10 +1057,11 @@ void		parsing(char **env, t_node *list_cmd)
 	else
 		path = ft_strchr(path, '/');
 	fill_my_env(env);
-	fill_my_array_env(env);
+	// fill_my_array_env(env);
 	signal(SIGINT, signal_C_received);
 	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
+		// fill_my_export();
 		
 		// printf("statsus : %d\n", g_gb.exit_code);
 
@@ -1054,6 +1088,9 @@ void		parsing(char **env, t_node *list_cmd)
 			{
 					check_expanding(list_cmd);
 					expanding(list_cmd);
+					// printf("file : |%s|\n", list_cmd->cmd_dt->file[0]);
+					// printf("file : |%s|\n", list_cmd->cmd_dt->coted[0]);
+					// printf("cmd : |%s|\n", list_cmd->new_cmd);
 
 					check_herdocs(list_cmd);
 					
