@@ -24,10 +24,10 @@ spaces                                            done
 
 << ll                                             done
     > $USER                                       done
-"ls  "                                           not yet
+"ls  "                                           done
 exit with arguments                               done
 
-export                                            done(not yet)
+export                                            done
 ambiguis                                          done
 unset the env and taper ls
 

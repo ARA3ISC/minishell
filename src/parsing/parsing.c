@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/04 18:47:58 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/04 19:23:27 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,7 @@ int allocate_for_op_and_file(t_node *tmp, int i, int j)
 		i++;
 	}
 	tmp->cmd_dt->file[j] = malloc(sizeof(char) * len + 1);
+	// tmp->cmd_dt->to_open[j] = malloc(2);
 	// printf("allocated : %d\n", len);
 	if(!tmp->cmd_dt->file[j])
 		exit(1);
@@ -305,6 +306,7 @@ void	get_details(t_node *tmp)
 			{
 				tmp->cmd_dt->op[j][0] = '>';
 				tmp->cmd_dt->op[j][1] = '\0';
+				tmp->cmd_dt->to_open[j] = ft_strdup("0");
 				i = i + 2;
 				
 			}
@@ -323,6 +325,8 @@ void	get_details(t_node *tmp)
 				}
 				else
 					tmp->cmd_dt->op[j][1] = '\0';
+				tmp->cmd_dt->to_open[j] = ft_strdup("1");
+				
 			}
 			fill_file_name(tmp, i, j);   //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
 			
@@ -370,6 +374,9 @@ int	detail_cmd(t_node *list_cmd)
 			return 0;
 		list_cmd->cmd_dt->coted = malloc(sizeof(char *) * (list_cmd->op_count + 1));
 		if(!list_cmd->cmd_dt->coted)
+			return 0;
+		list_cmd->cmd_dt->to_open = malloc(sizeof(char *) * (list_cmd->op_count + 1));
+		if(!list_cmd->cmd_dt->to_open)
 			return 0;
 			
 		// printf("*** we will allocate %d\n", list_cmd->herdocs_count + 1);
@@ -696,55 +703,58 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 	char	*new_cmd = NULL;
 	// char	**split_cmd;
 	int i = 0;
-	while (list_cmd->new_cmd[i])
+	while (list_cmd->cmd[i])
 	{
-		if(list_cmd->new_cmd[i] == 34)
+				// printf("cat : |%c|\n", list_cmd->cmd[i]);
+		
+		if(list_cmd->cmd[i] == 34)
 		{
+			
 			i++;
-			while(list_cmd->new_cmd[i] && list_cmd->new_cmd[i] != 34)
+			while(list_cmd->cmd[i] && list_cmd->cmd[i] != 34)
 			{
-				new_cmd = ft_strjoin_char(new_cmd, list_cmd->new_cmd[i]);
+				new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i]);
 				i++;
 			}
 			i++;
 		}
-		else if(list_cmd->new_cmd[i] == 39)
+		else if(list_cmd->cmd[i] == 39)
 		{
 			i++;
-			while(list_cmd->new_cmd[i] && list_cmd->new_cmd[i] != 39)
+			while(list_cmd->cmd[i] && list_cmd->cmd[i] != 39)
 			{
-				new_cmd = ft_strjoin_char(new_cmd, list_cmd->new_cmd[i]);
+				new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i]);
 				i++;
 			}
 			i++;
 		}
-		else if (list_cmd->new_cmd[i] && (list_cmd->new_cmd[i] == '>' || list_cmd->new_cmd[i] == '<'))
+		else if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<'))
 		{
 			new_cmd = ft_strjoin_char(new_cmd, '&');
 			i++;
-			if (list_cmd->new_cmd[i] && (list_cmd->new_cmd[i] == '>' || list_cmd->new_cmd[i] == '<'))
+			if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>' || list_cmd->cmd[i] == '<'))
 				i++;
-			while (list_cmd->new_cmd[i] && list_cmd->new_cmd[i] == 32)
+			while (list_cmd->cmd[i] && list_cmd->cmd[i] == 32)
 				i++;
-			while (list_cmd->new_cmd[i] && list_cmd->new_cmd[i] != 32)
+			while (list_cmd->cmd[i] && list_cmd->cmd[i] != 32)
 				i++;
 		}
-		else if(list_cmd->new_cmd[i] == 32)
+		else if(list_cmd->cmd[i] == 32)
 		{
-			while(list_cmd->new_cmd[i] && list_cmd->new_cmd[i] == 32)
+			while(list_cmd->cmd[i] && list_cmd->cmd[i] == 32)
 				i++;
 			new_cmd = ft_strjoin_char(new_cmd, '&');
 		}
 		else
-			new_cmd = ft_strjoin_char(new_cmd, list_cmd->new_cmd[i++]);
+			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i++]);
 	}
 	list_cmd->cmd_flags = ft_split(new_cmd, '&');
-	//  i = 0;
-	// while(list_cmd->cmd_flags[i])
-	// {
-	// 	printf("flags : |%s|\n", list_cmd->cmd_flags[i]);
-	// 	i++;
-	// }
+	 i = 0;
+	while(list_cmd->cmd_flags[i])
+	{
+		printf("flags : |%s|\n", list_cmd->cmd_flags[i]);
+		i++;
+	}
 	 
 	// printf("new cmd : %s\n", new_cmd);
 	// exit(10);
@@ -754,6 +764,7 @@ void	get_cmd_with_flags(t_node *list_cmd)
 {
 	while (list_cmd)
 	{
+		// printf("ddddd\n");
 		cmd_flags_1st_case(list_cmd);
 		list_cmd = list_cmd->next;
 	}
@@ -919,7 +930,8 @@ int	output_redirections(t_node *list_cmd, int i)
 			fd = open(file, O_CREAT | O_RDWR | O_TRUNC, 0666);
 		else
 			fd = open(list_cmd->cmd_dt->file[i], O_CREAT | O_RDWR | O_TRUNC , 0666);
-		list_cmd->outf_fd = fd;
+		if(list_cmd->cmd_dt->to_open[i][0] == '1')
+			list_cmd->outf_fd = fd;
 		// close(fd);
 		// printf("%s outfile opened %d\n",list_cmd->cmd_dt->file[i], list_cmd->outf_fd);
 	}
@@ -971,6 +983,8 @@ int	open_files(t_node *list_cmd)
 	// {
 		// printf("cmd : %s\n", list_cmd->cmd);
 		i = 0;
+		// printf("op : %s\n", list_cmd->cmd_dt->op[0]);
+		// printf("to_open : %s\n", list_cmd->cmd_dt->to_open[0]);
 		while (list_cmd->cmd_dt->file[i])
 		{
 			rd = output_redirections(list_cmd, i);

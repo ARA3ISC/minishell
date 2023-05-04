@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/04 18:34:21 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/04 19:05:09 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_cmd
 	char **coted;
 	char **eofs;
 	char **op;
+	char **to_open;
 }			t_cmd;
 
 typedef struct s_node
