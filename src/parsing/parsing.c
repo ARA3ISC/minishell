@@ -6,11 +6,12 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/05 16:39:43 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 22:52:45 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+#include <stdio.h>
 
 void    free_2d_table(char **t)
 {
@@ -76,6 +77,7 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 	while (all_cmds[i])
 	{
 		all_cmds[i] = ft_strtrim(all_cmds[i], " ");
+		all_cmds[i] = ft_strtrim(all_cmds[i], "\t");
 		ft_lstadd_back(list_cmd, ft_lstnew(all_cmds[i]));
 		i++;
 	}
@@ -646,7 +648,7 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
 	char *result;
     pipe(fds);
     int id = fork();
-	printf ("%d ... %d\n", fds[0], fds[1]);
+	// printf ("%d ... %d\n", fds[0], fds[1]);
     if (id == 0)
     {
 		close(fds[0]);
@@ -721,13 +723,12 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 	char	*new_cmd = NULL;
 	// char	**split_cmd;
 	int i = 0;
+
+	// exit(10);
 	while (list_cmd->cmd[i])
 	{
-				// printf("cat : |%c|\n", list_cmd->cmd[i]);
-		
 		if(list_cmd->cmd[i] == 34)
 		{
-			
 			i++;
 			while(list_cmd->cmd[i] && list_cmd->cmd[i] != 34)
 			{
@@ -767,6 +768,19 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i++]);
 	}
 	list_cmd->cmd_flags = ft_split(new_cmd, '&');
+	// if (!new_cmd)
+	// {
+	// 	list_cmd->cmd_flags = malloc(sizeof(char *));
+	// 	list_cmd->cmd_flags[0] = NULL;
+	// }
+	// else
+
+
+	
+	// printf("ddddddd\n");
+	// if (list_cmd->cmd_flags)
+	// 	printf("cmd  : %s\n", list_cmd->cmd_flags[0]);
+	// exit(10);/
 	//  i = 0;
 	// while(list_cmd->cmd_flags[i])
 	// {
@@ -1080,7 +1094,7 @@ void		parsing(char **env, t_node *list_cmd)
 	// int i;
 
 	banner();
-	// signal(SIGINT, SIG_IGN);
+	signal(SIGINT, SIG_IGN);
 
 
 	// signal(SIGQUIT, signal_D_received);
@@ -1095,60 +1109,31 @@ void		parsing(char **env, t_node *list_cmd)
 	signal(SIGINT, signal_C_received);
 	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
-		// fill_my_export();
-		
-		// printf("statsus : %d\n", g_gb.exit_code);
-
-		// g_gb.exit_code = 0;
+		printf("ytrw\n");
 		add_history(full_cmd);
 		g_gb.error = all_error(full_cmd);
-		
 		if(!g_gb.error)
 		{
-
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
-
-
-			// exit(10);
 			if (g_gb.error != 0)
 			{
-				
 				get_number_of_tokens(full_cmd, list_cmd);
 				g_gb.error = detail_cmd(list_cmd);
-	
-				
 			}
 			if (g_gb.error != 0)
 			{
 					check_expanding(list_cmd);
 					expanding(list_cmd);
-					// printf("file : |%s|\n", list_cmd->cmd_dt->file[0]);
-					// printf("file : |%s|\n", list_cmd->cmd_dt->coted[0]);
-					// printf("cmd : |%s|\n", list_cmd->new_cmd);
-
 					check_herdocs(list_cmd);
-					
 					get_cmd_with_flags(list_cmd);
 					execution(list_cmd);
-					
-				// }
-					
-
-				// printf("exit code : %d\n", g_gb.exit_code);
 			}
 		}
-		// else if (g_gb.error != 0)
-
-        		// printf("out : %d\n", list_cmd->outf_fd);
 		ft_lstclear(&list_cmd);
-		// free(list_cmd);
 		list_cmd = NULL;
 		signal(SIGQUIT, signal_D_received);
-		// free(full_cmd);
 		g_gb.error = 0;
-		// g_gb.exit_code = 0;
-
-		
 	}
+		// ft_putstr_fd("i'm here", 2);
 	exit(g_gb.exit_code);
 }

@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/06 14:45:05 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/05 04:43:31 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 19:03:19 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	ps1 = (unsigned char *)s1;
 	ps2 = (unsigned char *)s2;
 	i = 0;
+	// printf("ddfdfdfdfdfdfdf\n");
 	while ((ps1[i] || ps2[i]) && i < n)
 	{
 		if (ps1[i] != ps2[i])

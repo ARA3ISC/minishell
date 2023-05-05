@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 22:40:50 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/03 15:37:26 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 19:47:38 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,6 @@ void ft_pwd(t_node *full_cmd)
    } else {
        perror("getcwd() error");
    }
+    g_gb.exit_code = 0;
+
 }

@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/05 16:58:30 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 22:52:12 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void cmd_not_found(char *full_cmd)
 	printf("minishell: %s: command not found\n", cmd);
 	g_gb.exit_code = 127;
 	exit(127);
+
 }
 
 void	check_cmds(t_node *list_cmd)
@@ -145,10 +146,12 @@ void close_all_fds(t_node *node, t_node *tmp)
 {
 	while(tmp && tmp->index <= node->index)
 	{
-		if (tmp->inf_fd > 2)
-			close (tmp->inf_fd);
-		close(tmp->fds[0]);
-		close(tmp->fds[1]);
+		// printf ("tmp->fds[0] = |%d|\n", tmp->fds[0]);
+		// printf ("tmp->fds[1] = |%d|\n", tmp->fds[1]);
+		if (tmp->fds[0] > 2)
+			close(tmp->fds[0]);
+		if (tmp->fds[1] > 2)
+			close(tmp->fds[1]);		
 		tmp = tmp->next;
 	}
 }
@@ -205,6 +208,7 @@ void	execute_list_of_cmds(t_node *list_cmd)
 					// printf("inf : %d\n", list_cmd->inf_fd);
 					if(list_cmd->inf_fd == 0 && list_cmd->index > 0)
 					{
+						
 						list_cmd->inf_fd = list_cmd->fds[0];
 					}
 					dup2(list_cmd->inf_fd, 0);
@@ -229,9 +233,6 @@ void	execute_list_of_cmds(t_node *list_cmd)
 					}
 					exit(0);
 				}
-				// printf("%d ----- %d\n", list_cmd->fds[0], list_cmd->fds[1]);
-				// if (list_cmd->inf_fd > 2)
-				// 	close(list_cmd->inf_fd);
 				//
 				// printf(" lswls in > %d\n", list_cmd->inf_fd);
 				// printf("lawla out > %d\n", list_cmd->outf_fd);
@@ -239,10 +240,12 @@ void	execute_list_of_cmds(t_node *list_cmd)
 			}
 			else
 			{
+				
 				fk = fork();
 				
 				if (fk == 0)
 				{
+					// printf("CMD : |%s|\n", list_cmd->new_cmd);
 					close_fds(list_cmd, tmp);
 					if(list_cmd->outf_fd > 2)
 						dup2(list_cmd->outf_fd, 1);
@@ -261,10 +264,11 @@ void	execute_list_of_cmds(t_node *list_cmd)
 					
 				}
 				close_all_fds(list_cmd, tmp);
+				// printf ("hello");
 				// if(list_cmd->inf_fd > )
-					// printf("%d ..... .\n", list_cmd->inf_fd);
 				// if (list_cmd->inf_fd > 2)
 				// 	close(list_cmd->inf_fd);
+
 				
 				//
 				while (wait(NULL) != -1)

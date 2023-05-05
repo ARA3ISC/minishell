@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 22:25:53 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/02 14:55:41 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 19:47:16 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,6 @@ void	ft_cd(t_node *full_cmd)
 	// exit(0);
 	if (chdir(path) == -1)
 		perror("error change directory");
+    g_gb.exit_code = 0;
+	
 }
