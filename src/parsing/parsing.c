@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/05 06:24:13 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 16:39:43 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -646,6 +646,7 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
 	char *result;
     pipe(fds);
     int id = fork();
+	printf ("%d ... %d\n", fds[0], fds[1]);
     if (id == 0)
     {
 		close(fds[0]);
@@ -917,7 +918,7 @@ void	expanding(t_node *list_cmd)
 		// if(var)
 		// 	free(var);
 		// printf("cmd : %s\n", list_cmd->new_cmd);
-		g_gb.exit_code = 0;
+		// g_gb.exit_code = 0;
 		list_cmd = list_cmd->next;
 	}
 }
@@ -1090,7 +1091,7 @@ void		parsing(char **env, t_node *list_cmd)
 	else
 		path = ft_strchr(path, '/');
 	fill_my_env(env);
-	// fill_my_array_env(env);
+	fill_my_array_env(env);
 	signal(SIGINT, signal_C_received);
 	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
@@ -1145,5 +1146,9 @@ void		parsing(char **env, t_node *list_cmd)
 		signal(SIGQUIT, signal_D_received);
 		// free(full_cmd);
 		g_gb.error = 0;
+		// g_gb.exit_code = 0;
+
+		
 	}
+	exit(g_gb.exit_code);
 }

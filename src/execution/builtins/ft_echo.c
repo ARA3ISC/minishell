@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 22:17:18 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/03 22:16:10 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 16:48:07 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ void      ft_echo(t_node *cmd)
     if(nl)
         ft_putstr_fd("\n", cmd->outf_fd);
     free(print);
+    g_gb.exit_code = 0;
     // dup2( 1,cmd->outf_fd);
     // close(cmd->outf_fd);
 }

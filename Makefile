@@ -17,6 +17,7 @@ OBJ = $(FT_SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
+	@stty -echoctl
 	@make -C costumizing/
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) -lreadline
 

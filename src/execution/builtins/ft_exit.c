@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 11:26:33 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/03 23:14:14 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 16:47:33 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void ft_exit(t_node *full_cmd)
 
     flags = NULL;
     cmd_tmp = &(full_cmd->new_cmd[4]);
-    
     while (cmd_tmp[i] && cmd_tmp[i] == 32)
         i++;
     while(cmd_tmp[i])
@@ -85,22 +84,23 @@ void ft_exit(t_node *full_cmd)
         }
     }
     split_flags = ft_split(flags, '&');
+    
     i = 0;
-    while(split_flags[i])
+    while(split_flags && split_flags[i])
         i++;
-    if(!ft_is_nbr(split_flags[0]))
+    if(split_flags && !ft_is_nbr(split_flags[0]))
     {
         ft_putstr_fd("minishell: exit: numeric argument required", full_cmd->outf_fd);
         ft_putstr_fd("\n", full_cmd->outf_fd);
         exit(255);
     }
-    if(ft_is_nbr(split_flags[0]) && i > 1)
+    if(split_flags && ft_is_nbr(split_flags[0]) && i > 1)
     {
         ft_putstr_fd("minishell: exit: too many arguments", full_cmd->outf_fd);
         ft_putstr_fd("\n", full_cmd->outf_fd);
     }
-    else if (ft_is_nbr(split_flags[0]) && i == 1)
+    else if (split_flags && ft_is_nbr(split_flags[0]) && i == 1)
         exit(ft_atoi(split_flags[0]));
     else
-        exit(0);
+        exit(g_gb.exit_code);
 }
