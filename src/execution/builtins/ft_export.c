@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 11:33:14 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/04 18:04:18 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 05:24:36 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void display_export(t_node *full_cmd)
     while(tmp)
     {
         // printf("equal : %d\n", tmp->equal);
+		// printf("pipe out : %d\npipe in : %d\n", full_cmd->outf_fd, full_cmd->inf_fd);
+
         ft_putstr_fd("declare -x ", full_cmd->outf_fd);
         ft_putstr_fd(tmp->name, full_cmd->outf_fd);
         
@@ -41,22 +43,31 @@ void display_export(t_node *full_cmd)
     }
 }
 
-// void fill_my_export(void)
-// {
-//     char *alpha;
-//     while(g_gb.my_env)
-//     {
-//         alpha = 
-        
-//         g_gb.my_env = g_gb.my_env->value;
-//     }
-// }
 
-int name_is_exist(char *name)
+
+int name_is_exist_in_env(char *name)
 {
     t_env *tmp;
-    
+    // if(!name)
+    //     return 0;
     tmp = g_gb.my_env;            
+    while(tmp)
+    {
+        if(!ft_strcmp(name, tmp->name))
+        {
+            return 1;
+        }
+        tmp = tmp->next;
+    }
+    return 0;
+}
+
+int name_is_exist_in_export(char *name)
+{
+    t_env *tmp;
+    // if(!name)
+    //     return 0;
+    tmp = g_gb.my_export;            
     while(tmp)
     {
         if(!ft_strcmp(name, tmp->name))
@@ -76,14 +87,16 @@ void ft_export(t_node *full_cmd)
     char *value = NULL;
 	char *cmd;
 	int i;
+	// int check = 0;
     int plus = 0;
     i = 0;
 
-	cmd = &(full_cmd->new_cmd[6]);
+	cmd = &(full_cmd->cmd[6]);
     if(!cmd[0])
         display_export(full_cmd);
 	while(cmd[i])
     {
+        // printf("char : |%c|\n", cmd[i]);
         if (cmd[i] == '>' || cmd[i] == '<')
         {
             i++;
@@ -93,12 +106,14 @@ void ft_export(t_node *full_cmd)
                 i++;
             if(cmd[i] && cmd[i] == 34)
             {
+                i++;
                 while(cmd[i] && cmd[i] != 34)
                     i++;
                 i++;
             }
             else if(cmd[i] && cmd[i] == 39)
             {
+                i++;
                 while(cmd[i] && cmd[i] != 39)
                     i++;
                 i++;
@@ -106,6 +121,8 @@ void ft_export(t_node *full_cmd)
             else
                 while(cmd[i] && cmd[i] != 32 && cmd[i] != '\t')
                     i++;
+            if(!cmd[i])
+                 display_export(full_cmd);
         }
         else if (cmd[i] == ' ')
             while(cmd[i] && (cmd[i] == 32 || cmd[i] == '\t'))
@@ -114,18 +131,57 @@ void ft_export(t_node *full_cmd)
         {
             while(cmd[i] && cmd[i] != '+' && cmd[i] != '=' && cmd[i] != ' ')
             {
-                if(cmd[i] == 34 || cmd[i] == 39)
+                        // printf("char : |%c|\n", cmd[i]);
+                if(cmd[i] == 34)
+                {
                     i++;
+                    while(cmd[i] && cmd[i] != 34)
+                    {
+                        if(cmd[i] == 32 ||  !ft_isalnum(cmd[i]))
+                        {
+                            ft_putstr_fd("minishell: export: not a valid identifier", full_cmd->outf_fd);
+                            ft_putstr_fd("\n", full_cmd->outf_fd);
+                            return ; 
+                        }
+                        name = ft_strjoin_char(name, cmd[i++]);
+                        
+                    }
+                    i++;
+                }
+                else if(cmd[i] == 39 )
+                {
+                    i++;
+                    while(cmd[i] && cmd[i] != 39)
+                    {
+                        if(cmd[i] == 32 ||  !ft_isalnum(cmd[i]))
+                        {
+                            ft_putstr_fd("minishell: export: not a valid identifier", full_cmd->outf_fd);
+                            ft_putstr_fd("\n", full_cmd->outf_fd);
+                            return ; 
+                        }
+                        name = ft_strjoin_char(name, cmd[i++]);
+                        
+                    }
+                    i++;
+                }
                 else
+                {
+                    if(!ft_isalnum(cmd[i]))
+                    {
+                        ft_putstr_fd("minishell: export: not a valid identifier", full_cmd->outf_fd);
+                            ft_putstr_fd("\n", full_cmd->outf_fd);
+                            return ; 
+                    }
                     name = ft_strjoin_char(name, cmd[i++]);
+                }
             }
-            // printf("char : |%c|\n", cmd[i]);
             if(cmd[i] == ' ' || cmd[i] == '\0')
             {
                 tmp2 = g_gb.my_export;
-                ft_lstadd_back_env(&tmp2, ft_lstnew_env(name, "" , 0, existe_spaces("")));
-                // tmp2->equal = 0;
-                break;
+                if(!name_is_exist_in_export(name))
+                    ft_lstadd_back_env(&tmp2, ft_lstnew_env(name, "" , 0, existe_spaces("")));
+                if(cmd[i])    
+                    i++;
             }
             else 
             {
@@ -141,7 +197,7 @@ void ft_export(t_node *full_cmd)
                     }
                 }
                 i++;
-                while(cmd[i])
+                while(cmd[i] && cmd[i] != 32)
                 {
                     if(cmd[i] == 34)
                     {
@@ -169,7 +225,7 @@ void ft_export(t_node *full_cmd)
                 
                 tmp = g_gb.my_env;
                 tmp2 =  g_gb.my_export;
-                if(name_is_exist(name))
+                if(name_is_exist_in_env(name))
                 {
                     while(tmp)
                     {
@@ -185,17 +241,15 @@ void ft_export(t_node *full_cmd)
                 }
                 else
                 {
-                    
                     ft_lstadd_back_env(&tmp, ft_lstnew_env(name, value , 1, existe_spaces(value)));
                     ft_lstadd_back_env(&tmp2, ft_lstnew_env(name, value, 1, existe_spaces(value)));
                     
                     
                 }
+            }
                 name = NULL;
                 value =  NULL;
                 plus = 0;
-            }
-            
         }
     }
     

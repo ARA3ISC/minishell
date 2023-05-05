@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/04 19:05:09 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 04:43:54 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,10 +141,12 @@ void 				ft_exit(t_node *full_cmd);
 void 				ft_export(t_node *full_cmd);
 void 				ft_env(t_node *full_cmd);
 void 				ft_unset(t_node *cmd);
-int 				name_is_exist(char *name);
+int 				name_is_exist_in_env(char *name);
+int 				name_is_exist_in_export(char *name);
 char	           *get_from_my_env(char *exp, char *quot);
 int					open_files(t_node *list_cmd);
 int 				existe_spaces(char *value);
+void 				remove_it_exp(char *name);
 
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/04 19:23:27 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 06:24:13 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,10 +296,25 @@ void	get_details(t_node *tmp)
 	k = 0;
 	while (tmp->cmd[i])
 	{
+		// printf("char : |%c|\n", tmp->cmd[i]);
 		is_eof = 0;
-		if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
+		if(tmp->cmd[i] == 34)
 		{
-			if (tmp->cmd[i] && tmp->cmd[i] == '<' && tmp->cmd[i + 1] == '<')
+			i++;
+			while(tmp->cmd[i] && tmp->cmd[i] != 34)
+				i++;
+			i++;
+		}
+		else if(tmp->cmd[i] == 39)
+		{
+			i++;
+			while(tmp->cmd[i] && tmp->cmd[i] != 39)
+				i++;
+			i++;
+		}
+		else if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
+		{
+			if (tmp->cmd[i + 1] && tmp->cmd[i] == '<' && tmp->cmd[i + 1] == '<')
 				is_eof = 1;
 			len = allocate_for_op_and_file(tmp, i + 1, j);
 			if (tmp->cmd[i] && tmp->cmd[i] == '<' && tmp->cmd[i + 1] == '>')
@@ -633,6 +648,7 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
     int id = fork();
     if (id == 0)
     {
+		close(fds[0]);
         signal(SIGINT, exit_herdoc);
         while(1)
         {
@@ -649,6 +665,7 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
 				{
 					result = expend_herdocc(input);
                 	write(fds[1], result, ft_strlen(result) * sizeof(char));
+					// printf("1 : %d\n", fds[1]);
 				}
 				else
                 	write(fds[1], input, ft_strlen(input) * sizeof(char));
@@ -661,12 +678,12 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
     else
     {
 		// close(fds[0]);
+		close(fds[1]);
+        list_cmd->inf_fd = fds[0];
 		wait(&g_gb.exit_code);
 		g_gb.exit_code = WEXITSTATUS(g_gb.exit_code);
 		// printf("status : %d\n", g_gb.exit_code);
-        list_cmd->inf_fd = fds[0];
 		// printf("here outf : %d\n", fds[0]);
-		close(fds[1]);
 		// close(fds[0]);
     }
 	// printf("fd[0] dyal lpipe : %d\n", fds[0]);
@@ -749,12 +766,12 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i++]);
 	}
 	list_cmd->cmd_flags = ft_split(new_cmd, '&');
-	 i = 0;
-	while(list_cmd->cmd_flags[i])
-	{
-		printf("flags : |%s|\n", list_cmd->cmd_flags[i]);
-		i++;
-	}
+	//  i = 0;
+	// while(list_cmd->cmd_flags[i])
+	// {
+	// 	printf("flags : |%s|\n", list_cmd->cmd_flags[i]);
+	// 	i++;
+	// }
 	 
 	// printf("new cmd : %s\n", new_cmd);
 	// exit(10);
@@ -774,6 +791,8 @@ void	get_cmd_with_flags(t_node *list_cmd)
 int existe_spaces(char *value)
 {
 	int i = 0;
+	if(!value)
+		return 0;
 	while(value[i])
 	{
 		if(value[i] == 32)

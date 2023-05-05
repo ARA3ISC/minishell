@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 16:52:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/02 14:56:42 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/05 04:41:59 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,24 @@ void remove_it(char *name)
     t_env *to_destroy;
     
     tmp = g_gb.my_env;
+    while(tmp)
+    {
+        if(tmp->next && !ft_strcmp(name, tmp->next->name))
+        {
+            to_destroy = tmp->next;
+            tmp->next = tmp->next->next;
+            free(to_destroy);
+        }
+        tmp = tmp->next;
+    }
+}
+
+void remove_it_exp(char *name)
+{
+    t_env *tmp;
+    t_env *to_destroy;
+    
+    tmp = g_gb.my_export;
     while(tmp)
     {
         if(tmp->next && !ft_strcmp(name, tmp->next->name))
@@ -82,8 +100,10 @@ void ft_unset(t_node *full_cmd)
                     name = ft_strjoin_char(name, cmd[i++]);
             }
             // printf("--- %s\n", name);
-            if(name_is_exist(name))
+            if(name_is_exist_in_env(name))
                 remove_it(name);
+            if(name_is_exist_in_export(name))
+                remove_it_exp(name);
             name = NULL;
         }
     }
