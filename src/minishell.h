@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/05 04:43:54 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/06 08:08:19 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef struct s_node
 	char **exp_var;
 	char *new_cmd;
 	int index;
+	bool	only_heredoc;
 
 	struct s_node *next;
 }				t_node;

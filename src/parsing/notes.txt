@@ -1,10 +1,10 @@
 export                                               done
 <>bbjbjb                                             done
 
-echo $? | echo $?                                     done
+echo $? | echo $?                                     mashi done
 >l                                                    done
 ls >""                                                done
-<< ""                                                 done
+<< ""                                                 mach done
 ash: export: `e+-=5': not a valid identifier          done
 
 
@@ -22,7 +22,7 @@ ls > '>'                                          done
 rm '|'                                            done
 spaces                                            done
 
-<< ll                                             done
+<< ll                                             machi done
     > $USER                                       done
 "ls  "                                           done
 exit with arguments                               done

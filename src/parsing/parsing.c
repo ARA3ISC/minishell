@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/05 22:52:45 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/06 08:14:33 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -672,6 +672,7 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
 				}
 				else
                 	write(fds[1], input, ft_strlen(input) * sizeof(char));
+				
                 exit(0);
             }
             input = ft_strjoin2(input, rd);
@@ -692,6 +693,35 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
 	// printf("fd[0] dyal lpipe : %d\n", fds[0]);
 }
 
+bool	ft_is_space(char c)
+{
+	if ((c >= 9 && c <= 13) || c == 32)
+		return (true);
+	return (false);
+}
+
+void	ft_check_rest(char *s, bool *heredoc_on)
+{
+	int	i;
+
+	if (!s || !ft_strlen(s))
+	{
+		*heredoc_on = true;
+		return ;
+	}
+	i = 0;
+	while (s[i])
+	{
+		if (!ft_is_space(s[i]))
+		{
+			*heredoc_on = false;
+			return; 
+		}
+		i++;
+	}
+	*heredoc_on = true;
+}
+
 void	check_herdocs(t_node *list_cmd)
 {
 	char *eof;
@@ -706,7 +736,9 @@ void	check_herdocs(t_node *list_cmd)
 		{
 			if (list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '<' && list_cmd->cmd[i + 1] == '<')
 			{
+				// ft_check_rest(&list_cmd->cmd[i + 1]);
 				eof = list_cmd->cmd_dt->eofs[j];
+				printf("--> |%s|\n", eof);
 				start_reading(list_cmd, eof, list_cmd->cmd_dt->coted[j++]);
 			}
 
@@ -716,6 +748,18 @@ void	check_herdocs(t_node *list_cmd)
 		list_cmd = list_cmd->next;
 	}
 
+}
+
+int	ft_twodim_len(char **p)
+{
+	int	i;
+
+	i = 0;
+	if (!p || !p[i])
+		return (0);
+	while (p[i])
+		i++;
+	return (i);
 }
 
 void	cmd_flags_1st_case(t_node *list_cmd)
@@ -767,7 +811,12 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 		else
 			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i++]);
 	}
+	// ft_putstr_fd(new_cmd ,2);
+	// ft_putstr_fd("\n" ,2);
 	list_cmd->cmd_flags = ft_split(new_cmd, '&');
+	if (!ft_twodim_len(list_cmd->cmd_flags))
+		list_cmd->only_heredoc = true;
+	// ft_check_rest(&list_cmd->cmd, &list_cmd->heredoc_on);
 	// if (!new_cmd)
 	// {
 	// 	list_cmd->cmd_flags = malloc(sizeof(char *));
@@ -1109,12 +1158,13 @@ void		parsing(char **env, t_node *list_cmd)
 	signal(SIGINT, signal_C_received);
 	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
-		printf("ytrw\n");
+		// printf("ytrw\n");
 		add_history(full_cmd);
 		g_gb.error = all_error(full_cmd);
 		if(!g_gb.error)
 		{
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
+			// !!! list_cmd->only_heredoc = false;
 			if (g_gb.error != 0)
 			{
 				get_number_of_tokens(full_cmd, list_cmd);
@@ -1126,6 +1176,8 @@ void		parsing(char **env, t_node *list_cmd)
 					expanding(list_cmd);
 					check_herdocs(list_cmd);
 					get_cmd_with_flags(list_cmd);
+					
+					// ft_putstr_fd(list_cmd->cmd_flags[0], 2);
 					execution(list_cmd);
 			}
 		}

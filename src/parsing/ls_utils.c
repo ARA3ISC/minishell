@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 10:36:43 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/04 17:22:26 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/06 08:19:50 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ t_node	*ft_lstnew(char *_cmd)
 	n->cmd = _cmd;
 	n->inf_fd = 0;
 	n->outf_fd = 1;
+	n->only_heredoc = false;
 	n->next = NULL;
 	
 	// printf("cmd %s\n", n->next->cmd);

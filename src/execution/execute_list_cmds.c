@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/05 22:52:12 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/06 08:13:11 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,13 @@ void cmd_not_found(char *full_cmd)
 	int i;
 
 	i = 0;
+	// write (2, "123", 3);
+	if (!full_cmd || !ft_strlen(full_cmd))
+	{
+		printf("minishell: : command not found\n");
+		g_gb.exit_code = 127;
+		exit(127);
+	}
 	while(full_cmd[i] && full_cmd[i] != ' ' && full_cmd[i] != '<' && full_cmd[i] != '>')
 	{
 		cmd = ft_strjoin_char(cmd, full_cmd[i]);
@@ -71,10 +78,12 @@ void	check_cmds(t_node *list_cmd)
 	// 	i++;
 	// }
 	i = 0;
+	
+	// printf ("list_cmd->cmd_flags[0] = |%s|", list_cmd->cmd_flags[0]);
 	// cmd_flags = check_flags(cmd);
-	if (access(list_cmd->cmd_flags[0], X_OK) == 0)
+	if (list_cmd->cmd_flags && access(list_cmd->cmd_flags[0], X_OK) == 0)
 		execve(list_cmd->cmd_flags[0], list_cmd->cmd_flags, g_gb.env_array);
-	else
+	else if(list_cmd->cmd_flags)
 	{
 		paths = get_paths();
 		// printf("sssss\n");
@@ -91,9 +100,24 @@ void	check_cmds(t_node *list_cmd)
 			i++;
 		}
 	}
+	if ((!list_cmd->cmd_flags || !ft_strlen(list_cmd->cmd_flags[0])) && !list_cmd->only_heredoc)
+	{
+		// write(2, "als", 3);
+	// write (2, "i'm here", ft_strlen("i'm here"));
+		cmd_not_found(NULL);
+	}
 	// printf("flags : %s\n", list_cmd->cmd_flags[0]);
-	if (list_cmd->cmd_flags[0])
+	if (list_cmd->cmd_flags && list_cmd->cmd_flags[0])
+	{
+		
+	printf("fsfdddddd\n");
 		cmd_not_found(list_cmd->cmd_flags[0]);
+	}
+	else if(!list_cmd->cmd_flags)
+	{
+		printf("fffffffff\n");
+		cmd_not_found("");
+	}
 	else
 		exit(0);
 }
