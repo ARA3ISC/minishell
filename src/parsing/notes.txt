@@ -1,7 +1,12 @@
 export                                               done
+export a="echo $USER" --->							must be expanded
+"ls "
+echo $? | echo $?                                     mashi done
+
+
+
 <>bbjbjb                                             done
 
-echo $? | echo $?                                     mashi done
 >l                                                    done
 ls >""                                                done
 << ""                                                 mach done
@@ -22,7 +27,7 @@ ls > '>'                                          done
 rm '|'                                            done
 spaces                                            done
 
-<< ll                                             machi done
+<< ll                                             done
     > $USER                                       done
 "ls  "                                           done
 exit with arguments                               done

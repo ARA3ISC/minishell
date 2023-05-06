@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 17:12:49 by maneddam          #+#    #+#             */
-/*   Updated: 2023/04/07 17:14:44 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/05/06 10:39:56 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ int	ft_strcmp(char *s1, char *s2)
 	size_t			i;
 	unsigned char	*ps1;
 	unsigned char	*ps2;
-
+	if (!s1 || !s2)
+		return 1;
 	ps1 = (unsigned char *)s1;
 	ps2 = (unsigned char *)s2;
 	i = 0;

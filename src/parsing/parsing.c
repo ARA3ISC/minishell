@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/06 09:37:09 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/06 11:31:45 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,6 @@ char	*working_in_the_name_of_the_file(t_node *cmd, int len, int d)
 	cmd->cmd_dt->coted[d] = malloc(2);
 	cmd->cmd_dt->coted[d][0] = '0';
 	cmd->cmd_dt->coted[d][1] = '\0';
-	
 	while(cmd->cmd_dt->file[d][i])
 	{
 		if(cmd->cmd_dt->file[d][i] == '\"' )
@@ -248,7 +247,7 @@ char	*working_in_the_name_of_the_file(t_node *cmd, int len, int d)
 	return n_name;
 }
 
-void fill_file_name(t_node *tmp, int i, int j)
+int fill_file_name(t_node *tmp, int i, int j)
 {
 	int k = 0;
 	while(tmp->cmd[i] && (tmp->cmd[i] == 32 || tmp->cmd[i] == '\t'))
@@ -261,7 +260,7 @@ void fill_file_name(t_node *tmp, int i, int j)
 		if(tmp->cmd_dt->file[j][0] == '#')
 		{
 			print_error("syntax error", 404);
-			return;
+			return 1;
 		}
 		if(tmp->cmd[i] == 34)
 		{
@@ -281,6 +280,7 @@ void fill_file_name(t_node *tmp, int i, int j)
 			i++;
 	}
 	tmp->cmd_dt->file[j][k] = '\0';
+	return 0;
 }
 
 void	get_details(t_node *tmp)
@@ -288,6 +288,7 @@ void	get_details(t_node *tmp)
 	int i;
 	int j;
 	int k;
+	int help;
 	// int d;
 	int len;
 	int is_eof;
@@ -296,6 +297,7 @@ void	get_details(t_node *tmp)
 	i = 0;
 	j = 0;
 	k = 0;
+	help = ft_strlen(tmp->cmd) - 1;
 	while (tmp->cmd[i])
 	{
 		// printf("char : |%c|\n", tmp->cmd[i]);
@@ -314,6 +316,8 @@ void	get_details(t_node *tmp)
 				i++;
 			i++;
 		}
+		// else if(tmp->cmd[i] == 32)
+		// 	i++;		
 		else if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
 		{
 			if (tmp->cmd[i + 1] && tmp->cmd[i] == '<' && tmp->cmd[i + 1] == '<')
@@ -345,8 +349,9 @@ void	get_details(t_node *tmp)
 				tmp->cmd_dt->to_open[j] = ft_strdup("1");
 				
 			}
-			fill_file_name(tmp, i, j);   //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
-			
+			g_gb.error = fill_file_name(tmp, i, j);   //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
+			if(g_gb.error)
+				return;
 			// printf("file : |%s|\n", tmp->cmd_dt->file[j]);
 			tmp->cmd_dt->file[j] = working_in_the_name_of_the_file(tmp, len, j);
 			// printf("finale file : |%s|\n", tmp->cmd_dt->file[j]);
@@ -354,7 +359,7 @@ void	get_details(t_node *tmp)
 				tmp->cmd_dt->eofs[k++] = tmp->cmd_dt->file[j];
 			j++;
 		}
-		if (tmp->cmd[i])
+		else
 			i++;
 	}
 	tmp->cmd_dt->op[j] = NULL;
@@ -693,34 +698,7 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
 	// printf("fd[0] dyal lpipe : %d\n", fds[0]);
 }
 
-bool	ft_is_space(char c)
-{
-	if ((c >= 9 && c <= 13) || c == 32)
-		return (true);
-	return (false);
-}
 
-void	ft_check_rest(char *s, bool *heredoc_on)
-{
-	int	i;
-
-	if (!s || !ft_strlen(s))
-	{
-		*heredoc_on = true;
-		return ;
-	}
-	i = 0;
-	while (s[i])
-	{
-		if (!ft_is_space(s[i]))
-		{
-			*heredoc_on = false;
-			return; 
-		}
-		i++;
-	}
-	*heredoc_on = true;
-}
 
 void	check_herdocs(t_node *list_cmd)
 {
@@ -738,7 +716,6 @@ void	check_herdocs(t_node *list_cmd)
 			{
 				// ft_check_rest(&list_cmd->cmd[i + 1]);
 				eof = list_cmd->cmd_dt->eofs[j];
-				printf("--> |%s|\n", eof);
 				start_reading(list_cmd, eof, list_cmd->cmd_dt->coted[j++]);
 			}
 
@@ -762,9 +739,26 @@ int	ft_twodim_len(char **p)
 	return (i);
 }
 
+char *search_and_replace(char *str, char a, char b)
+{
+	int i = 0;
+
+	if (!str)
+		return NULL;
+	while (str[i])
+	{
+		if (str[i] == a)
+			str[i] = b;
+		i++;	
+	}
+	return str;
+}
+
 void	cmd_flags_1st_case(t_node *list_cmd)
 {
 	char	*new_cmd = NULL;
+	char 	*expanded_cmd;
+	char  	*cmd_tosplit;
 	// char	**split_cmd;
 	int i = 0;
 
@@ -811,42 +805,30 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 		else
 			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i++]);
 	}
-	ft_putstr_fd(new_cmd ,2);
-	// ft_putstr_fd("\n" ,2);
-	list_cmd->cmd_flags = ft_split(new_cmd, '&');
+
+		
+
+	expanded_cmd = expend_herdocc(new_cmd);
+	cmd_tosplit = search_and_replace(expanded_cmd, ' ', '&');
+	
+	// printf("--> |%s|\n", cmd_tosplit);
+	// exit(10);
+	
+	list_cmd->cmd_flags = ft_split(cmd_tosplit, '&');
 	if (!ft_twodim_len(list_cmd->cmd_flags))
 		list_cmd->only_heredoc = true;
-	// ft_check_rest(&list_cmd->cmd, &list_cmd->heredoc_on);
-	// if (!new_cmd)
-	// {
-	// 	list_cmd->cmd_flags = malloc(sizeof(char *));
-	// 	list_cmd->cmd_flags[0] = NULL;
-	// }
-	// else
 
-
-	
-	// printf("ddddddd\n");
-	// if (list_cmd->cmd_flags)
-	// 	printf("cmd  : %s\n", list_cmd->cmd_flags[0]);
-	// exit(10);/
-	//  i = 0;
-	// while(list_cmd->cmd_flags[i])
-	// {
-	// 	printf("flags : |%s|\n", list_cmd->cmd_flags[i]);
-	// 	i++;
-	// }
-	 
-	// printf("new cmd : %s\n", new_cmd);
-	// exit(10);
 }
 
 void	get_cmd_with_flags(t_node *list_cmd)
 {
+	// char *expanded_cmd;
 	while (list_cmd)
 	{
 		// printf("ddddd\n");
 		cmd_flags_1st_case(list_cmd);
+		// expend_herdocc(list_cmd);
+		// expanded_cmd = cmd_flags_1st_case(list_cmd);
 		list_cmd = list_cmd->next;
 	}
 
@@ -905,7 +887,6 @@ char *get_from_my_env(char *exp, char *quot)
 	
 	t_env *tmp;
 	tmp = g_gb.my_env;
-	
 	while(tmp)
 	{
 		if(!ft_strcmp(exp, tmp->name))
