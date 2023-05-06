@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/06 08:14:33 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/06 09:37:09 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -811,7 +811,7 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 		else
 			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i++]);
 	}
-	// ft_putstr_fd(new_cmd ,2);
+	ft_putstr_fd(new_cmd ,2);
 	// ft_putstr_fd("\n" ,2);
 	list_cmd->cmd_flags = ft_split(new_cmd, '&');
 	if (!ft_twodim_len(list_cmd->cmd_flags))
@@ -1156,6 +1156,7 @@ void		parsing(char **env, t_node *list_cmd)
 	fill_my_env(env);
 	fill_my_array_env(env);
 	signal(SIGINT, signal_C_received);
+	signal(SIGQUIT, SIG_IGN);
 	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
 		// printf("ytrw\n");
@@ -1183,7 +1184,7 @@ void		parsing(char **env, t_node *list_cmd)
 		}
 		ft_lstclear(&list_cmd);
 		list_cmd = NULL;
-		signal(SIGQUIT, signal_D_received);
+
 		g_gb.error = 0;
 	}
 		// ft_putstr_fd("i'm here", 2);
