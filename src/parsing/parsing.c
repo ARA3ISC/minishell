@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/06 11:31:45 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/06 12:57:20 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -747,6 +747,7 @@ char *search_and_replace(char *str, char a, char b)
 		return NULL;
 	while (str[i])
 	{
+		
 		if (str[i] == a)
 			str[i] = b;
 		i++;	
@@ -759,6 +760,7 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 	char	*new_cmd = NULL;
 	char 	*expanded_cmd;
 	char  	*cmd_tosplit;
+	int is_quoted = 0;
 	// char	**split_cmd;
 	int i = 0;
 
@@ -767,6 +769,7 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 	{
 		if(list_cmd->cmd[i] == 34)
 		{
+			is_quoted = 1;
 			i++;
 			while(list_cmd->cmd[i] && list_cmd->cmd[i] != 34)
 			{
@@ -777,6 +780,8 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 		}
 		else if(list_cmd->cmd[i] == 39)
 		{
+			is_quoted = 1;
+
 			i++;
 			while(list_cmd->cmd[i] && list_cmd->cmd[i] != 39)
 			{
@@ -809,12 +814,18 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 		
 
 	expanded_cmd = expend_herdocc(new_cmd);
-	cmd_tosplit = search_and_replace(expanded_cmd, ' ', '&');
+	if (!is_quoted)
+	{
+		cmd_tosplit = search_and_replace(expanded_cmd, ' ', '&');
+		list_cmd->cmd_flags = ft_split(cmd_tosplit, '&');
+	}
+	else
+		list_cmd->cmd_flags = ft_split(expanded_cmd, '&');
 	
 	// printf("--> |%s|\n", cmd_tosplit);
 	// exit(10);
 	
-	list_cmd->cmd_flags = ft_split(cmd_tosplit, '&');
+	
 	if (!ft_twodim_len(list_cmd->cmd_flags))
 		list_cmd->only_heredoc = true;
 
@@ -825,10 +836,7 @@ void	get_cmd_with_flags(t_node *list_cmd)
 	// char *expanded_cmd;
 	while (list_cmd)
 	{
-		// printf("ddddd\n");
 		cmd_flags_1st_case(list_cmd);
-		// expend_herdocc(list_cmd);
-		// expanded_cmd = cmd_flags_1st_case(list_cmd);
 		list_cmd = list_cmd->next;
 	}
 

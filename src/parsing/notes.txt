@@ -1,8 +1,8 @@
 export                                               done
-export a="echo $USER" --->							must be expanded
 "ls "
 echo $? | echo $?                                     mashi done
 
+export a="echo $USER" --->							done
 
 
 <>bbjbjb                                             done
