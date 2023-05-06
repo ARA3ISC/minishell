@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 11:33:14 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/05 19:47:32 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/06 12:20:42 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ void ft_export(t_node *full_cmd)
                     i++;
                     while(cmd[i] && cmd[i] != 34)
                     {
-                        if(cmd[i] == 32 ||  !ft_isalnum(cmd[i]))
+                        if((cmd[i] < 65 && cmd[i] > 31 ) || cmd[i] == '\0')
                         {
                             ft_putstr_fd("minishell: export: not a valid identifier", full_cmd->outf_fd);
                             ft_putstr_fd("\n", full_cmd->outf_fd);
@@ -153,7 +153,7 @@ void ft_export(t_node *full_cmd)
                     i++;
                     while(cmd[i] && cmd[i] != 39)
                     {
-                        if(cmd[i] == 32 ||  !ft_isalnum(cmd[i]))
+                        if((cmd[i] < 65 && cmd[i] > 31 ) || cmd[i] == '\0')
                         {
                             ft_putstr_fd("minishell: export: not a valid identifier", full_cmd->outf_fd);
                             ft_putstr_fd("\n", full_cmd->outf_fd);
@@ -178,8 +178,10 @@ void ft_export(t_node *full_cmd)
             if(cmd[i] == ' ' || cmd[i] == '\0')
             {
                 tmp2 = g_gb.my_export;
-                if(!name_is_exist_in_export(name))
-                    ft_lstadd_back_env(&tmp2, ft_lstnew_env(name, "" , 0, existe_spaces("")));
+                
+                
+                if(!name_is_exist_in_export(expend_herdocc(name)))
+                    ft_lstadd_back_env(&tmp2, ft_lstnew_env(expend_herdocc(name), "" , 0, existe_spaces("")));
                 if(cmd[i])    
                     i++;
             }
@@ -241,8 +243,8 @@ void ft_export(t_node *full_cmd)
                 }
                 else
                 {
-                    ft_lstadd_back_env(&tmp, ft_lstnew_env(name, value , 1, existe_spaces(value)));
-                    ft_lstadd_back_env(&tmp2, ft_lstnew_env(name, value, 1, existe_spaces(value)));
+                    ft_lstadd_back_env(&tmp, ft_lstnew_env(expend_herdocc(name), expend_herdocc(value) , 1, existe_spaces(value)));
+                    ft_lstadd_back_env(&tmp2, ft_lstnew_env(expend_herdocc(name), expend_herdocc(value), 1, existe_spaces(value)));
                     
                     
                 }

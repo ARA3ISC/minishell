@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/06 08:08:19 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/06 11:57:27 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,7 @@ char	           *get_from_my_env(char *exp, char *quot);
 int					open_files(t_node *list_cmd);
 int 				existe_spaces(char *value);
 void 				remove_it_exp(char *name);
+char 				*expend_herdocc(char *input);
 
 
 #endif
