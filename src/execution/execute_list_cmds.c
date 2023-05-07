@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/06 09:36:42 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/06 16:44:12 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,53 +91,27 @@ void	check_cmds(t_node *list_cmd)
 	char	*f_cmd;
 	int		i;
 
-	// i = 0;
-	// while(list_cmd->cmd_flags[i])
-	// {
-	// printf("flags : %s\n", list_cmd->cmd_flags[i]);
-	// 	i++;
-	// }
 	i = 0;
-
-	// printf ("list_cmd->cmd_flags[0] = |%s|", list_cmd->cmd_flags[0]);
-	// cmd_flags = check_flags(cmd);
 	if (list_cmd->cmd_flags && access(list_cmd->cmd_flags[0], X_OK) == 0)
 		execve(list_cmd->cmd_flags[0], list_cmd->cmd_flags, g_gb.env_array);
 	else if(list_cmd->cmd_flags)
 	{
 		paths = get_paths();
-		// printf("sssss\n");
-		// printf("path : %s\n", paths[0]);
-		// exit(0);
 		while (paths[i])
 		{
 			paths[i] = ft_strjoin(paths[i], "/");
 			f_cmd = ft_strjoin(paths[i], list_cmd->cmd_flags[0]);
 			if (access(f_cmd, X_OK) == 0)
-			{
 				execve(f_cmd, list_cmd->cmd_flags, g_gb.env_array);
-			}
 			i++;
 		}
 	}
 	if ((!list_cmd->cmd_flags || !ft_strlen(list_cmd->cmd_flags[0])) && !list_cmd->only_heredoc)
-	{
-		// write(2, "als", 3);
-	// write (2, "i'm here", ft_strlen("i'm here"));
 		cmd_not_found(NULL);
-	}
-	// printf("flags : %s\n", list_cmd->cmd_flags[0]);
 	if (list_cmd->cmd_flags && list_cmd->cmd_flags[0])
-	{
-		
-	// printf("fsfdddddd\n");
 		cmd_not_found(list_cmd->cmd_flags[0]);
-	}
 	else if(!list_cmd->cmd_flags)
-	{
-		// printf("fffffffff\n");
 		cmd_not_found("");
-	}
 	else
 		exit(0);
 }

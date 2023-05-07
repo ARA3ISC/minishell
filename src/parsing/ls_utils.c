@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 10:36:43 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/06 08:19:50 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/07 11:22:54 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,74 @@ t_node	*ft_lstnew(char *_cmd)
 	return (n);
 }
 
+void free_big_one(char **tab)
+{
+	free(tab);
+}
+
+void free_cmd_dt(t_node *lst)
+{
+	if(lst->op_count > 0)
+	{
+
+		free_2d_table(lst->cmd_dt->file);
+		free_2d_table(lst->cmd_dt->op);
+		free_2d_table(lst->cmd_dt->to_open);
+		free_2d_table(lst->cmd_dt->coted);
+	}
+	else
+	{
+		free_big_one(lst->cmd_dt->op);
+		free_big_one(lst->cmd_dt->file);
+		free_big_one(lst->cmd_dt->to_open);
+		free_big_one(lst->cmd_dt->coted);
+	}
+	if(lst->herdocs_count > 0)
+		free_2d_table(lst->cmd_dt->eofs);
+	else
+		free_big_one(lst->cmd_dt->eofs);
+	free(lst->cmd_dt);
+		
+}
+
+
+void free_exp(t_node *lst)
+{
+	if(lst->var_count > 0)
+	{
+		free_2d_table(lst->exp_var);
+	}
+	else
+	{
+		free_big_one(lst->exp_var);
+	}	
+}
+
+void free_flags(t_node *lst)
+{
+	if(lst->cmd_flags)
+	{
+		free_2d_table(lst->cmd_flags);
+	}
+	// else
+	// {
+	// 	free_big_one(lst->cmd_flags);
+	// }	
+}
+
 void	ft_lstdelone(t_node *lst)
 {
 	if (lst)
 	{
+		
 		free(lst->cmd);
+		// free(lst->cmd_dt->file[0]);
+		free_cmd_dt(lst);
+		free_exp(lst);
+		free(lst->new_cmd);
+		free_flags(lst);
+		
+		// free(lst->cmd_dt->file);
 		free(lst);
 	}
 }
@@ -83,12 +146,11 @@ int	ft_lstsize(t_node *lst)
 void	ft_lstclear(t_node **lst)
 {
 	t_node	*p;
-
+	p = *lst;
 	if (lst)
 	{
 		while (*lst && p)
 		{
-			// printf ("lst->cmd = |%s|\n", (*lst)->cmd);
 			p = (*lst)->next;
 			ft_lstdelone((*lst));
 			*lst = p;
@@ -103,8 +165,6 @@ t_env	*ft_lstnew_env(char *name, char *value, int equal, int space)
 	n = malloc(sizeof(t_env));
 	if (!n)
 		return (NULL);
-	n->equal = (int )malloc(4);
-	n->space = (int )malloc(4);
 	n->name = name;
 	n->value = value;
 	n->equal = equal;

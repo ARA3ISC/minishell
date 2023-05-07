@@ -62,5 +62,6 @@ char	*ft_strtrim(char const *s1, char const *set)
 	i = ft_start(s1, set);
 	len = ft_end(s1, set, i);
 	ptr = ft_substr(s1, i, len - i + 1);
+	free((void *)s1);
 	return (ptr);
 }

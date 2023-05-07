@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/06 12:57:20 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/07 11:54:40 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,11 @@
 void    free_2d_table(char **t)
 {
 	int    i;
-
+	if(!t)
+		return;
 	i = 0;
+		// exit(0);
+
 	while (t[i])
 	{
 		free(t[i]);
@@ -62,15 +65,17 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 	char **all_cmds;
 	char *cmd_tmp = ft_strdup(cmd);
 	all_cmds = spliting_by_pipe(cmd_tmp);
-	
+	free(cmd_tmp);
 
 	if (!all_cmds[0])
 	{
+		free(all_cmds);
 		print_error(NULL, 0);
 		return 0;
 	}
 	if (check_whitespaces(all_cmds) && all_cmds[1])
 	{
+		free(all_cmds);
 		print_error("syntax error near unexpected token `|'", 258);
 		return 0;
 	}
@@ -81,11 +86,13 @@ int		fill_struct(char *cmd, t_node **list_cmd)
 		ft_lstadd_back(list_cmd, ft_lstnew(all_cmds[i]));
 		i++;
 	}
-	if (all_cmds[0][0] == '\0')
-	{
-		print_error(NULL, 0);
-		return 0;
-	}
+	// if (all_cmds[0][0] == '\0')
+	// {
+	// 	free(all_cmds);
+	// 	print_error(NULL, 0);
+	// 	return 0;
+	// }
+	free(all_cmds);
 	return 1;
 }
 
@@ -132,10 +139,10 @@ int	checking_redirection_in_the_last(char *cmd)
 		int i = ft_strlen(cmd);
 		if (i != 0)
 			i--;
-		while(i > 0 && cmd[i] == ' ')
+		while(i > 0 && (cmd[i] == ' ' || cmd[i] == '\t'))
 			i--;
 		if(cmd[i] == '>' || cmd[i] == '<')
-			return (print_error("syntax error", 258));
+			return (print_error("Syntax error", 258));
 
 	}
 	return 0;
@@ -200,10 +207,6 @@ char	*working_in_the_name_of_the_file(t_node *cmd, int len, int d)
 	int j = 0;
 
 	char *n_name;
-	
-	cmd->cmd_dt->coted[d] = malloc(2);
-	cmd->cmd_dt->coted[d][0] = '0';
-	cmd->cmd_dt->coted[d][1] = '\0';
 	while(cmd->cmd_dt->file[d][i])
 	{
 		if(cmd->cmd_dt->file[d][i] == '\"' )
@@ -244,6 +247,7 @@ char	*working_in_the_name_of_the_file(t_node *cmd, int len, int d)
 		}
 	}
 	n_name[j] = '\0';
+	free(cmd->cmd_dt->file[d]);
 	return n_name;
 }
 
@@ -349,14 +353,15 @@ void	get_details(t_node *tmp)
 				tmp->cmd_dt->to_open[j] = ft_strdup("1");
 				
 			}
-			g_gb.error = fill_file_name(tmp, i, j);   //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
+			g_gb.error = fill_file_name(tmp, i, j); 
+			tmp->cmd_dt->coted[j] = ft_strdup("0");  //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
 			if(g_gb.error)
 				return;
 			// printf("file : |%s|\n", tmp->cmd_dt->file[j]);
 			tmp->cmd_dt->file[j] = working_in_the_name_of_the_file(tmp, len, j);
 			// printf("finale file : |%s|\n", tmp->cmd_dt->file[j]);
 			if (is_eof)
-				tmp->cmd_dt->eofs[k++] = tmp->cmd_dt->file[j];
+				tmp->cmd_dt->eofs[k++] = ft_strdup(tmp->cmd_dt->file[j]);
 			j++;
 		}
 		else
@@ -364,7 +369,8 @@ void	get_details(t_node *tmp)
 	}
 	tmp->cmd_dt->op[j] = NULL;
 	tmp->cmd_dt->file[j] = NULL;
-	// printf("k : %d\n", k);
+	tmp->cmd_dt->to_open[j] = NULL;
+	tmp->cmd_dt->coted[j] = NULL;
 	tmp->cmd_dt->eofs[k] = NULL;
 
 	// i = 0;
@@ -380,17 +386,14 @@ void	get_details(t_node *tmp)
 
 int	detail_cmd(t_node *list_cmd)
 {
-	// int i = 0;
 	while (list_cmd)
 	{
 		list_cmd->cmd_dt = malloc(sizeof(t_cmd));
 		if(!list_cmd->cmd_dt)
 			return 0;
-			// printf("count op : %d\n", list_cmd->op_count);
 		list_cmd->cmd_dt->op = malloc(sizeof(char *) * (list_cmd->op_count + 1));
 		if(!list_cmd->cmd_dt->op)
 			return 0;
-		// printf("file : %d\n", list_cmd->op_count);
 		list_cmd->cmd_dt->file = malloc(sizeof(char *) * (list_cmd->op_count + 1));
 		if(!list_cmd->cmd_dt->file)
 			return 0;
@@ -400,23 +403,12 @@ int	detail_cmd(t_node *list_cmd)
 		list_cmd->cmd_dt->to_open = malloc(sizeof(char *) * (list_cmd->op_count + 1));
 		if(!list_cmd->cmd_dt->to_open)
 			return 0;
-			
-		// printf("*** we will allocate %d\n", list_cmd->herdocs_count + 1);
 		list_cmd->cmd_dt->eofs = malloc(sizeof(char *) * (list_cmd->herdocs_count + 1));
-		// printf
 		get_details(list_cmd);
-		// i = 0;
-		// while(list_cmd->cmd_dt->op[i])
-		// {
-		// 	// printf("op : %s\n", list_cmd->cmd_dt->op[i]);
-		// 	i++;
-		// }
 		if (g_gb.exit_code == 404)
 			return 0;
 		list_cmd = list_cmd->next;
 	}
-	
-
 	return 1;
 }
 
@@ -427,6 +419,7 @@ int var_count(char *cmd)
 
 	len = 0;
 	i = 0;
+
 	while(cmd[i])
 	{
 		if(cmd[i] == 39)
@@ -435,7 +428,11 @@ int var_count(char *cmd)
 			help_check_quote(cmd, &i, 39);
 		}
 		if(cmd[i] && cmd[i + 1] && cmd[i] == '$' && ( cmd[i + 1] == '?' || ft_isalnum(cmd[i + 1])))
+		{
+		// printf(GREEN"char : |%c|\n"RESET, cmd[i]);
+			
 			len++;
+		}
 		i++;
 	}
 	return len;
@@ -443,10 +440,9 @@ int var_count(char *cmd)
 
 void alloc_variables(t_node *tmp)
 {
-	int len;
 
-	len = var_count(tmp->cmd);
-	tmp->exp_var = malloc((len + 1) * sizeof(char *));
+	tmp->var_count = var_count(tmp->cmd);		
+	tmp->exp_var = malloc((tmp->var_count + 1) * sizeof(char *));
 	if(!tmp->exp_var)
 		return ;
 }
@@ -456,6 +452,9 @@ char	*get_var(char *str, t_node *tmp, int j)
 	int len;
 	int i;
 	char *exp;
+
+	(void)tmp;
+	(void)j;
 	len = 0;
 	if(ft_isalnum(str[len]))
 		while (ft_isalnum(str[len]) && str[len])
@@ -472,9 +471,6 @@ char	*get_var(char *str, t_node *tmp, int j)
 		i++;
 	}
 	exp[i] = '\0';
-	if(tmp)
-		tmp->exp_var[j] = exp;
-	
 	return exp;
 }
 
@@ -502,7 +498,7 @@ void	look_for_dollar(t_node *tmp)
 			{
 				if(tmp->cmd[i + 1] && tmp->cmd[i] == '$' && (tmp->cmd[i + 1] == '?' || ft_isalnum(tmp->cmd[i + 1])))
 				{
-					get_var(&tmp->cmd[i + 1], tmp, j);
+					tmp->exp_var[j] = get_var(&tmp->cmd[i + 1], tmp, j);
 					j++;
 				}
 				i++;
@@ -512,7 +508,8 @@ void	look_for_dollar(t_node *tmp)
 		}
 		if(tmp->cmd[i] && tmp->cmd[i] == '$' && tmp->cmd[i + 1]  && (tmp->cmd[i + 1] == '?' || ft_isalnum(tmp->cmd[i + 1])))
 		{
-			get_var(&tmp->cmd[i + 1], tmp, j);
+			tmp->exp_var[j] = get_var(&tmp->cmd[i + 1], tmp, j);
+			// free(var);
 			j++;
 		}
 		if(tmp->cmd[i]) 
@@ -524,8 +521,10 @@ void	look_for_dollar(t_node *tmp)
 
 void	check_expanding(t_node *list_cmd)
 {
+	
 	while (list_cmd)
 	{
+
 		look_for_dollar(list_cmd);
 		list_cmd = list_cmd->next;
 	}
@@ -599,15 +598,6 @@ char * expend_herdocc(char *input)
 		i++;
 	}
 	var[j] = NULL;
-	// exit(0);
-	// j = 0;
-	// while (var[j])
-	// {
-	// 	printf("var : %s\n", var[j]);
-	// 	j++;
-	// }
-	// exit(0);
-	// printf
 	i = 0;
 	j = 0;
 	while (input[i])
@@ -641,6 +631,7 @@ char * expend_herdocc(char *input)
 			i++;
 		}
 	}
+	free_2d_table(var);
 	return new_cmd;
 }
 
@@ -673,10 +664,12 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
 				{
 					result = expend_herdocc(input);
                 	write(fds[1], result, ft_strlen(result) * sizeof(char));
+					free(result);
 					// printf("1 : %d\n", fds[1]);
 				}
 				else
                 	write(fds[1], input, ft_strlen(input) * sizeof(char));
+				free(input);
 				
                 exit(0);
             }
@@ -717,6 +710,8 @@ void	check_herdocs(t_node *list_cmd)
 				// ft_check_rest(&list_cmd->cmd[i + 1]);
 				eof = list_cmd->cmd_dt->eofs[j];
 				start_reading(list_cmd, eof, list_cmd->cmd_dt->coted[j++]);
+				if(g_gb.exit_code > 0)
+					break; 
 			}
 
 			i++;
@@ -821,6 +816,9 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 	}
 	else
 		list_cmd->cmd_flags = ft_split(expanded_cmd, '&');
+	free(new_cmd);
+	free(expanded_cmd);
+
 	
 	// printf("--> |%s|\n", cmd_tosplit);
 	// exit(10);
@@ -869,10 +867,11 @@ void	fill_my_env(char **env)
 			name = ft_strjoin_char(name, env[k][i]);
 			i++;
 		}
-
 		ft_lstadd_back_env(&g_gb.my_env, ft_lstnew_env(name, getenv(name), 1, existe_spaces(getenv(name))));
 		ft_lstadd_back_env(&g_gb.my_export, ft_lstnew_env(name, getenv(name), 1, existe_spaces(getenv(name))));
+		// free(name);
 		name = NULL;
+
 		k++;
 	}
 }
@@ -915,6 +914,7 @@ void	expanding(t_node *list_cmd)
 {
 	char *var;
 	int i;
+	int k;
 	int j = 0;
 	// printf("exit code :%d\n", g_gb.exit_code);
 	while (list_cmd)
@@ -925,6 +925,8 @@ void	expanding(t_node *list_cmd)
 		// printf("cmd : %s\n", list_cmd->cmd);
 		while (list_cmd->cmd[i])
 		{
+			k = 0;
+			var = NULL;
 			if(list_cmd->cmd[i] == 39)
 			{
 				i++;
@@ -941,7 +943,8 @@ void	expanding(t_node *list_cmd)
 			{
 				if(list_cmd->cmd[i + 1] == '?')
 				{
-					var = ft_strdup(ft_itoa(g_gb.exit_code));
+					k = i + 1;
+					var = ft_itoa(g_gb.exit_code);
 					i = i + 2;
 				}
 				else
@@ -953,6 +956,10 @@ void	expanding(t_node *list_cmd)
 				if (var)
 				{
 					list_cmd->new_cmd = ft_strjoin2(list_cmd->new_cmd, var);
+					if (list_cmd->cmd[k] && list_cmd->cmd[k] == '?')
+					{	
+						free(var);
+					}
 				}
 				else
 					list_cmd->new_cmd = ft_strjoin2(list_cmd->new_cmd, "\n");
@@ -964,13 +971,10 @@ void	expanding(t_node *list_cmd)
 			{
 				list_cmd->new_cmd = ft_strjoin_char(list_cmd->new_cmd, list_cmd->cmd[i]);
 				i++;
-				
 			}
+		if(var)
+			free(var);
 		}
-		// if(var)
-		// 	free(var);
-		// printf("cmd : %s\n", list_cmd->new_cmd);
-		// g_gb.exit_code = 0;
 		list_cmd = list_cmd->next;
 	}
 }
@@ -1116,7 +1120,6 @@ void	fill_my_array_env(char **env)
 
 	while (env[i])
 	{
-		// g_gb.env_array[i] = malloc(ft_strlen(env[i]));
 		g_gb.env_array[i] = ft_strdup(env[i]);
 		i++;
 	}
@@ -1125,57 +1128,45 @@ void	fill_my_array_env(char **env)
 
 void		parsing(char **env, t_node *list_cmd)
 {
-
-
-	char *path;
 	char *full_cmd;
-	// int i;
 
 	banner();
 	signal(SIGINT, SIG_IGN);
 
-
-	// signal(SIGQUIT, signal_D_received);
-	path = get_pwd(env);
-	path = ft_strjoin(path, "$ ");
-	if (!path)
-		path = "$ ";
-	else
-		path = ft_strchr(path, '/');
 	fill_my_env(env);
 	fill_my_array_env(env);
 	signal(SIGINT, signal_C_received);
 	signal(SIGQUIT, SIG_IGN);
 	while ((full_cmd = readline(MINISHELL)) != NULL)
 	{
-		// printf("ytrw\n");
 		add_history(full_cmd);
 		g_gb.error = all_error(full_cmd);
 		if(!g_gb.error)
 		{
 			g_gb.error = fill_struct(full_cmd, &list_cmd);
-			// !!! list_cmd->only_heredoc = false;
 			if (g_gb.error != 0)
 			{
 				get_number_of_tokens(full_cmd, list_cmd);
 				g_gb.error = detail_cmd(list_cmd);
-			}
-			if (g_gb.error != 0)
-			{
+				if (g_gb.error != 0)
+				{
 					check_expanding(list_cmd);
+					
 					expanding(list_cmd);
 					check_herdocs(list_cmd);
 					get_cmd_with_flags(list_cmd);
-					
-					// ft_putstr_fd(list_cmd->cmd_flags[0], 2);
 					execution(list_cmd);
+				}
+				free(g_gb.infos);
+				ft_lstclear(&list_cmd);
 			}
 		}
-		ft_lstclear(&list_cmd);
+		
+		free(full_cmd);
 		list_cmd = NULL;
-
+		// system("leaks minishell");
 		g_gb.error = 0;
 	}
-		// ft_putstr_fd("i'm here", 2);
+	printf("exit\n");
 	exit(g_gb.exit_code);
 }

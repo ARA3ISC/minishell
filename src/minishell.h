@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/06 11:57:27 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/07 11:46:58 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@
 # define RESET "\n\033[0m"
 # define GREEN "\033[0;32m"
 # define MINISHELL "minishell-0.1$ "
-// # define MINISHELL "\033[0;32mminishell-0.1$ \033[0m"
 # define RED "\033[0;31m"
 
 typedef struct s_info
@@ -55,6 +54,7 @@ typedef struct s_node
 	int op_count;
 	int fds[2];
 	int herdocs_count;
+	int var_count;
 	// int *fds;
 	char **cmd_flags;
 	int inf_fd;
@@ -115,7 +115,6 @@ int					count_pipes(char *cmd);
 int					**alloc_pipes(char **all_cmds);
 void				signal_received(char s);
 void				signal_C_received(int signo);
-void				signal_D_received(int signo);
 int					check_redirection_syntax(char *cmd);
 int 				checking_quotes(char c, int *i, char *cmd);
 int					checking_redirection_in_the_last(char *cmd);
@@ -149,6 +148,7 @@ int					open_files(t_node *list_cmd);
 int 				existe_spaces(char *value);
 void 				remove_it_exp(char *name);
 char 				*expend_herdocc(char *input);
-
+void    			free_2d_table(char **t);
+int var_count(char *cmd);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/15 10:24:37 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/13 17:51:39 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/05/07 08:18:47 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (i < len)
 		str[i++] = s2[j++];
 	str[i] = '\0';
+	free((void *)s1);
 	return (str);
 }
 
@@ -61,6 +62,9 @@ char	*ft_strjoin2(char const *s1, char const *s2)
 	while (i < len)
 		str[i++] = s2[j++];
 	str[i] = '\0';
+	free((void *)s1);
+	// free((void *)s2);
+	
 	return (str);
 }
 #include <stdio.h>
@@ -95,9 +99,10 @@ char	*ft_strjoin_char(char *s1, char c)
 	while (i < len && s1[i])
 		str[i++] = s1[j++];
 	j = 0;
-	// while (i < len)
 	str[i++] = c;
 	str[i] = '\0';
+	free(s1);
+
 	return (str);
 }
 

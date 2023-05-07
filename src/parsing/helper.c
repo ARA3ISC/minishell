@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 14:27:28 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/01 09:08:24 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/07 06:38:25 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,11 +118,11 @@ int	get_herdocs_count(char *single_cmd)
 void	get_number_of_tokens(char *full_cmd, t_node *list_cmd)
 {
 	
-	while (list_cmd)
-	{
 		g_gb.infos = malloc(sizeof(t_info));
 		if(!g_gb.infos)
 			return ;
+	while (list_cmd)
+	{
 		// printf("kelooll \n");
 		list_cmd->op_count = count_op(list_cmd->cmd);
 		// printf("count oppp : %d\n", list_cmd->op_count);

@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:26:45 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/06 09:27:12 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/07 11:46:48 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ int	** alloc_pipes(char **all_cmds)
 	int **arr;
 	int i = 0;
 
-	//  ?normaly we  must allocate number of caommand minus 1
 	arr = malloc(sizeof(int *) * cmds_count(all_cmds));
 	if(!arr)
 		return NULL;
@@ -49,14 +48,5 @@ void	signal_C_received(int signo)
 		rl_replace_line("", 0);
 		rl_redisplay();
 		g_gb.exit_code = 1;
-		// printf("exit code :%d", g_gb.exit_code);
-	}
-}
-void	signal_D_received(int signo)
-{
-	printf("ctrl-D\n");
- 	if (signo == SIGQUIT)
-	{
-		g_gb.exit_code = 0;
 	}
 }
