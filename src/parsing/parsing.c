@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/07 11:54:40 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/07 12:07:39 by maneddam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	**spliting_by_pipe(char *cmd)
 		else
 			i++;
 	}
-	
+
 	all_cmds = ft_split(cmd, '&');
 	return (all_cmds);
 }
@@ -213,7 +213,7 @@ char	*working_in_the_name_of_the_file(t_node *cmd, int len, int d)
 			cmd->cmd_dt->coted[d][0] = '1';
 		else if(cmd->cmd_dt->file[d][i] == '\'')
 			cmd->cmd_dt->coted[d][0] = '2';
-			
+
 		i++;
 	}
 	i = 0;
@@ -259,7 +259,7 @@ int fill_file_name(t_node *tmp, int i, int j)
 	while(tmp->cmd[i] && tmp->cmd[i] != 32 && tmp->cmd[i] != '\t' && tmp->cmd[i] != '<'
 		&& tmp->cmd[i] != '>')
 	{
-		
+
 		tmp->cmd_dt->file[j][k++] = tmp->cmd[i];
 		if(tmp->cmd_dt->file[j][0] == '#')
 		{
@@ -321,7 +321,7 @@ void	get_details(t_node *tmp)
 			i++;
 		}
 		// else if(tmp->cmd[i] == 32)
-		// 	i++;		
+		// 	i++;
 		else if (tmp->cmd[i] == '>' || tmp->cmd[i] == '<')
 		{
 			if (tmp->cmd[i + 1] && tmp->cmd[i] == '<' && tmp->cmd[i + 1] == '<')
@@ -333,9 +333,9 @@ void	get_details(t_node *tmp)
 				tmp->cmd_dt->op[j][1] = '\0';
 				tmp->cmd_dt->to_open[j] = ft_strdup("0");
 				i = i + 2;
-				
+
 			}
-			else 
+			else
 			{
 				tmp->cmd_dt->op[j][0] = tmp->cmd[i];
 				i++;
@@ -351,9 +351,9 @@ void	get_details(t_node *tmp)
 				else
 					tmp->cmd_dt->op[j][1] = '\0';
 				tmp->cmd_dt->to_open[j] = ft_strdup("1");
-				
+
 			}
-			g_gb.error = fill_file_name(tmp, i, j); 
+			g_gb.error = fill_file_name(tmp, i, j);
 			tmp->cmd_dt->coted[j] = ft_strdup("0");  //! I have problem here !!!!!!!!!!!!!!!!!!!!!!!!!!
 			if(g_gb.error)
 				return;
@@ -430,7 +430,7 @@ int var_count(char *cmd)
 		if(cmd[i] && cmd[i + 1] && cmd[i] == '$' && ( cmd[i + 1] == '?' || ft_isalnum(cmd[i + 1])))
 		{
 		// printf(GREEN"char : |%c|\n"RESET, cmd[i]);
-			
+
 			len++;
 		}
 		i++;
@@ -441,7 +441,7 @@ int var_count(char *cmd)
 void alloc_variables(t_node *tmp)
 {
 
-	tmp->var_count = var_count(tmp->cmd);		
+	tmp->var_count = var_count(tmp->cmd);
 	tmp->exp_var = malloc((tmp->var_count + 1) * sizeof(char *));
 	if(!tmp->exp_var)
 		return ;
@@ -485,7 +485,7 @@ void	look_for_dollar(t_node *tmp)
 	alloc_variables(tmp);
 	while (tmp->cmd[i])
 	{
-		
+
 		if(tmp->cmd[i] == 39)
 		{
 			i++;
@@ -512,7 +512,7 @@ void	look_for_dollar(t_node *tmp)
 			// free(var);
 			j++;
 		}
-		if(tmp->cmd[i]) 
+		if(tmp->cmd[i])
 			i++;
 	}
 	tmp->exp_var[j] = NULL;
@@ -521,14 +521,14 @@ void	look_for_dollar(t_node *tmp)
 
 void	check_expanding(t_node *list_cmd)
 {
-	
+
 	while (list_cmd)
 	{
 
 		look_for_dollar(list_cmd);
 		list_cmd = list_cmd->next;
 	}
-	
+
 	// exit(0);
 }
 
@@ -611,7 +611,7 @@ char * expend_herdocc(char *input)
 			}
 			else
 			{
-				result = get_from_my_env(var[j], "5"); 
+				result = get_from_my_env(var[j], "5");
 				// printf("var  ")
 				i = i + ft_strlen(var[j]) + 1;
 			}
@@ -621,7 +621,7 @@ char * expend_herdocc(char *input)
 			}
 			else
 				new_cmd = ft_strjoin2(new_cmd, "\n");
-			
+
 			j++;
 			continue;
 		}
@@ -659,7 +659,7 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
             }
             if (!ft_strcmp(rd, eof))
             {
-				
+
 				if(coted[0] == '0')
 				{
 					result = expend_herdocc(input);
@@ -670,7 +670,7 @@ void    start_reading(t_node *list_cmd, char *eof, char *coted)
 				else
                 	write(fds[1], input, ft_strlen(input) * sizeof(char));
 				free(input);
-				
+
                 exit(0);
             }
             input = ft_strjoin2(input, rd);
@@ -711,7 +711,7 @@ void	check_herdocs(t_node *list_cmd)
 				eof = list_cmd->cmd_dt->eofs[j];
 				start_reading(list_cmd, eof, list_cmd->cmd_dt->coted[j++]);
 				if(g_gb.exit_code > 0)
-					break; 
+					break;
 			}
 
 			i++;
@@ -742,10 +742,10 @@ char *search_and_replace(char *str, char a, char b)
 		return NULL;
 	while (str[i])
 	{
-		
+
 		if (str[i] == a)
 			str[i] = b;
-		i++;	
+		i++;
 	}
 	return str;
 }
@@ -806,7 +806,7 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 			new_cmd = ft_strjoin_char(new_cmd, list_cmd->cmd[i++]);
 	}
 
-		
+
 
 	expanded_cmd = expend_herdocc(new_cmd);
 	if (!is_quoted)
@@ -819,11 +819,11 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 	free(new_cmd);
 	free(expanded_cmd);
 
-	
+
 	// printf("--> |%s|\n", cmd_tosplit);
 	// exit(10);
-	
-	
+
+
 	if (!ft_twodim_len(list_cmd->cmd_flags))
 		list_cmd->only_heredoc = true;
 
@@ -850,7 +850,7 @@ int existe_spaces(char *value)
 		if(value[i] == 32)
 			return 1;
 		i++;
-	}	
+	}
 	return 0;
 }
 
@@ -891,7 +891,7 @@ void	look_for_var(t_node *tmp, int j)
 
 char *get_from_my_env(char *exp, char *quot)
 {
-	
+
 	t_env *tmp;
 	tmp = g_gb.my_env;
 	while(tmp)
@@ -921,7 +921,7 @@ void	expanding(t_node *list_cmd)
 	{
 		list_cmd->new_cmd = NULL;
 		i = 0;
-		
+
 		// printf("cmd : %s\n", list_cmd->cmd);
 		while (list_cmd->cmd[i])
 		{
@@ -957,13 +957,13 @@ void	expanding(t_node *list_cmd)
 				{
 					list_cmd->new_cmd = ft_strjoin2(list_cmd->new_cmd, var);
 					if (list_cmd->cmd[k] && list_cmd->cmd[k] == '?')
-					{	
+					{
 						free(var);
 					}
 				}
 				else
 					list_cmd->new_cmd = ft_strjoin2(list_cmd->new_cmd, "\n");
-				
+
 				j++;
 				continue;
 			}
@@ -983,7 +983,7 @@ char	*expanded_file_name(t_node *cmd, int i)
 {
 	char *r;
 	if (cmd->cmd_dt->file[i][1] && cmd->cmd_dt->file[i][0] == '$' && cmd->cmd_dt->coted[i][0] != '2' && (cmd->cmd_dt->file[i][1] == '?' || ft_isalnum(cmd->cmd_dt->file[i][1])))
-	{	
+	{
 		if(cmd->cmd_dt->file[i][1] == '?')
 			r = ft_strdup(ft_itoa(g_gb.exit_code));
 		else
@@ -1053,7 +1053,7 @@ int	open_files(t_node *list_cmd)
 {
 	int i;
 	int rd;
-	
+
 	rd = 1;
 	// while (list_cmd)
 	// {
@@ -1072,8 +1072,8 @@ int	open_files(t_node *list_cmd)
 		}
 		// list_cmd = list_cmd->next;
 	// }
-	
-	
+
+
 	return rd;
 }
 
@@ -1151,7 +1151,7 @@ void		parsing(char **env, t_node *list_cmd)
 				if (g_gb.error != 0)
 				{
 					check_expanding(list_cmd);
-					
+
 					expanding(list_cmd);
 					check_herdocs(list_cmd);
 					get_cmd_with_flags(list_cmd);
@@ -1161,10 +1161,9 @@ void		parsing(char **env, t_node *list_cmd)
 				ft_lstclear(&list_cmd);
 			}
 		}
-		
+
 		free(full_cmd);
 		list_cmd = NULL;
-		// system("leaks minishell");
 		g_gb.error = 0;
 	}
 	printf("exit\n");
