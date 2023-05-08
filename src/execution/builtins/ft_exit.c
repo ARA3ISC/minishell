@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 11:26:33 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/07 20:18:39 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/08 03:37:09 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,16 @@ int get_flags(char *cmd_tmp, int i, char **flags)
 			i++;
 			while (cmd_tmp[i] && cmd_tmp[i] != 34)
 				*flags = ft_strjoin_char(*flags, cmd_tmp[i++]);
-			i++;
+			if(cmd_tmp[i])
+				i++;
 		}
 		else if (cmd_tmp[i] && cmd_tmp[i] == 39)
 		{
 			i++;
 			while (cmd_tmp[i] && cmd_tmp[i] != 39)
 				*flags = ft_strjoin_char(*flags, cmd_tmp[i]);
-			i++;
+			if(cmd_tmp[i])
+				i++;
 		}
 		else
 			*flags = ft_strjoin_char(*flags, cmd_tmp[i++]);
@@ -87,13 +89,11 @@ void finish(char **split_flags, t_node *full_cmd, int i)
 	}
 	else if (split_flags && ft_is_nbr(split_flags[0]) && i == 1)
 	{
-		
-		free_2d_table(split_flags);
+
 		exit(ft_atoi(split_flags[0]));
 	}
 	else
 	{
-		free_2d_table(split_flags);
 		exit(g_gb.exit_code);
 	}
 }
@@ -111,6 +111,7 @@ void	ft_exit(t_node *full_cmd)
 	while (cmd_tmp[i] && cmd_tmp[i] == 32)
 		i++;
 	i = get_flags(cmd_tmp, i, &flags);
+
 	split_flags = ft_split(flags, '&');
 	i = 0;
 	while (split_flags && split_flags[i])
@@ -124,4 +125,6 @@ void	ft_exit(t_node *full_cmd)
 	}
 	finish(split_flags, full_cmd, i);
 	free(flags);
+	free_2d_table(split_flags);
+
 }

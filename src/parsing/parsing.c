@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:16:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/08 02:31:45 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/08 03:22:31 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -752,7 +752,7 @@ void	parsing(char **env, t_node *list_cmd)
 		list_cmd = NULL;
 		g_gb.error = 0;
 	}
-	// system("leaks minishell");
+	system("leaks minishell");
 	printf("exit\n");
 	exit(g_gb.exit_code);
 }
