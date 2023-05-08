@@ -6,26 +6,14 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:25:26 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/07 11:09:06 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/08 02:32:16 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	syntax_error(char *cmd)
+int	help_error(int error, int i, char *cmd, int check)
 {
-	int i = 0;
-	int check = 0;
-	int error;
-	error = 0;
-	int len =ft_strlen(cmd) - 1;
-
-	while(len > 0 && (cmd[len] == 32 || cmd[len] == '\t'))
-			len--;
-
-	if(len >= 0 && cmd[len] == '|')
-		return (print_error("syntax error near unexpected token `|'", 258));
-	error = checking_redirection_in_the_last(cmd);
 	while (!error &&  cmd[i])
 	{
 		check = checking_quotes(cmd[i], &i, cmd);
@@ -37,9 +25,29 @@ int	syntax_error(char *cmd)
 			return (print_error("syntax error", 103));
 		if (((i == 0 || i == ft_strlen(cmd) - 1) && cmd[i] == '|'))
 			return (print_error("syntax error near unexpected token `|'", 258));
-		
 		i++;
 	}
+	return 0;
+}
+
+int	syntax_error(char *cmd)
+{
+	int i;
+	int check;
+	int error;
+	int len; 
+
+	i = 0;
+	check = 0;
+	error = 0;
+	len = ft_strlen(cmd) - 1;
+	while(len > 0 && (cmd[len] == 32 || cmd[len] == '\t'))
+			len--;
+	if(len >= 0 && cmd[len] == '|')
+		return (print_error("syntax error near unexpected token `|'", 258));
+	error = checking_redirection_in_the_last(cmd);
+	if (!error)
+		error = help_error(error, i, cmd, check);
 	return error;
 }
 

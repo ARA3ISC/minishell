@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 16:26:45 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/07 11:46:48 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/07 22:34:38 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	signal_received(char s)
 	}
 }
 
-void	signal_C_received(int signo)
+void	signal_c_received(int signo)
 {
  	if (signo == SIGINT)
 	{

@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/15 10:24:37 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/07 08:18:47 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/07 14:45:40 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,20 +63,16 @@ char	*ft_strjoin2(char const *s1, char const *s2)
 		str[i++] = s2[j++];
 	str[i] = '\0';
 	free((void *)s1);
-	// free((void *)s2);
-	
 	return (str);
 }
-#include <stdio.h>
+
 char	*ft_strjoin_char(char *s1, char c)
 {
 	int		len;
 	char	*str;
 	int		i;
 	int		j;
- 
 
-  // kkkkk 
 	if (s1 == NULL)
 	{
 		s1 = malloc(2);
@@ -84,13 +80,7 @@ char	*ft_strjoin_char(char *s1, char c)
 		s1[1] = '\0';
 		return (s1);
 	}
-
-
 	len = ft_strlen(s1) + 1;
-	
-	// printf("allocated :%d\n", len);
-	// exit(1);
-
 	str = malloc(len + 1);
 	if (!str)
 		return (NULL);
@@ -102,22 +92,5 @@ char	*ft_strjoin_char(char *s1, char c)
 	str[i++] = c;
 	str[i] = '\0';
 	free(s1);
-
 	return (str);
 }
-
-// int main()
-// {
-// 	char *s1 = "NULL";
-// 	s1 = ft_strjoin_char(s1, 'o');
-// 	int i = 0;
-
-// 	// while (i < 5)
-// 	// {
-// 	// 	s1 = ft_strjoin_char(s1, 'a');
-// 	// 	i++;
-// 	// }
-
-// 	printf("%s\n", s1);
-// 	return 0;
-// }

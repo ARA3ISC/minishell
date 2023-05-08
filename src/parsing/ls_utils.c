@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 10:36:43 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/07 11:22:54 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/08 02:20:16 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,21 @@
 
 void	ft_lstadd_back(t_node **lst, t_node *new)
 {
-	// if((*lst)->cmd)
-	// 	printf("cmd %s\n", (*lst)->cmd);
 	t_node	*p;
 
 	if (*lst == NULL)
-	{
-		
 		*lst = new;
-		// printf("cmd %s\n", (*lst)->cmd);
-	}
 	else
 	{
-
 		p = *lst;
 		while (p->next != NULL)
 			p = p->next;
 		p->next = new;
 	}
-	// printf("cmd %s\n", (*lst)->cmd);
-	// if((*lst)->next)
-	// 	printf("cmd %s\n", (*lst)->next->cmd);
-	// printf("cmd %s\n", (*lst)->next->next->cmd);
 }
 
 t_node	*ft_lstnew(char *_cmd)
 {
-	
 	t_node	*n;
 
 	n = malloc(sizeof(t_node));
@@ -51,8 +39,6 @@ t_node	*ft_lstnew(char *_cmd)
 	n->outf_fd = 1;
 	n->only_heredoc = false;
 	n->next = NULL;
-	
-	// printf("cmd %s\n", n->next->cmd);
 
 	return (n);
 }
@@ -91,40 +77,26 @@ void free_cmd_dt(t_node *lst)
 void free_exp(t_node *lst)
 {
 	if(lst->var_count > 0)
-	{
 		free_2d_table(lst->exp_var);
-	}
 	else
-	{
 		free_big_one(lst->exp_var);
-	}	
 }
 
 void free_flags(t_node *lst)
 {
 	if(lst->cmd_flags)
-	{
 		free_2d_table(lst->cmd_flags);
-	}
-	// else
-	// {
-	// 	free_big_one(lst->cmd_flags);
-	// }	
 }
 
 void	ft_lstdelone(t_node *lst)
 {
 	if (lst)
 	{
-		
 		free(lst->cmd);
-		// free(lst->cmd_dt->file[0]);
 		free_cmd_dt(lst);
 		free_exp(lst);
 		free(lst->new_cmd);
 		free_flags(lst);
-		
-		// free(lst->cmd_dt->file);
 		free(lst);
 	}
 }
@@ -158,6 +130,32 @@ void	ft_lstclear(t_node **lst)
 	}
 }
 
+void	ft_lstdelone_env(t_env *lst)
+{
+	if (lst)
+	{
+		free(lst->name);
+		free(lst->value);
+		free(lst);
+	}
+}
+
+
+void	ft_lstclear_env(t_env **lst)
+{
+	t_env	*p;
+	p = *lst;
+	if (lst)
+	{
+		while (*lst && p)
+		{
+			p = (*lst)->next;
+			ft_lstdelone_env((*lst));
+			*lst = p;
+		}
+	}
+}
+
 
 t_env	*ft_lstnew_env(char *name, char *value, int equal, int space)
 {
@@ -180,21 +178,9 @@ void	ft_lstadd_back_env(t_env **lst, t_env *new)
 		*lst = new;
 	else
 	{
-    	// printf("name : |%s|\nvalue : |%s|\n", new->name, new->value);
-		
 		p = *lst;
 		while (p->next)
-		{
-			// printf("name : %s\n", p->name);
 			p = p->next;
-		}
-		// printf("name : %s\n", p->name);
-		
 		p->next = new;
-		// printf("name : %s\n", p->next->name);
-
-		// printf("%s : %s \n", (*lst)->name , (*lst)->value);
-		// if(ft_lstsize(*lst) == 3)
-		// 	exit(0);
 	}
 }

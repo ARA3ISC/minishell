@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/27 00:23:09 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/04/26 11:31:55 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/05/07 14:49:26 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char				*ft_strnstr(const char *haystack, const char *needle,
 char				*ft_strrchr(const char *s, int c);
 int					ft_tolower(int c);
 int					ft_toupper(int c);
-char				*ft_substr(char const *s,  int start, int len);
+char				*ft_substr(char const *s, int start, int len);
 char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strjoin2(char const *s1, char const *s2);
 char				*ft_strjoin_char(char *s1, char c);
@@ -54,11 +54,5 @@ void				ft_putchar_fd(char c, int fd);
 void				ft_putstr_fd(char *s, int fd);
 void				ft_putendl_fd(char *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
-// typedef struct s_list
-// {
-// 	void			*content;
-// 	struct s_list	*next;
-// }					t_node;
-
 
 #endif

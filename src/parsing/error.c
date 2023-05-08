@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/07 10:02:04 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/08 03:16:30 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ bool	check_next_cmd(char *cmd)
 int	invalid_expression(char *cmd)
 {
 	int i = 0;
-
 	while (cmd[i])
 	{
 		if ((cmd[i] == '>' || cmd[i] == '<'))
@@ -94,11 +93,12 @@ int	invalid_expression(char *cmd)
 			}
 			else
 			{
-				if (check_next_cmd(&cmd[i]) == false)
+				if (cmd[i] && check_next_cmd(&cmd[i]) == false)
 					return 1;
 			}
 		}
-		i++;
+		if (cmd[i])
+			i++;
 	}
 	return 0;
 }

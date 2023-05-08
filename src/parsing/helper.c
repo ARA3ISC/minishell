@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 14:27:28 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/07 06:38:25 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/08 02:27:54 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,27 @@ char    *get_pwd(char **env)
 	return (NULL);
 }
 
+int skip_must(char *cmd, int i)
+{
+	if(cmd[i] == 39)
+	{
+		i++;
+		while(cmd[i] && cmd[i] != 39)
+			i++;
+		i++;
+	}
+	else if(cmd[i] && cmd[i] == 34)
+	{
+		i++;
+		while(cmd[i] && cmd[i] != 34)
+			i++;
+		i++;
+	}
+	else
+		i++;
+	return i;
+}
+
 int	count_op(char *cmd)
 {
 	int i = 0;
@@ -47,35 +68,17 @@ int	count_op(char *cmd)
 			if(cmd[i] && (cmd[i] == '<' || cmd[i] == '>'))
 				i++;
 		}
-		if(cmd[i] == 39)
-		{
-			i++;
-			while(cmd[i] && cmd[i] != 39)
-				i++;
-			i++;
-		}
-		else if(cmd[i] && cmd[i] == 34)
-		{
-			i++;
-			while(cmd[i] && cmd[i] != 34)
-				i++;
-			i++;
-		}
-		else
-			i++;
+		i = skip_must(cmd, i);
 	}
 	return (count);
 }
 
 int	count_pipes(char *cmd)
 {
-
-
 	int i = 0;
 	int count = 0;
 	while(cmd[i])
 	{
-		// printf("cmd : %c\n", cmd[i]);
 		if(cmd[i] && cmd[i] == '|')
 			count++;
 		if(cmd[i] == 39)
