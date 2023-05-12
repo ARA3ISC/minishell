@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 11:33:14 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/12 17:32:53 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/12 21:05:07 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,7 @@ void	add_to_env_exp(char *name, char *value, int plus)
 	}
 	else
 	{
-		ft_lstadd_back_env(&g_gb.my_env, ft_lstnew_env(expend_herdocc(name),
-				expend_herdocc(value), 1, existe_spaces(value)));
-		ft_lstadd_back_env(&g_gb.my_export, ft_lstnew_env(expend_herdocc(name),
-				expend_herdocc(value), 1, existe_spaces(value)));
+		add_to_env_and_to_export(name, value);
 	}
 	free(name);
 	free(value);

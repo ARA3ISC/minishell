@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 16:38:26 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/12 17:42:26 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/12 21:03:13 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,4 +247,6 @@ int					get_name_from_simple_quot(char *cmd, char **name, int i,
 						t_node *full_cmd);
 char				*get_namee(char *cmd, int *i, t_node *full_cmd);
 int					ft_is_nbr(char *str);
+int					skipiiin(char *cmd_tmp, int i);
+void				add_to_env_and_to_export(char *name, char *value);
 #endif

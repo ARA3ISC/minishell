@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/12 17:27:34 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/12 17:34:55 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/12 21:04:48 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,26 @@ int	ft_is_nbr(char *str)
 		i++;
 	}
 	return (1);
+}
+
+int	skipiiin(char *cmd_tmp, int i)
+{
+	i++;
+	if (cmd_tmp[i] == '>')
+		i++;
+	while (cmd_tmp[i] && (cmd_tmp[i] == 32 || cmd_tmp[i] == '\t'))
+		i++;
+	while (cmd_tmp[i] && cmd_tmp[i] != 32 && cmd_tmp[i] != '\t')
+		i++;
+	while (cmd_tmp[i] && (cmd_tmp[i] == 32 || cmd_tmp[i] == '\t'))
+		i++;
+	return (i);
+}
+
+void	add_to_env_and_to_export(char *name, char *value)
+{
+	ft_lstadd_back_env(&g_gb.my_env, ft_lstnew_env(expend_herdocc(name),
+			expend_herdocc(value), 1, existe_spaces(value)));
+	ft_lstadd_back_env(&g_gb.my_export, ft_lstnew_env(expend_herdocc(name),
+			expend_herdocc(value), 1, existe_spaces(value)));
 }

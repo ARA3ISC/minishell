@@ -6,25 +6,11 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 22:17:18 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/12 20:06:58 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/12 21:03:21 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-int	skipiiin(char *cmd_tmp, int i)
-{
-	i++;
-	if (cmd_tmp[i] == '>')
-		i++;
-	while (cmd_tmp[i] && (cmd_tmp[i] == 32 || cmd_tmp[i] == '\t'))
-		i++;
-	while (cmd_tmp[i] && cmd_tmp[i] != 32 && cmd_tmp[i] != '\t')
-		i++;
-	while (cmd_tmp[i] && (cmd_tmp[i] == 32 || cmd_tmp[i] == '\t'))
-		i++;
-	return (i);
-}
 
 char	*get_print_help(char *cmd_tmp, int *i, char *print, int *nl)
 {
@@ -81,7 +67,19 @@ char	*get_print(char *cmd_tmp, int *i, char **print, int *nl)
 	return (*print);
 }
 
-
+void	what_to_print(char *print, t_node *cmd, int nl)
+{
+	if (print)
+	{
+		print = ft_strtrim(print, " ");
+		ft_putstr_fd(print, cmd->outf_fd);
+		if (nl)
+			ft_putstr_fd("\n", cmd->outf_fd);
+	}
+	else
+		ft_putstr_fd("\n", cmd->outf_fd);
+	free(print);
+}
 
 void	ft_echo(t_node *cmd)
 {
@@ -100,15 +98,6 @@ void	ft_echo(t_node *cmd)
 			i++;
 		print = get_print(cmd_tmp, &i, &print, &nl);
 	}
-	if (print)
-	{
-		print = ft_strtrim(print, " ");
-		ft_putstr_fd(print, cmd->outf_fd);
-		if (nl)
-			ft_putstr_fd("\n", cmd->outf_fd);
-	}
-	else
-		ft_putstr_fd("\n", cmd->outf_fd);
-	free(print);
+	what_to_print(print, cmd, nl);
 	g_gb.exit_code = 0;
 }

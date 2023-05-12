@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 17:28:22 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/12 20:05:52 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/12 21:05:33 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,6 @@ void	builtins(t_node *full_cmd)
 		&& (full_cmd->new_cmd[4] == ' ' || full_cmd->new_cmd[4] == '<'
 			|| full_cmd->new_cmd[4] == '>' || full_cmd->new_cmd[4] == '\0'))
 		ft_exit(full_cmd);
-	help_builtins(full_cmd);
+	else
+		help_builtins(full_cmd);
 }
