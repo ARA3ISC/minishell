@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 11:16:40 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/08 03:16:30 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/12 15:36:50 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,13 @@ int	print_error(char *msg, int code)
 	if (msg)
 		printf("%s\n", msg);
 	g_gb.exit_code = code;
-	return code;
+	return (code);
 }
 
 int	all_error(char *full_cmd)
 {
-	int error;
+	int	error;
+
 	error = syntax_error(full_cmd);
 	if (!error)
 		error = check_redirection_syntax(full_cmd);
@@ -30,7 +31,7 @@ int	all_error(char *full_cmd)
 		error = invalid_expression(full_cmd);
 	if (!error)
 		count_herdocs(full_cmd);
-	return error;
+	return (error);
 }
 
 int	check_whitespaces(char **all_cmds)
@@ -38,7 +39,6 @@ int	check_whitespaces(char **all_cmds)
 	int	k;
 	int	i;
 	int	j;
-
 
 	i = 0;
 	while (all_cmds[i])
@@ -52,7 +52,7 @@ int	check_whitespaces(char **all_cmds)
 			j++;
 		}
 		if (k)
-			return k;
+			return (k);
 		i++;
 	}
 	return (k);
@@ -60,8 +60,9 @@ int	check_whitespaces(char **all_cmds)
 
 bool	check_next_cmd(char *cmd)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	while (cmd[i] && (cmd[i] == 32 || cmd[i] == '\t'))
 		i++;
 	while (cmd[i])
@@ -69,37 +70,38 @@ bool	check_next_cmd(char *cmd)
 		if (cmd[i] == '<' || cmd[i] == '>' || cmd[i] == '|')
 		{
 			print_error("syntax error", 555);
-			return false;
+			return (false);
 		}
 		else
 			break ;
 		i++;
 	}
-	return true;
+	return (true);
 }
 
 int	invalid_expression(char *cmd)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (cmd[i])
 	{
 		if ((cmd[i] == '>' || cmd[i] == '<'))
 		{
 			i++;
-			if (cmd[i] && (cmd[i] == '>' || cmd[i] =='<'))
+			if (cmd[i] && (cmd[i] == '>' || cmd[i] == '<'))
 			{
 				if (check_next_cmd(&cmd[i + 1]) == false)
-					return 1;
+					return (1);
 			}
 			else
 			{
 				if (cmd[i] && check_next_cmd(&cmd[i]) == false)
-					return 1;
+					return (1);
 			}
 		}
 		if (cmd[i])
 			i++;
 	}
-	return 0;
+	return (0);
 }
-

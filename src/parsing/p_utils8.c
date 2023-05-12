@@ -6,42 +6,39 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 23:21:55 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/08 00:15:17 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/12 16:03:32 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int join_it(t_node *list_cmd, int i, int p, char **new_cmd)
+int	join_it(t_node *list_cmd, int i, int p, char **new_cmd)
 {
-    i++;
-    while (list_cmd->cmd[i] && list_cmd->cmd[i] != p)
-    {
-        (*new_cmd) = ft_strjoin_char((*new_cmd), list_cmd->cmd[i]);
-        i++;
-    }
-    i++;
-    return i;
+	i++;
+	while (list_cmd->cmd[i] && list_cmd->cmd[i] != p)
+	{
+		(*new_cmd) = ft_strjoin_char((*new_cmd), list_cmd->cmd[i]);
+		i++;
+	}
+	i++;
+	return (i);
 }
 
-int skip_op(t_node *list_cmd, char **new_cmd, int i)
+int	skip_op(t_node *list_cmd, char **new_cmd, int i)
 {
-    (*new_cmd) = ft_strjoin_char((*new_cmd), '&');
-    i++;
-    if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>'
-            || list_cmd->cmd[i] == '<'))
-        i++;
-    while (list_cmd->cmd[i] && list_cmd->cmd[i] == 32)
-        i++;
-    while (list_cmd->cmd[i] && list_cmd->cmd[i] != 32)
-        i++;
-
-    return i;
+	(*new_cmd) = ft_strjoin_char((*new_cmd), '&');
+	i++;
+	if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>'
+			|| list_cmd->cmd[i] == '<'))
+		i++;
+	while (list_cmd->cmd[i] && list_cmd->cmd[i] == 32)
+		i++;
+	while (list_cmd->cmd[i] && list_cmd->cmd[i] != 32)
+		i++;
+	return (i);
 }
 
-
-
-int    get_correct_flags(t_node *list_cmd, int is_quoted, char **new_cmd, int i)
+int	get_correct_flags(t_node *list_cmd, int is_quoted, char **new_cmd, int i)
 {
 	while (list_cmd->cmd[i])
 	{
@@ -53,10 +50,10 @@ int    get_correct_flags(t_node *list_cmd, int is_quoted, char **new_cmd, int i)
 		else if (list_cmd->cmd[i] == 39)
 		{
 			is_quoted = 1;
-            i = join_it(list_cmd, i, 39, new_cmd);
+			i = join_it(list_cmd, i, 39, new_cmd);
 		}
 		else if (list_cmd->cmd[i] && (list_cmd->cmd[i] == '>'
-					|| list_cmd->cmd[i] == '<'))
+				|| list_cmd->cmd[i] == '<'))
 			i = skip_op(list_cmd, new_cmd, i);
 		else if (list_cmd->cmd[i] == 32)
 		{
@@ -67,7 +64,7 @@ int    get_correct_flags(t_node *list_cmd, int is_quoted, char **new_cmd, int i)
 		else
 			(*new_cmd) = ft_strjoin_char((*new_cmd), list_cmd->cmd[i++]);
 	}
-    return is_quoted;
+	return (is_quoted);
 }
 
 void	cmd_flags_1st_case(t_node *list_cmd)
@@ -80,7 +77,7 @@ void	cmd_flags_1st_case(t_node *list_cmd)
 
 	new_cmd = NULL;
 	is_quoted = 0;
-    i = 0;
+	i = 0;
 	is_quoted = get_correct_flags(list_cmd, is_quoted, &new_cmd, i);
 	expanded_cmd = expend_herdocc(new_cmd);
 	if (!is_quoted)

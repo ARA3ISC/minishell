@@ -6,66 +6,70 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/29 14:27:28 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/08 02:27:54 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/12 15:47:27 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int		cmds_count(char **cmds)
+int	cmds_count(char **cmds)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (cmds[i])
 		i++;
-	return i;
+	return (i);
 }
 
-char    *get_pwd(char **env)
+char	*get_pwd(char **env)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	while (env[i])
 	{
 		if (env[i][0] == 'P' && env[i][1] == 'W' && env[i][2] == 'D')
-			return env[i];
+			return (env[i]);
 		i++;
 	}
 	return (NULL);
 }
 
-int skip_must(char *cmd, int i)
+int	skip_must(char *cmd, int i)
 {
-	if(cmd[i] == 39)
+	if (cmd[i] == 39)
 	{
 		i++;
-		while(cmd[i] && cmd[i] != 39)
+		while (cmd[i] && cmd[i] != 39)
 			i++;
 		i++;
 	}
-	else if(cmd[i] && cmd[i] == 34)
+	else if (cmd[i] && cmd[i] == 34)
 	{
 		i++;
-		while(cmd[i] && cmd[i] != 34)
+		while (cmd[i] && cmd[i] != 34)
 			i++;
 		i++;
 	}
 	else
 		i++;
-	return i;
+	return (i);
 }
 
 int	count_op(char *cmd)
 {
-	int i = 0;
-	int count = 0;
+	int	i;
+	int	count;
 
-	// exit(10);
+	i = 0;
+	count = 0;
 	while (cmd[i])
 	{
-		if(cmd[i] == '<' || cmd[i] == '>')
+		if (cmd[i] == '<' || cmd[i] == '>')
 		{
 			count++;
-			if(cmd[i] && (cmd[i] == '<' || cmd[i] == '>'))
+			if (cmd[i] && (cmd[i] == '<' || cmd[i] == '>'))
 				i++;
 		}
 		i = skip_must(cmd, i);
@@ -73,68 +77,23 @@ int	count_op(char *cmd)
 	return (count);
 }
 
-int	count_pipes(char *cmd)
+int	skip_d(char *cmd, int i)
 {
-	int i = 0;
-	int count = 0;
-	while(cmd[i])
+	if (cmd[i] == 39)
 	{
-		if(cmd[i] && cmd[i] == '|')
-			count++;
-		if(cmd[i] == 39)
-		{
+		i++;
+		while (cmd[i] && cmd[i] != 39)
 			i++;
-			while(cmd[i] && cmd[i] != 39)
-				i++;
-			i++;
-		}
-		else if(cmd[i] && cmd[i] == 34)
-		{
-			i++;
-			while(cmd[i] && cmd[i] != 34)
-				i++;
-			i++;
-		}
-		else
-			i++;
+		i++;
 	}
-	return (count);
-}
-
-int	get_herdocs_count(char *single_cmd)
-{
-	int i = 0;
-	int count = 0;
-	while (single_cmd[i])
+	else if (cmd[i] && cmd[i] == 34)
 	{
-		if (single_cmd[i] && single_cmd[i] == '<' && single_cmd[i + 1] == '<')
-		{
-			count++;
+		i++;
+		while (cmd[i] && cmd[i] != 34)
 			i++;
-		}
-		if (single_cmd[i])
-			i++;
+		i++;
 	}
-	return count;
-}
-
-void	get_number_of_tokens(char *full_cmd, t_node *list_cmd)
-{
-	
-		g_gb.infos = malloc(sizeof(t_info));
-		if(!g_gb.infos)
-			return ;
-	while (list_cmd)
-	{
-		// printf("kelooll \n");
-		list_cmd->op_count = count_op(list_cmd->cmd);
-		// printf("count oppp : %d\n", list_cmd->op_count);
-		list_cmd->herdocs_count = get_herdocs_count(list_cmd->cmd);
-
-		g_gb.infos->pipe_count = count_pipes(full_cmd);
-		g_gb.infos->cmd_count = g_gb.infos->pipe_count + 1;
-		list_cmd = list_cmd->next;
-	}
-	g_gb.infos->pipe_count = count_pipes(full_cmd);
-	g_gb.infos->cmd_count = g_gb.infos->pipe_count + 1;
+	else
+		i++;
+	return (i);
 }

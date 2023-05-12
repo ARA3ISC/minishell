@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 18:24:13 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/08 00:13:08 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/12 15:53:30 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,26 +50,26 @@ char	*get_var(char *str, t_node *tmp, int j)
 void	skip3(t_node *tmp, int *i, int *j)
 {
 	if (tmp->cmd[*i] == 39)
+	{
+		(*i)++;
+		help_check_quote(tmp->cmd, i, 39);
+	}
+	if (tmp->cmd[*i] == 34)
+	{
+		(*i)++;
+		while (tmp->cmd[*i] && tmp->cmd[*i] != 34)
 		{
-			(*i)++;
-			help_check_quote(tmp->cmd, i, 39);
-		}
-		if (tmp->cmd[*i] == 34)
-		{
-			(*i)++;
-			while (tmp->cmd[*i] && tmp->cmd[*i] != 34)
+			if (tmp->cmd[*i + 1] && tmp->cmd[*i] == '$'
+				&& (tmp->cmd[*i + 1] == '?' || ft_isalnum(tmp->cmd[*i + 1])))
 			{
-				if (tmp->cmd[*i + 1] && tmp->cmd[*i] == '$'
-					&& (tmp->cmd[*i + 1] == '?' || ft_isalnum(tmp->cmd[*i + 1])))
-				{
-					tmp->exp_var[*j] = get_var(&tmp->cmd[*i + 1], tmp, *j);
-					(*j)++;
-				}
-				(*i)++;
+				tmp->exp_var[*j] = get_var(&tmp->cmd[*i + 1], tmp, *j);
+				(*j)++;
 			}
-			if (tmp->cmd[*i])
-				(*i)++;
+			(*i)++;
 		}
+		if (tmp->cmd[*i])
+			(*i)++;
+	}
 }
 
 void	look_for_dollar(t_node *tmp)

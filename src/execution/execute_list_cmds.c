@@ -6,7 +6,7 @@
 /*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/27 14:05:47 by eej-jama          #+#    #+#             */
-/*   Updated: 2023/05/08 00:10:59 by eej-jama         ###   ########.fr       */
+/*   Updated: 2023/05/12 17:38:37 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,15 @@ void	printf_error(char *msg, char *cmd)
 		write(2, cmd, ft_strlen(cmd));
 	write(2, " :", 2);
 	write(2, msg, ft_strlen(msg));
-	write(2, "\n", 1);	
+	write(2, "\n", 1);
 }
 
-void cmd_not_found(char *full_cmd)
+void	cmd_not_found(char *full_cmd)
 {
-	char *cmd = NULL;
-	int i;
+	char	*cmd;
+	int		i;
 
+	cmd = NULL;
 	i = 0;
 	if (!full_cmd || !ft_strlen(full_cmd))
 	{
@@ -51,7 +52,8 @@ void cmd_not_found(char *full_cmd)
 		g_gb.exit_code = 127;
 		exit(127);
 	}
-	while(full_cmd[i] && full_cmd[i] != ' ' && full_cmd[i] != '<' && full_cmd[i] != '>')
+	while (full_cmd[i] && full_cmd[i] != ' ' && full_cmd[i] != '<'
+		&& full_cmd[i] != '>')
 	{
 		cmd = ft_strjoin_char(cmd, full_cmd[i]);
 		i++;
@@ -59,7 +61,6 @@ void cmd_not_found(char *full_cmd)
 	printf_error("command not found", cmd);
 	g_gb.exit_code = 127;
 	exit(127);
-
 }
 
 void	check_cmds(t_node *list_cmd)
@@ -71,7 +72,7 @@ void	check_cmds(t_node *list_cmd)
 	i = 0;
 	if (list_cmd->cmd_flags && access(list_cmd->cmd_flags[0], X_OK) == 0)
 		execve(list_cmd->cmd_flags[0], list_cmd->cmd_flags, g_gb.env_array);
-	else if(list_cmd->cmd_flags)
+	else if (list_cmd->cmd_flags)
 	{
 		paths = get_paths();
 		while (paths[i])
@@ -88,8 +89,8 @@ void	check_cmds(t_node *list_cmd)
 
 void	execute_list_of_cmds(t_node *list_cmd)
 {
-	int	len;
-	t_node *tmp;
+	int		len;
+	t_node	*tmp;
 
 	tmp = list_cmd;
 	len = ft_lstsize(list_cmd);
@@ -100,12 +101,12 @@ void	execute_list_of_cmds(t_node *list_cmd)
 		{
 			if (list_cmd)
 				list_cmd = list_cmd->next;
-			continue; 
+			continue ;
 		}
-		if(is_herdoc(list_cmd))
+		if (is_herdoc(list_cmd))
 		{
 			list_cmd = list_cmd->next;
-			continue; 
+			continue ;
 		}
 		execute_all_cmds(list_cmd, tmp, len);
 		list_cmd = list_cmd->next;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   p_utils6.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maneddam <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: eej-jama <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/07 18:34:50 by maneddam          #+#    #+#             */
-/*   Updated: 2023/05/07 21:49:45 by maneddam         ###   ########.fr       */
+/*   Updated: 2023/05/12 16:01:19 by eej-jama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,30 +33,30 @@ char	*get_from_my_env(char *exp, char *quot)
 	return (NULL);
 }
 
-int skip_10(t_node *list_cmd, int i)
+int	skip_10(t_node *list_cmd, int i)
 {
-	if(list_cmd->cmd[i] == 39)
+	if (list_cmd->cmd[i] == 39)
 	{
 		i++;
-		while(list_cmd->cmd[i] && list_cmd->cmd[i] != 39)
+		while (list_cmd->cmd[i] && list_cmd->cmd[i] != 39)
 		{
-			list_cmd->new_cmd = ft_strjoin_char(list_cmd->new_cmd, list_cmd->cmd[i]);
+			list_cmd->new_cmd = ft_strjoin_char(list_cmd->new_cmd,
+					list_cmd->cmd[i]);
 			i++;
 		}
 		i++;
 	}
-	if(list_cmd->cmd[i] == 34)
+	if (list_cmd->cmd[i] == 34)
 		i++;
-
 	return (i);
 }
 
-int replace_var(t_node *list_cmd, int i, int k, int j)
+int	replace_var(t_node *list_cmd, int i, int k, int j)
 {
-	char *var;
+	char	*var;
 
 	var = NULL;
-	if(list_cmd->cmd[i + 1] == '?')
+	if (list_cmd->cmd[i + 1] == '?')
 	{
 		k = i + 1;
 		var = ft_itoa(g_gb.exit_code);
@@ -75,36 +75,42 @@ int replace_var(t_node *list_cmd, int i, int k, int j)
 	}
 	else
 		list_cmd->new_cmd = ft_strjoin2(list_cmd->new_cmd, "\n");
-	// if(var)
-	// 	free(var);
-	return i;
+	return (i);
+}
+
+void	helping(t_node *list_cmd, int j)
+{
+	int	i;
+	int	k;
+
+	i = 0;
+	while (list_cmd->cmd[i])
+	{
+		k = 0;
+		i = skip_10(list_cmd, i);
+		if (list_cmd->cmd[i] && list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '$'
+			&& (list_cmd->cmd[i + 1] == '?' || ft_isalnum(list_cmd->cmd[i
+						+ 1])))
+		{
+			i = replace_var(list_cmd, i, k, j);
+			j++;
+			continue ;
+		}
+		if (list_cmd->cmd[i])
+			list_cmd->new_cmd = ft_strjoin_char(list_cmd->new_cmd,
+					list_cmd->cmd[i++]);
+	}
 }
 
 void	expanding(t_node *list_cmd)
 {
-	int i;
-	int k;
-	int j;
+	int	j;
 
 	while (list_cmd)
 	{
 		j = 0;
 		list_cmd->new_cmd = NULL;
-		i = 0;
-		while (list_cmd->cmd[i])
-		{
-			k = 0;
-			i = skip_10(list_cmd, i);
-			if(list_cmd->cmd[i] && list_cmd->cmd[i + 1] && list_cmd->cmd[i] == '$' && (list_cmd->cmd[i + 1] == '?'
-					|| ft_isalnum(list_cmd->cmd[i + 1])))
-			{
-				i = replace_var(list_cmd, i, k, j);
-				j++;
-				continue;
-			}
-			if(list_cmd->cmd[i])
-				list_cmd->new_cmd = ft_strjoin_char(list_cmd->new_cmd, list_cmd->cmd[i++]);
-		}
+		helping(list_cmd, j);
 		list_cmd = list_cmd->next;
 	}
 }
